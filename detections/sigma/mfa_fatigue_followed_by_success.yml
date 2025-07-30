@@ -1,0 +1,37 @@
+title: Suspicious MFA Failures Followed by Successful Sign-in
+id: 1a2b3c4d-5678-90ab-cdef-1234567890ab
+description: Detects multiple failed MFA attempts followed by a successful login from the same user and IP, indicative of possible MFA fatigue attacks.
+status: experimental
+author: Robert Clark
+date: 2025-07-30
+references:
+  - https://attack.mitre.org/groups/G0137/  # Scattered Spider
+logsource:
+  product: azure
+  service: signin
+  definition: 'Azure AD Sign-in logs'
+detection:
+  selection_failed_mfa:
+    ResultType:
+      - 500121
+      - 50074
+      - 50076
+  selection_success:
+    ResultType: 0
+  condition: |
+    selection_failed_mfa
+    | count() by UserPrincipalName, IPAddress, bin(TimeGenerated, 5m) >= 5
+    and selection_success
+    | where UserPrincipalName == UserPrincipalName and IPAddress == IPAddress
+fields:
+  - UserPrincipalName
+  - IPAddress
+  - TimeGenerated
+falsepositives:
+  - Legitimate users retrying MFA multiple times
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1078
+  - attack.t1110
+  - attack.t1098
