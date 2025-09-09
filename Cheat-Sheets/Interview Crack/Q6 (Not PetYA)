@@ -1,0 +1,30 @@
+Absolutely — discussing the NotPetya cyberattack in interviews is an excellent way to demonstrate your understanding of advanced persistent threats (APTs), supply chain vulnerabilities, and the broader implications of cyber warfare. Here's a comprehensive overview you can use:
+🧠 Interview-Ready Overview: The NotPetya Cyberattack (June 2017)
+Background
+On June 27, 2017, a devastating cyberattack known as NotPetya targeted Ukraine, causing widespread disruptions across various sectors. The malware was delivered through a compromised update of the widely used Ukrainian accounting software M.E.Doc, affecting approximately 400,000 customers, including major banks, government agencies, and critical infrastructure entities. 
+Wikipedia
+Attribution
+The attack was attributed to the Russian military hacker group Sandworm, a unit of the Russian GRU (military intelligence). Both the United States and the United Kingdom publicly confirmed this attribution, highlighting the geopolitical motivations behind the attack. 
+Axios
++1
+Technical Details
+Ransomware Facade: NotPetya masqueraded as ransomware, demanding a Bitcoin ransom. However, unlike traditional ransomware, it was designed to be irrecoverable, rendering the ransom payment futile.
+Propagation Methods: The malware exploited the EternalBlue vulnerability (CVE-2017-0144) in Microsoft Windows SMBv1, similar to the WannaCry attack. It also utilized Mimikatz for credential harvesting and PsExec for lateral movement.
+CrowdStrike
+Impact on Systems: NotPetya encrypted the Master Boot Record (MBR) and the Master File Table (MFT), rendering systems inoperable and causing significant data loss.
+Global Impact
+While the primary target was Ukraine, the effects rippled globally:
+Maersk: The global shipping giant faced an estimated $250–300 million in damages due to disrupted operations across ports worldwide.
+FedEx (TNT Express): Experienced significant operational disruptions, leading to substantial financial losses.
+Mondelez: The multinational confectionery company faced over $100 million in damages. 
+WIRED
+Brookings
+Lessons Learned
+Supply Chain Vulnerabilities: The attack underscored the critical importance of securing third-party vendors and software supply chains.
+Incident Response: Organizations realized the necessity of having robust incident response plans and the ability to quickly isolate and mitigate threats.
+Cyber Insurance Challenges: The incident highlighted ambiguities in cyber insurance policies, especially regarding acts of war exclusions. 
+Brookings
+🎯 Sample Interview Response
+"One of the most significant cyberattacks in recent history was NotPetya, which occurred in June 2017. Initially appearing as ransomware, it was later identified as a wiper malware designed to cause irreversible damage. The attack primarily targeted Ukraine but had far-reaching global consequences, affecting major corporations like Maersk and FedEx."
+"The malware propagated using the EternalBlue exploit and tools like Mimikatz and PsExec. It encrypted critical system components, rendering systems inoperable. The attack was attributed to the Russian military hacker group Sandworm, highlighting the increasing use of cyber capabilities in geopolitical conflicts."
+"In terms of detection, organizations should monitor for unusual SMB traffic, unauthorized use of administrative tools, and signs of credential dumping. Implementing network segmentation and regularly updating systems can help mitigate such threats."
