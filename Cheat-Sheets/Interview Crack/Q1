@@ -1,0 +1,37 @@
+💡 Interview Question (APT Context)
+"Suppose you’re investigating possible activity from APT29 (Cozy Bear) in a Windows enterprise. They’re known to use Kerberoasting, dump NTLM hashes, and then move laterally with WMI or WinRM. How would you hunt for and detect these behaviors in logs or Splunk? How would you distinguish legitimate admin activity from malicious Cozy Bear activity?"
+✅ Strong Answer
+1. Kerberoasting (T1558.003)
+APT29 TTP: Cozy Bear often abuses Kerberos to extract service account credentials.
+Detection: EventID 4769 (TGS requests).
+Splunk Hunt:
+index=wineventlog EventCode=4769 
+(EncryptionType=0x17 OR EncryptionType=0x18) 
+| stats count by Account_Name, Service_Name, src_ip
+Baseline vs Malicious: A single workstation suddenly requesting multiple SPN tickets for high-value service accounts is suspicious.
+2. NTLM Hash Dumping (T1003)
+APT29 TTP: They’ve used credential dumping to steal cached NTLM hashes for lateral movement.
+Detection: Look for LSASS access (4656) and suspicious process creation (4688).
+Splunk Hunt:
+index=wineventlog (EventCode=4656 OR EventCode=4688) 
+Object_Name="*lsass.exe*" 
+| stats count by Process_Name, Account_Name, host
+Baseline vs Malicious: Security tools may access LSASS — but if a random user process (e.g., procdump.exe) does it, that’s likely malicious.
+3. WMI Lateral Movement (T1047)
+APT29 TTP: They have abused WMI for stealthy remote execution.
+Detection: WMI-Activity logs (5858, 5861).
+Splunk Hunt:
+index=wineventlog (EventCode=5858 OR EventCode=5861) 
+| stats count by Account_Name, ComputerName, Process_Name
+Baseline vs Malicious: Admins might use WMI from known jump servers, but workstation-to-workstation WMI calls stand out.
+4. WinRM Lateral Movement (T1028)
+APT29 TTP: They rely on PowerShell Remoting over WinRM to maintain persistence and move laterally.
+Detection: EventIDs 4104 (PS script block) and 600 (WinRM service start).
+Splunk Hunt:
+index=wineventlog (EventCode=4104 OR EventCode=600) 
+| stats count by Account_Name, ScriptBlockText, ComputerName
+Baseline vs Malicious: IT admins may use WinRM, but Cozy Bear often executes scripts from compromised endpoints rather than admin consoles.
+5. Analyst Closing Point
+“To differentiate Cozy Bear activity from normal ops, I would establish baselines: which hosts normally request Kerberos tickets, which accounts typically use WMI/WinRM, and which security tools touch LSASS. Anything outside that baseline — especially when chained together (Kerberoast + NTLM dump + WMI/WinRM from the same host) — would trigger a hunt alert for potential APT29 activity.”
+👉 This way you’re tying MITRE ATT&CK → Logs → Splunk queries → APT29 tradecraft.
+Do you want me to build you a set of APT-focused interview practice questions (like flashcards), each with a different threat actor mapped to the techniques?
