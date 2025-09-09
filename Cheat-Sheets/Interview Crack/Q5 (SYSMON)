@@ -1,0 +1,18 @@
+Sysmon Trade-Off Interview Questions & Model Answers
+#	Question	Model Answer Summary
+1	You can only enable 2 Sysmon Event IDs to detect lateral movement and credential theft. Which ones and why?	EventID 1 (Process Creation) → detect tools like Mimikatz, PsExec, PowerShell scripts.
+EventID 3 (Network Connection) → detect unusual SMB, WMI, WinRM connections. Noise mitigated via whitelisting and baselining.
+2	You need to monitor persistence techniques with minimal Sysmon logging. Which 2 events do you enable?	EventID 1 (Process Creation) → scheduled tasks, startup binaries.
+EventID 7 (Registry Create/Modify) → autoruns, Run/RunOnce keys. Noise reduced via excluding standard IT admin modifications.
+3	You’re concerned about file-based malware dropping tools. Which Sysmon Event IDs would you choose?	EventID 11 (FileCreate) → new files in sensitive directories.
+EventID 1 (Process Creation) → execution of dropped files. Noise mitigated by ignoring normal temp or software updates directories.
+4	You want to detect credential theft but must minimize log volume. Which events?	EventID 1 (Process Creation) → LSASS dumps.
+EventID 10 (ProcessAccess) → access to LSASS or other sensitive processes. Only log access from non-whitelisted accounts to reduce noise.
+5	If you can monitor only 1 Sysmon event to detect suspicious PowerShell activity, which would you choose?	EventID 1 (Process Creation) → captures PowerShell execution and scripts.
+Optionally correlate with EventID 8 (CreateRemoteThread) if lateral movement is suspected. Use hashes and command-line filters to reduce noise.
+6	You’re asked to prioritize detection for lateral movement via SMB. Which 2 events?	EventID 3 (Network Connection) → SMB connections to unusual hosts.
+EventID 1 (Process Creation) → PsExec, WMI, or other tools initiating connections. Baseline standard network and admin tools.
+🔑 Tips for Answering These in Interviews
+Always explain reasoning: Don’t just name IDs — explain why each detects a TTP.
+Mention noise mitigation: Shows operational maturity.
+Tie to ATT&CK: Optional, but mapping to TTPs impresses senior interviewers.
