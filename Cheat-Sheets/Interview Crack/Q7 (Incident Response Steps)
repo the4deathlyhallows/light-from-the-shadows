@@ -1,0 +1,8 @@
+Step, Description
+Preparation, "Develop IR plans, train team, implement monitoring, run tabletop exercises."
+Identification, "Detect and analyze incidents, confirm scope, type, and severity."
+Containment, "Isolate affected systems, prevent lateral movement, preserve evidence."
+Eradication, "Remove malware, malicious accounts, patch vulnerabilities."
+Recovery, "Restore clean systems, monitor for reinfection, return to normal operations."
+Lessons Learned, "Conduct post-mortem, update IR plans, share intelligence, improve defenses."
+		
