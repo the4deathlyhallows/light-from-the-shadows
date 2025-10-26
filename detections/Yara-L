@@ -1,0 +1,15 @@
+rule FirewallRuleModificationSpike
+{
+    meta:
+        author = "YourName"
+        description = "Detects anomalous spikes in Windows Firewall Event ID 2004"
+        last_modified = "2025-10-26"
+        severity = "high"
+
+    events:
+        $fw2004 = { EventID == 2004 }
+
+    condition:
+        // Count occurrences of EventID 2004 in the last hour
+        count($fw2004, timewindow="1h") > 10
+}
