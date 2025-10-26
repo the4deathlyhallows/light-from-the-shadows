@@ -1,0 +1,20 @@
+(`indexes`) sourcetype=iis
+| eval uri_query=lower(uri_query)
+| eval cookie=lower(coalesce(cookie, "-"))
+| where match(uri_query, "/(cmd|shell|upload|r57|c99|phpmyadmin|wso|b374k)\\.php") 
+  OR like(uri_query, "%?cmd=%") 
+  OR like(uri_query, "%?exec=%")
+  OR match(uri_query, "(eval|base64_decode|assert)\\(")
+  OR match(uri_query, "(select\\s+.+\\s+from\\s+.+)")
+  OR match(cookie, "(union\\s+select|<script>|%27|%3Cscript%3E)")
+  OR match(uri_query, "\\.\\./")
+  OR match(uri_query, "%2e%2e%2f")
+  OR match(uri_query, "%ADd+allow_url_include%3d1+%ADd+auto_prepend_file%3dphp://input")
+  OR match(uri_query, "(etc/passwd|boot.ini|win.ini)")
+| anomalies threshold=0.01 field=c_ip
+| eval threshold=0.01 
+| sort -unexpectedness
+| eval flag=if(unexpectedness>=threshold, "anomalous", "not_anomalous")
+  | fillnull value="-" src_ip uri_query http_method status cookie useragent
+| stats earliest(_time) as firsttime latest(_time) as lasttime values(cs_host) as site  values(index) as Index values(cs_method) as Method values(status) as Status values(cs_cookie) as cookie values(url) as URL values(cs_uri_query) as uri_query values(uri_path) as uri by c_ip
+| convert ctime(*time)
