@@ -1,0 +1,2 @@
+
+index=corelight sourcetype=corelight_conn  | timechart count span=1d ``` create a line chart of count of corelight conn events broken into spans of 1 day```  | timewrap 1week ``` timewrap stacks the lines of times on top of each other so you can see the anomalies
