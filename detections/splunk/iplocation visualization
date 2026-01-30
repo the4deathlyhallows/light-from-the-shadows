@@ -1,0 +1,4 @@
+index=corelight sourcetype=corelight_conn   
+| iplocation prefix=dest_loc_ allfields=true dest_ip ```prefix creates a prefix to each field generated from iplocation command```   
+|  stats count by dest_loc_Country
+| geom geo_countries allFeatures=True featureIdField=dest_loc_Country ``` geom maps the coordinates of the countries so it can be applied to the visualization
