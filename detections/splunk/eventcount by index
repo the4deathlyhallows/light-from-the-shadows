@@ -1,0 +1,1 @@
+| eventcount summarize=false index=* | stats count by index | fields index  ```Provide a list of all indexes```
