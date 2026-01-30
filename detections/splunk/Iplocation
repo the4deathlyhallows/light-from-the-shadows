@@ -1,0 +1,4 @@
+index=corelight sourcetype=corelight_conn 
+| iplocation prefix=dest_loc_ allfields=true dest_ip ```prefix creates a prefix to each field generated from iplocation command``` 
+| iplocation prefix=src_loc_ allfields=true src_ip ```prefix creates a prefix to each field generated from iplocation command``` 
+| table dest_loc*, src_loc* ```table command can use wildcards so you don't have to call out all "dest" or "src" fields```
