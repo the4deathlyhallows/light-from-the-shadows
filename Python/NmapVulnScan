@@ -1,0 +1,32 @@
+#import the nmap library to utilize Nmap functionalities
+import nmap
+# define a function to scan the network
+def scan_network(target):
+    #Initialize the nmap Port Scanner object to scan the target
+    nm = nmap.PortScanner()
+    #perform a tcp syn scan (-sS) on the target IP address
+    nm.scan(target, arguments=" -sS ")
+    #check if the target host is up and responding
+    if nm[target].state == "up" :
+        print(f"{target} is up")
+
+        #iterate over all scanned hosts (though in this case, its just the target)
+        for host in nm[target].all_hosts():
+            #print open ports on hosts
+            print(f"Open ports pm {nm[target].all_hosts()}")
+
+    # lopp through each protocol (TCP OR UDP) used in the scan
+        for proto in nm[target].all_protocols():
+        #get all scanned ports for the specific protocol
+            ports = nm[target].all_protocols()[proto].keys()
+    #loop through each port and print its status (open/closed/etc.)
+    for port in ports:
+        print(f"Port: {port} - STate : {nm[host] [proto] [port] [state]}")
+        #if the host is down, print that the target is not responding
+        print(f"host: {target} is down")
+    #entry point of the script
+    if __name__ == "__main__":
+        #specify the target IP address or IP range to scan
+        target = input("Please enter the target : ")
+        #call the scan function to perform a vulnerability scan on the target ip
+        scan_network(target)
