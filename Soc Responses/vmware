@@ -1,0 +1,73 @@
+index=linux OR index=vmware-vclog
+("sshd" AND "authentication failure")
+rhost=10
+| stats values(user) as targeted_users count by rhost
+
+
+index=linux OR index=vmware-vclog
+("sshd")
+(user="ServiceNow-")
+("authentication failure" OR "Accepted password" OR "Accepted publickey")
+| table _time host rhost user message
+| sort _time
+
+
+  index=linux OR index=vmware-vclog
+("sshd" AND "authentication failure")
+rhost=1
+| stats count by user rhost
+| sort - count
+
+
+  index=vmware host= EventCode=4688 OR EventCode=4624 OR EventCode=4625
+("ssh" OR "sshd" OR "plink")
+NOT user="*$"
+
+| eval ssh_indicator=case(
+    like(New_Process_Name,"%ssh%"), "SSH Process Execution",
+    EventCode=4624 AND Logon_Type=10, "Remote Interactive Logon (RDP/SSH)",
+    EventCode=4624 AND Logon_Type=3, "Network Logon (Possible SSH)",
+    EventCode=4625, "Failed Logon",
+    true(), "Other"
+)
+
+| stats 
+    count
+    values(ssh_indicator) as activity_type
+    values(host) as ComputerName
+    values(user) as user
+    values(Account_Domain) as Domain
+    values(src_ip) as Source_IP
+    values(dest_ip) as Destination_IP
+    values(Logon_Type) as Logon_Type
+    values(parent_process_name) as Parent_Process
+    values(New_Process_Name) as Process_Name
+    values(Process_Command_Line) as CommandLine
+    earliest(_time) as first_seen
+    latest(_time) as last_seen
+by user
+
+| convert ctime(first_seen) ctime(last_seen)
+| sort - count
+
+
+
+  index=vmware-vclog host=caewpptvc01
+("sshd" OR "ssh ")
+NOT user="*$"
+
+| stats 
+    count
+    values(src) as Source_IP
+    values(user) as user
+    values(process) as Process
+    values(cmdline) as CommandLine
+    earliest(_time) as first_seen
+    latest(_time) as last_seen
+by user
+
+| convert ctime(first_seen) ctime(last_seen)
+| sort - count
+
+
+
