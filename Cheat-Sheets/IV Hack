@@ -1,7 +1,0 @@
-🔑 Windows Credential & Lateral Movement Cheat Sheet
-Technique	MITRE ATT&CK ID	Tools / Commands	Key Event IDs (Detection)	Mitigation
-Kerberoasting	T1558.003 (Kerberos TGS Request)	Rubeus kerberoast, Invoke-Kerberoast, setspn -T DOMAIN -Q */*	4769 (TGS Request), abnormal service account usage	Strong svc account passwords, gMSA, monitor TGS requests
-NTLM Hash Dumping	T1003.001 (LSASS Memory), T1003.002 (SAM)	Mimikatz sekurlsa::logonpasswords, reg save HKLM\SAM	4624 (logon), 4656 (handle to LSASS), EDR alerts	LSASS protection, Credential Guard, least privilege
-Pass-the-Hash	T1550.002	Mimikatz sekurlsa::pth	4624 (logon type 3, NTLM)	Enforce Kerberos, disable NTLM, restrict admin rights
-WMI Execution	T1047	Invoke-WmiMethod, wmic process call create	5858 (WMI connection), 5861 (WMI execution)	Limit WMI remote access, monitor WMI activity
-WinRM / PowerShell Remoting	T1028	Enter-PSSession, Invoke-Command	4104 (PS script block), 600 (WinRM service)	Limit WinRM users, enforce logging & mutual auth

@@ -1,3 +1,0 @@
-DeviceProcessEvents
-| where FileName in~ ("AADInternals.ps1", "AADInternals.exe")
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, InitiatingProcessParentFileName

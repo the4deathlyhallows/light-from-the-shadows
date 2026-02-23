@@ -1,4 +1,0 @@
-DeviceProcessEvents
-| where FileName in~ ("rundll32.exe", "mshta.exe", "powershell.exe", "wscript.exe", "regsvr32.exe")
-| where ProcessCommandLine has_any ("http", ".ps1", "DownloadFile", "Invoke-Expression")
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName
