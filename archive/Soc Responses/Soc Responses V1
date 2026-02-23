@@ -1,0 +1,60 @@
+
+🔹 Non-Malicious Response Snippets — Enhanced
+
+Purpose: Fast, copy-ready responses for common, non-malicious detections. Fill placeholders and attach supporting logs/screenshots when closing or documenting.
+
+1) Inbound Activity — False Positive
+Case Summary: Inbound activity from [SOURCE_IP/DOMAIN] to [HOSTNAME] at [TIMEFRAME] determined non-malicious after review.
+Key Findings:
+- Source reputation: [scanner/service/provider].
+- No exploitation or follow-on suspicious activity observed.
+- Correlated logs (firewall/Proxy/EDR) show expected behavior; no persistence/exfiltration identified.
+Conclusion: False positive — document and monitor.
+Recommendation: Record in change log; no escalation unless recurrence with anomalous behavior.
+
+2) Scheduled Task — Expected/Maintenance
+Case Summary: Scheduled task on [HOSTNAME] for [USERNAME] at [TIMEFRAME].
+Key Findings:
+- Task matches documented maintenance (updates/backup).
+- Binary/signature verified and path trusted: [path].
+Conclusion: Expected/benign.
+Recommendation: Document; no remediation required.
+
+3) Failed Login Attempts — User Error
+Case Summary: Multiple failed logins for [USERNAME] on [HOSTNAME] between [START_TIME] and [END_TIME].
+Key Findings:
+- Origin: [internal_ip] (known user device).
+- Subsequent successful login; no signs of brute force or lateral movement.
+Conclusion: User error.
+Recommendation: Advise user to confirm credentials and MFA; monitor for repeats.
+
+4) URI / Domain Detection — Benign
+Case Summary: URI request to [URI/DOMAIN] flagged on [HOSTNAME] at [TIMEFRAME].
+Key Findings:
+- TI indicates benign domain tied to [service/app].
+- No payloads or suspicious follow-up activity.
+Conclusion: False positive.
+Recommendation: Close as informational; attach logs for audit.
+
+---
+Master Copy-Paste Template (use for quick replies)
+- Category (tick one): [ ] False Positive  [ ] Scheduled Task  [ ] User Error  [ ] Benign URI/Domain  [ ] Other: _______
+- Short Summary: [one-line summary of event and reason]
+- Source / Host: [SOURCE_IP/DOMAIN] / [HOSTNAME or USERNAME]
+- Timeframe: [YYYY-MM-DD HH:MM to HH:MM]
+- Evidence: [queries/logs/hashes/screenshots — list attachments]
+- TI Summary: [brief reputations]
+- Action Taken: [monitored / documented / isolated / no action]
+- Recommendation: [monitor / document / escalate / isolate]
+
+Standard Response (copy/paste):
+"Summary: At [TIMEFRAME], an alert for [ALERT_NAME] on [HOSTNAME] was investigated. The activity was determined to be [CATEGORY] — [brief reason]. Evidence: [key evidence]. Recommended action: [recommended action]. Please advise if you want escalation to CIRT."
+
+Usage Tips:
+- Always attach the SIEM query and time range used for the review.
+- When marking false positive, include at least one supporting log screenshot or excerpt.
+- Keep a small 'favorites' list of snippets you use frequently for speed.
+
+Options:
+- Convert this into a fillable Markdown file? Reply "Yes: Markdown".
+- Generate a small script to populate fields from SIEM CSV export? Reply "Yes: Script".

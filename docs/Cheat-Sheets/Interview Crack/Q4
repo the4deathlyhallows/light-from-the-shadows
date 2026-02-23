@@ -1,0 +1,42 @@
+🔄 Scenario Question
+"You notice multiple failed Kerberos logons (EventID 4771) followed by a successful TGS request (4769) for a high-value service account. What hypotheses would you form, and what next steps would you take to investigate?"
+This tests your ability to form hypotheses, not just repeat detection steps.
+
+🛠 Tool Choice Question
+"You suspect lateral movement via WMI and WinRM in your environment. Which tools would you use to investigate this, and why would you choose them over others?"
+This tests practical tool knowledge (Sysmon, EDR, PowerShell logging, Sysinternals, Splunk queries, etc.).
+
+⚖️ Trade-Off Question
+"If you could only monitor three Windows Event IDs for credential theft and lateral movement detection, which would you choose and why?"
+This forces you to prioritize and justify. (Good picks: 4688 – process creation, 4769 – Kerberoast TGS requests, 4624 – logons).
+
+🧩 Puzzle Question (Attack Chain)
+"An attacker compromised a workstation. They used Kerberoasting to grab service account creds, cracked them offline, then moved laterally with WMI, and finally set a scheduled task for persistence. Map these steps to MITRE ATT&CK and explain where you’d hunt for evidence."
+This checks whether you can link multiple TTPs into a story, which is huge in interviews.
+
+Do you want me to pick one of these styles and run a full Q&A example with an ideal answer, so you get practice on a new type of response?
+You said:
+answer the trade off question
+ChatGPT said:
+Perfect choice 👌 — the trade-off question is a classic senior-hunter style prompt.
+⚖️ Interview Question
+"If you could only monitor three Windows Event IDs for credential theft and lateral movement detection, which would you choose and why?"
+✅ Strong Answer
+1. EventID 4688 – Process Creation
+Why: Almost every credential dumping or lateral movement tool spawns a process. Mimikatz, procdump, PsExec, WMIC, PowerShell — all show up here.
+Benefit: Gives visibility into attacker tools and living-off-the-land binaries (LOLBins).
+Caveat: High volume — needs filtering (e.g., baseline common processes).
+2. EventID 4769 – Kerberos Service Ticket Request (TGS)
+Why: This is the pivot point for Kerberoasting. Attackers request service tickets to crack offline.
+Benefit: Detects early credential theft attempts targeting service accounts.
+Caveat: Requires tuning — admins also request tickets, but high volume or RC4-only tickets are suspicious.
+3. EventID 4624 – Logon
+Why: Core to spotting lateral movement. Different logon types reveal behavior:
+Type 3 = Network (SMB/Pass-the-Hash).
+Type 10 = Remote interactive (RDP).
+Benefit: Lets you correlate account usage across hosts (e.g., one account logging into 10 servers in 5 minutes).
+Caveat: Noisy — but critical when correlated with host and account baselines.
+🔑 Framing the Trade-off
+“I’d pick 4688, 4769, and 4624 because they cover three critical detection layers: attacker tooling, credential theft, and lateral movement. While other events (4656 LSASS access, 4104 PowerShell script logging) add depth, those three give me the broadest detection coverage if I’m resource-constrained. I’d then layer baselining and correlation in Splunk to reduce noise and surface real threats.”
+👉 That answer shows you understand both detection value and operational trade-offs.
+Want me to now throw you a mock trade-off question (like: “pick 2 Sysmon events for the same goal”), and you try to answer it — then I’ll refine your response?

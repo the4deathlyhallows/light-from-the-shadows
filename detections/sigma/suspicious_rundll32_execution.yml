@@ -1,0 +1,21 @@
+title: Suspicious rundll32 Execution
+id: 12345678-90ab-cdef-1234-567890abcdef
+status: experimental
+description: Detects suspicious execution of rundll32.exe with uncommon arguments
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        Image|endswith: '\rundll32.exe'
+        CommandLine|contains|all:
+            - ".dll"
+            - ","
+    condition: selection
+fields:
+    - Image
+    - CommandLine
+level: high
+tags:
+    - attack.execution
+    - attack.t1055
