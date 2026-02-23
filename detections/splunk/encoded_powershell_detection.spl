@@ -1,0 +1,4 @@
+# encoded_powershell_detection.spl
+index=wineventlog EventCode=4688 
+CommandLine="*EncodedCommand*"
+| stats count by ComputerName, User

@@ -1,0 +1,49 @@
+TableName
+| take 10               // Get 10 rows
+| project TimeGenerated, Account, Computer  // Select columns
+| order by TimeGenerated desc
+
+SecurityEvent
+| where EventID == 4624                     // Successful logon
+| where AccountType == "User"
+| where TimeGenerated > ago(24h)            // Last 24 hours
+
+SecurityEvent
+| where EventID == 4625                     // Failed logons
+| summarize FailedLogons=count() by Account, bin(TimeGenerated, 1h)
+| order by FailedLogons desc
+
+SecurityEvent
+| extend LoginType = iff(EventID == 4624, "Success", "Other")
+
+
+// Example: Failed logons joined with successful logons
+let Failed = SecurityEvent
+    | where EventID == 4625
+    | project Account, Computer, TimeGenerated;
+let Success = SecurityEvent
+    | where EventID == 4624
+    | project Account, Computer, TimeGenerated;
+
+Failed
+| join kind=inner Success on Account
+
+
+// Extract command-line arguments
+SecurityEvent
+| where EventID == 4688
+| extend ProcArgs = extract(@"CommandLine: (.*)", 1, EventData)
+
+
+// Parse structured field
+Syslog
+| parse Message with "user=" User " src=" SrcIP " dst=" DstIP
+
+
+| where Account has "admin"             // contains substring
+| where CommandLine matches regex @"(?i)powershell.*-enc"   // case-insensitive
+
+
+| where TimeGenerated between (datetime(2025-08-01)..now())
+| summarize count() by bin(TimeGenerated, 5m)
+

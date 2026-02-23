@@ -1,0 +1,21 @@
+
+Log4j inUserAgent 
+short_description = "LDAP-BASED Log4j exploitation attempts have been detected"
+description = "Detects LDAP-BASED Log4j exploitation attempts in User_Agent field. These requests
+are highly suspicious and
+attempt to achieve initial Access (T1190 - Exploit Public-Facing Application) or reconnaissance for exploitation"
+tactic = "{'TA0001'
+'Initial Access'}"
+technique = "{'T1190': 'Exploit Public-Facing Application'}"
+reference = " {https://ww.microsoft.com/en-us/msrc/blog/2021/12/microsofts-response-to-cve-2021-44228-apache-log4j2}"
+event_type = "NETWORK_CONNECTION"
+
+events:
+$e-metadata. event_type = "NETWORK_CONNECTION"
+$e.network.http.user_agent = /\$\{jndi: (ldap|rmi|dns|nis|corba|iiop|http|https): [^\}]+\}/ nocase
+$short_hostname = re. capture($e.principal.hostname, '^\w+*)
+not $short_hostname in %Internal_Scanners.hostname
+outcome:
+$risk_score = 50
+condition:
+$e

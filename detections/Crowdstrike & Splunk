@@ -1,0 +1,2214 @@
+
+
+Contents
+CrowdStrike Falcon Reconnaissance Queries	9
+List all processes with the keyword "nmap" in the command line:	9
+Identify suspicious network connections with the keyword "port scan":	9
+Search for any instances of suspicious file creation activities:	9
+Look for reconnaissance activities targeting system information:	9
+Identify attempts to exploit known vulnerabilities:	9
+Identify suspicious DNS queries:	9
+Search for network traffic containing suspicious keywords:	9
+Identify attempts to enumerate running processes:	9
+Look for reconnaissance activities targeting network information:	9
+Identify attempts to gather account information:	9
+Identify attempts to enumerate users and groups:	10
+Look for attempts to gather system configuration information:	10
+Identify attempts to gather information about installed software:	10
+Look for attempts to gather information about network shares:	10
+Identify attempts to gather information about domain controllers:	10
+Identify attempts to scan for open ports:	10
+Look for attempts to gather information about installed security software:	10
+Identify attempts to gather information about network devices:	10
+Look for attempts to gather information about connected devices:	11
+Identify attempts to gather information about cloud infrastructure:	11
+Look for attempts to gather information about running services:	11
+Identify attempts to gather information about domain names:	11
+Look for attempts to gather information about wire networks:	11
+Identify attempts to gather information about open shares:	11
+Look for attempts to gather information about users:	11
+Look for attempts to gather information about running applications:	11
+Identify attempts to gather information about running web applications:	11
+Look for attempts to gather information about virtual machines:	12
+Identify attempts to gather information about database servers:	12
+Look for attempts to gather information about directory services:	12
+Look for attempts to gather information about running processes with the keyword "ps":	12
+Identify attempts to gather information about network shares with the keyword "net share":	12
+Look for attempts to gather information about web server configuration:	12f
+Identify attempts to gather information about installed software with the keyword "product":	12
+Look for attempts to gather information about system memory with the keyword "dump":	12
+Look for attempts to gather information about running processes with the keyword "tasklist":	12
+Identify attempts to gather information about the domain controller:	12
+Look for attempts to gather information about network interfaces:	13
+Identify attempts to gather information about web application frameworks:	13
+Look for attempts to gather information about installed software with the keyword "uninstall":	13
+Identify attempts to gather information about system hardware:	13
+Look for attempts to gather information about installed software with the keyword "software":	13
+Identify attempts to gather information about running processes with the keyword "pstools":	13
+Look for attempts to gather information about network devices with the keyword "arp":	13
+Identify attempts to gather information about domain names with the keyword "domain":	13
+Look for attempts to gather information about network adapters:	14
+Identify attempts to gather information about running processes with the keyword "process":	14
+Look for attempts to gather information about user accounts:	14
+Identify attempts to gather information about network interfaces:	14
+Look for attempts to gather information about installed software with the keyword "application":	14
+Look for attempts to gather information about network protocols:	14
+Identify attempts to gather information about running processes with the keyword "task":	14
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":	14
+Identify attempts to gather information about virtual machines:	15
+Look for attempts to gather information about system memory with the keyword "memdump":	15
+Look for attempts to gather information about network services with the keyword "netstat":	15
+Identify attempts to gather information about system information with the keyword "systeminfo":	15
+Look for attempts to gather information about network adapters with the keyword "ipconfig":	15
+Identify attempts to gather information about running processes with the keyword "ps":	15
+Look for attempts to gather information about domain names with the keyword "nslookup":	15
+Look for attempts to gather information about network shares with the keyword "net share":	15
+Identify attempts to gather information about running processes with the keyword "task":	15
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":	16
+Identify attempts to gather information about virtual machines:	16
+Look for attempts to gather information about system memory with the keyword "memdump":	16
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":	16
+Identify attempts to gather information about system information with the keyword "systeminfo":	16
+Look for attempts to gather information about network adapters with the keyword "ipconfig":	16
+Identify attempts to gather information about running processes with the keyword "ps":	16
+Look for attempts to gather information about domain names with the keyword "nslookup":	16
+Look for attempts to gather information about network shares with the keyword "net share":	16
+Identify attempts to gather information about network protocols:	17
+Look for attempts to gather information about running processes with the keyword "task":	17
+Identify attempts to gather information about network adapters with the keyword "arp":	17
+Look for attempts to gather information about virtual machines with the keyword "vmtools":	17
+Look for attempts to gather information about network interfaces with the keyword "ipconfig":	17
+Identify attempts to gather information about running processes with the keyword "ps":	17
+Look for attempts to gather information about domain names with the keyword "nslookup":	17
+Identify attempts to gather information about network services with the keyword "netstat":	17
+Look for attempts to gather information about system hardware with the keyword "systeminfo":	17
+Look for attempts to gather information about network protocols with the keyword "netsh":	17
+Identify attempts to gather information about network interfaces with the keyword "ip addr":	18
+Look for attempts to gather information about system information with the keyword "systeminfo":	18
+Identify attempts to gather information about running processes with the keyword "task":	18
+Look for attempts to gather information about domain names with the keyword "nslookup":	18
+Look for attempts to gather information about network shares with the keyword "net share":	18
+Identify attempts to gather information about network adapters with the keyword "arp":	18
+Look for attempts to gather information about virtual machines with the keyword "vmtools":	18
+Identify attempts to gather information about running processes with the keyword "ps":	18
+Look for attempts to gather information about system memory with the keyword "memdump":	18
+Look for attempts to gather information about network protocols with the keyword "route":	19
+Identify attempts to gather information about network interfaces with the keyword "ifconfig":	19
+Look for attempts to gather information about running processes with the keyword "task":	19
+Identify attempts to gather information about domain names with the keyword "nslookup":	19
+Look for attempts to gather information about network services with the keyword "netstat":	19
+Look for attempts to gather information about system hardware with the keyword "systeminfo":	19
+Identify attempts to gather information about running processes with the keyword "ps":	19
+Look for attempts to gather information about network adapters with the keyword "ipconfig":	19
+Identify attempts to gather information about network shares with the keyword "net share":	19
+Look for attempts to gather information about virtual machines with the keyword "vmtools":	20
+CrowdStrike Falcon Search Queries	20
+Malware detection:	20
+Suspicious network traffic:	20
+Credential theft:	20
+Beaconing:	20
+Command and control:	20
+Lateral movement:	21
+PowerShell:	21
+Phishing:	21
+Data exfiltration:	21
+Suspicious activity:	21
+Ransomware:	22
+DNS tunneling:	22
+Advanced persistent threats:	22
+Webshell:	22
+Remote access:	22
+Insider threat:	23
+Exploit kits:	23
+Cryptojacking:	23
+Malicious insiders:	23
+Password spraying:	23
+Reconnaissance:	24
+Command andReconnaissance: control:	24
+Malware:	24
+Data manipulation:	24
+Password stealing:	24
+Network scanning:	25
+Web application attacks:	25
+Ransomware:	25
+Exploits:	25
+Brute force attacks:	25
+Endpoint attacks:	26
+Webshell:	26
+File integrity monitoring:	26
+Advanced persistent threats:	26
+Phishing:	27
+Insider threats:	27
+Privilege escalation:	27
+Command and control:	27
+Data exfiltration:	27
+Suspicious activity:	28
+Network scanning:	28
+Suspicious network activity:	28
+Active directory reconnaissance:	28
+Suspicious logins:	28
+Malicious activity:	29
+Data infiltration:	29
+Suspicious outgoing traffic:	29
+Suspicious PowerShell usage:	29
+SPLUNK Queries	30
+Detection Surface for any security-aware data source	30
+Detecting Beaconing	30
+RDP Terminal Service	31
+Track (un)signed PowerShell	31
+Username guessing brute force attack	31
+Successful file access (must have object access auditing enabled)	32
+Successful Logons	32
+Failed Logons	32
+User Logon, Logoff, and Duration	32
+Timechart of the Status of a Locked Out Account	33
+AD Password Change Attempts	33
+PTH Detection	33
+Find Passwords Entered As Usernames	33
+Failed Attempt to Login To A Disabled Account	33
+See when Windows Audit Logs are Cleared	34
+Failed RDP Attempt	34
+Disabled Account Re-enabled	34
+Account Deleted within 24 hours of Creation	34
+File Deletion Attempts	35
+New Service Installation on Windows	35
+Changes to Windows User Group by Account	35
+Failed Authentication to Non-Existing Account	35
+Time Between Account Creation and Deletion	36
+Weekend User Activity	36
+Time Between Rights Granted and Revoked	36
+Console Lock Duration	37
+Privilege Escalation Detection	37
+Number of Accounts Created in Windows Environment	37
+Data Exfiltration	37
+SMTP-Request	38
+VPN Connection	38
+Sysmon - Network Connections	38
+Sysmon  - Suspicious Domain Query	39
+WinEventLog  - Event Code 5156  (Process Connection)	39
+WinEventLog  - Kerberos Authentication Failure	39
+WinEventLog  - Other User Password Reset	40
+WinEventLog  - Suspicious Successful Logon	40
+WinEventLog  - User Creation	41
+Admin Tracking via 4688	41
+MITRE ATT&CK TTP & Detection Analytics	41
+Vulnerabilities & Detection Analytics	41
+Malware Detection Analytics	43
+Threat Hunting Dashboard	45
+Resources	62
+
+
+CrowdStrike Falcon Reconnaissance Queries
+List all processes with the keyword "nmap" in the command line:
+process_name:nmap*
+
+Identify suspicious network connections with the keyword "port scan":
+netconn_count:[5 TO *] AND (netconn_dns:ports scan* OR netconn_ip:ports scan*)
+
+Search for any instances of suspicious file creation activities:
+event_simpleName:CreateFile AND event_type:file_created AND file_name:cmd.exe AND file_path:Temp\
+
+Look for reconnaissance activities targeting system information:
+event_simpleName:ProcessCreate AND process_name:systeminfo.exe
+
+Identify attempts to exploit known vulnerabilities:
+(event_simpleName:ProcessCreate AND process_name:mshta.exe) OR (event_simpleName:ProcessCreate AND process_name:rundll32.exe AND command_line:*CVE*)
+
+Identify suspicious DNS queries:
+netconn_dns:nslookup* OR netconn_dns:whois* OR netconn_dns:hostname*
+
+Search for network traffic containing suspicious keywords:
+netconn_count:[5 TO *] AND (netconn_dns:hack* OR netconn_ip:hack* OR netconn_dns:backdoor* OR netconn_ip:backdoor*)
+
+Identify attempts to enumerate running processes:
+event_simpleName:ProcessCreate AND process_name:tasklist.exe
+
+67
+
+Identify attempts to gather account information:
+(event_simpleName:ProcessCreate AND process_name:net.exe) OR (event_simpleName:ProcessCreate AND process_name:dsquery.exe)
+
+
+Identify attempts to enumerate users and groups:
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:*user*) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:*group*)
+
+Look for attempts to gather system configuration information:
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SYSTEM\ CurrentControlSet\ Services\ Tcpip\ Parameters)
+
+Identify attempts to gather information about installed software:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall)
+
+Look for attempts to gather information about network shares:
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Identify attempts to gather information about domain controllers:
+(event_simpleName:ProcessCreate AND process_name:nltest.exe AND command_line:dsgetdc) OR (event_simpleName:ProcessCreate AND process_name:ping.exe AND command_line:ldap*)
+
+Identify attempts to scan for open ports:
+(event_simpleName:ProcessCreate AND process_name:nmap.exe AND command_line:-sT) OR (event_simpleName:ProcessCreate AND process_name:masscan.exe)
+
+Look for attempts to gather information about installed security software:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product where "name like '%antivirus%'" ) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall where "displayName like '%antivirus%'" )
+
+Identify attempts to gather information about network devices:
+(event_simpleName:ProcessCreate AND process_name:tracert.exe) OR (event_simpleName:ProcessCreate AND process_name:arp.exe -a)
+
+
+
+
+Look for attempts to gather information about connected devices:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:logicaldisk get caption, description, size) OR (event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:nicconfig get description, IPAddress, MACAddress)
+
+Identify attempts to gather information about cloud infrastructure:
+(event_simpleName:ProcessCreate AND process_name:aws.exe AND command_line:ec2 describe-instances) OR (event_simpleName:ProcessCreate AND process_name:gcloud.exe AND command_line:compute instances list) OR (event_simpleName:ProcessCreate AND process_name:az.exe AND command_line:vm list)
+
+Look for attempts to gather information about running services:
+(event_simpleName:ProcessCreate AND process_name:sc.exe AND command_line:query) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:service)
+
+Identify attempts to gather information about domain names:
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about wire networks:
+(event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:wlan show networks mode=bssid) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:wlan show profiles)
+
+Identify attempts to gather information about open shares:
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Look for attempts to gather information about users:
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:user) OR (event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:useraccount)
+
+Look for attempts to gather information about running applications:
+(event_simpleName:ProcessCreate AND process_name:tasklist.exe) OR (event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:process list brief)
+
+Identify attempts to gather information about running web applications:
+(event_simpleName:ProcessCreate AND process_name:iisapp.vbs) OR (event_simpleName:ProcessCreate AND process_name:appcmd.exe)
+
+Look for attempts to gather information about virtual machines:
+(event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe) OR (event_simpleName:ProcessCreate AND process_name:vmware-guestvmx.exe)
+
+Identify attempts to gather information about database servers:
+(event_simpleName:ProcessCreate AND process_name:sqlcmd.exe) OR (event_simpleName:ProcessCreate AND process_name:mssql-conf)
+
+Look for attempts to gather information about directory services:
+(event_simpleName:ProcessCreate AND process_name:dsquery.exe) OR (event_simpleName:ProcessCreate AND process_name:ldp.exe)
+
+Look for attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe)
+
+Identify attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Look for attempts to gather information about web server configuration:
+(event_simpleName:ProcessCreate AND process_name:httpd.exe -t -D DUMP_MODULES) OR (event_simpleName:ProcessCreate AND process_name:nginx.exe -t)
+
+Identify attempts to gather information about installed software with the keyword "product":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall)
+
+Look for attempts to gather information about system memory with the keyword "dump":
+(event_simpleName:ProcessCreate AND process_name:procdump.exe) OR (event_simpleName:ProcessCreate AND process_name:windbg.exe)
+
+Look for attempts to gather information about running processes with the keyword "tasklist":
+(event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Identify attempts to gather information about the domain controller:
+(event_simpleName:ProcessCreate AND process_name:nltest.exe AND command_line:dsgetdc) OR (event_simpleName:ProcessCreate AND process_name:ping.exe AND command_line:ldap*)
+
+Look for attempts to gather information about network interfaces:
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int ip show config)
+
+Identify attempts to gather information about web application frameworks:
+(event_simpleName:ProcessCreate AND process_name:python.exe AND command_line:manage.py runserver) OR (event_simpleName:ProcessCreate AND process_name:flask.exe) OR (event_simpleName:ProcessCreate AND process_name:rails.exe)
+
+Look for attempts to gather information about installed software with the keyword "uninstall":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product where "vendor like '%uninstall%'" ) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall where "displayName like '%uninstall%'" )
+
+Identify attempts to gather information about system hardware:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:csproduct get name) OR (event_simpleName:ProcessCreate AND process_name:systeminfo.exe)
+
+Look for attempts to gather information about installed software with the keyword "software":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product where "description like '%software%'" ) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall where "displayName like '%software%'" )
+
+Identify attempts to gather information about running processes with the keyword "pstools":
+(event_simpleName:ProcessCreate AND process_name:pslist.exe) OR (event_simpleName:ProcessCreate AND process_name:pskill.exe)
+
+Look for attempts to gather information about network devices with the keyword "arp":
+(event_simpleName:ProcessCreate AND process_name:arp.exe -a)
+
+Identify attempts to gather information about domain names with the keyword "domain":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe) OR (event_simpleName:ProcessCreate AND process_name:dig.exe)
+
+Look for attempts to gather information about network adapters:
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe /all) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about running processes with the keyword "process":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:process get caption,commandline,processid) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Look for attempts to gather information about user accounts:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:useraccount) OR (event_simpleName:ProcessCreate AND process_name:net.exe user)
+
+Identify attempts to gather information about network interfaces:
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int ip show config)
+
+Look for attempts to gather information about installed software with the keyword "application":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product where "description like '%application%'" ) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall where "displayName like '%application%'" )
+
+Look for attempts to gather information about network protocols:
+(event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int ip show offload) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int tcp show global)
+
+Identify attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":
+(event_simpleName:ProcessCreate AND process_name:ifconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:ip addr show)
+
+Identify attempts to gather information about virtual machines:
+(event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe) OR (event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe)
+
+Look for attempts to gather information about system memory with the keyword "memdump":
+(event_simpleName:ProcessCreate AND process_name:procdump.exe) OR (event_simpleName:ProcessCreate AND process_name:windbg.exe) OR (event_simpleName:ProcessCreate AND process_name:dumpcap.exe)
+
+Look for attempts to gather information about network services with the keyword "netstat":
+(event_simpleName:ProcessCreate AND process_name:netstat.exe -ano) OR (event_simpleName:ProcessCreate AND process_name:netstat.exe -bano)
+
+Identify attempts to gather information about system information with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Look for attempts to gather information about network adapters with the keyword "ipconfig":
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Identify attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":
+(event_simpleName:ProcessCreate AND process_name:ifconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:ip addr show)
+
+Identify attempts to gather information about virtual machines:
+(event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe) OR (event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe)
+
+Look for attempts to gather information about system memory with the keyword "memdump":
+(event_simpleName:ProcessCreate AND process_name:procdump.exe) OR (event_simpleName:ProcessCreate AND process_name:windbg.exe) OR (event_simpleName:ProcessCreate AND process_name:dumpcap.exe)
+
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":
+(event_simpleName:ProcessCreate AND process_name:ifconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:ip addr show)
+
+Identify attempts to gather information about system information with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Look for attempts to gather information about network adapters with the keyword "ipconfig":
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Identify attempts to gather information about network protocols:
+(event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int ip show offload) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int tcp show global)
+
+Look for attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Identify attempts to gather information about network adapters with the keyword "arp":
+(event_simpleName:ProcessCreate AND process_name:arp.exe -a)
+
+Look for attempts to gather information about virtual machines with the keyword "vmtools":
+(event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe) OR (event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe)
+
+Look for attempts to gather information about network interfaces with the keyword "ipconfig":
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Identify attempts to gather information about network services with the keyword "netstat":
+(event_simpleName:ProcessCreate AND process_name:netstat.exe -ano) OR (event_simpleName:ProcessCreate AND process_name:netstat.exe -bano)
+
+Look for attempts to gather information about system hardware with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Look for attempts to gather information about network protocols with the keyword "netsh":
+(event_simpleName:ProcessCreate AND process_name:netsh.exe interface ipv4 show route) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe interface ipv6 show route)
+
+Identify attempts to gather information about network interfaces with the keyword "ip addr":
+(event_simpleName:ProcessCreate AND process_name:ip.exe addr show) OR (event_simpleName:ProcessCreate AND process_name:ipconfig.exe /all)
+
+Look for attempts to gather information about system information with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Identify attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Look for attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Identify attempts to gather information about network adapters with the keyword "arp":
+(event_simpleName:ProcessCreate AND process_name:arp.exe -a)
+
+Look for attempts to gather information about virtual machines with the keyword "vmtools":
+(event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe) OR (event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about system memory with the keyword "memdump":
+(event_simpleName:ProcessCreate AND process_name:procdump.exe) OR (event_simpleName:ProcessCreate AND process_name:windbg.exe) OR (event_simpleName:ProcessCreate AND process_name:dumpcap.exe)
+
+Look for attempts to gather information about network protocols with the keyword "route":
+(event_simpleName:ProcessCreate AND process_name:route.exe print) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe interface ipv4 show route) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe interface ipv6 show route)
+
+Identify attempts to gather information about network interfaces with the keyword "ifconfig":
+(event_simpleName:ProcessCreate AND process_name:ifconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:ip addr show)
+
+Look for attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Identify attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about network services with the keyword "netstat":
+(event_simpleName:ProcessCreate AND process_name:netstat.exe -ano) OR (event_simpleName:ProcessCreate AND process_name:netstat.exe -bano)
+
+Look for attempts to gather information about system hardware with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about network adapters with the keyword "ipconfig":
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Look for attempts to gather information about virtual machines with the keyword "vmtools":
+(event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe) OR (event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe)
+
+CrowdStrike Falcon Search Queries
+Malware detection:
+process_name:"powershell.exe" AND command_line:"-ep bypass"
+filemod:(".exe" OR ".dll") AND "C:\ProgramData*.dll"
+process_name:"mshta.exe" AND command_line:"javascript:"
+
+Suspicious network traffic:
+destination_address:192.168.1.100 AND destination_port:443 AND (protocol:tcp OR protocol:udp)
+(source_address:10.0.0.0/8 OR source_address:172.16.0.0/12 OR source_address:192.168.0.0/16) AND destination_port:3389 AND (protocol:tcp OR protocol:udp)
+destination_address:8.8.8.8 AND (destination_port:53 OR destination_port:5353)
+
+Credential theft:
+(process_name:"lsass.exe" OR process_name:"lsaiso.exe") AND command_line:"lsadump::sam"
+process_name:"cmdkey.exe" OR process_name:"mimikatz.exe"
+process_name:"netsh.exe" AND command_line:"wlan show profile"
+
+Beaconing:
+netconn_count<10 AND netconn_duration>5m AND netconn_count_sent<5 AND user_name:"SYSTEM"
+destination_port:53 AND (protocol:tcp OR protocol:udp) AND (NOT query:"ciscopxe" OR NOT query:"vqmon")
+process_name:"svchost.exe" AND command_line:"-k netsvcs" AND (netconn_count:>30 OR netconn_count_sent:>30)
+
+Command and control:
+process_name:"iexplore.exe" AND command_line:"dns.pw"
+
+process_name:"rundll32.exe" AND command_line:"DLLName: PowerShellHttp.dll, EntryPoint: Invoke-Mimikatz"
+
+process_name:"powershell.exe" AND command_line:"dns.pw" AND user_name:(NOT "SYSTEM")
+
+Lateral movement:
+process_name:"net.exe" AND command_line:"use \*" AND (user_name:(NOT "SYSTEM") OR (user_name:"SYSTEM" AND parent_process_name:"services.exe"))
+filemod:(".exe" OR ".dll") AND (user_name:(NOT "SYSTEM") OR (user_name:"SYSTEM" AND parent_process_name:"services.exe")) AND (destination_address:192.168.0.0/16 OR destination_address:172.16.0.0/12 OR destination_address:10.0.0.0/8)
+
+PowerShell:
+process_name:"powershell.exe" AND (command_line:"scriptblock" OR command_line:"encodedcommand") AND (netconn_count:>0 OR filemod_count:>0 OR registrymod_count:>0)
+process_name:"powershell.exe" AND (command_line:"invoke-webrequest" OR command_line:"invoke-restmethod") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"new-object" OR command_line:"add-type" OR command_line:"reflection.assemblyname") AND filemod_count:>0
+
+Phishing:
+process_name:"outlook.exe" AND command_line:"/c IPM.note" AND filemod_count:>0 AND netconn_count:>0
+process_name:"chrome.exe" AND command_line:"--profile-directory=Default" AND netconn_count:>0 AND (query:"google.com" OR query:"mail.google.com")
+process_name:"firefox.exe" AND (command_line:"-new-window" OR command_line:"-new-tab") AND netconn_count:>0 AND query:"microsoft.com"
+
+Data exfiltration:
+process_name:"svchost.exe" AND command_line:"/t 60000" AND (netconn_count_sent:>1000 OR filemod_count_sent:>1000 OR registrymod_count_sent:>1000)
+process_name:"powershell.exe" AND (command_line:"convertto-securestring" OR command_line:"export-clixml") AND netconn_count_sent:>0
+process_name:"cmd.exe" AND command_line:"/c certutil -encode" AND filemod_count_sent:>0
+
+Suspicious activity:
+process_name:"wscript.exe" AND (command_line:"/e:VBScript.Encode" OR command_line:"/b /e:vbscript") AND filemod_count:>0
+process_name:"regsvr32.exe" AND command_line:"/s /u /i:http://*" AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"powershell" OR command_line:"certutil" OR command_line:"bitsadmin" OR command_line:"wevtutil" OR command_line:"wmic") AND netconn_count:>0
+
+Ransomware:
+process_name:"taskdl.exe" AND command_line:"-url" AND netconn_count:>0
+process_name:"lsass.exe" AND command_line:"-start" AND (filemod_count:>50 OR filemod_count_sent:>50 OR registrymod_count:>50 OR registrymod_count_sent:>50)
+process_name:"cmd.exe" AND (command_line:"/c chcp 65001 && echo " OR command_line:"/c powershell -enc") AND (filemod_count:>10 OR filemod_count_sent:>10 OR registrymod_count:>10 OR registrymod_count_sent:>10)
+
+DNS tunneling:
+query:(".-idc." OR "-cdn." OR "-data." OR "-image." OR "-mov." OR "-picture." OR "-stream." OR "-video." OR "-voice." OR "-web.") AND (destination_port:53 OR destination_port:5353) AND netconn_count:>0
+query:"google.com" AND netconn_count:>1000 AND netconn_duration:<1s
+query:"bing.com" AND netconn_count:>1000 AND netconn_duration:<1s
+
+Advanced persistent threats:
+process_name:"wscript.exe" AND (command_line:"/b /e:vbscript.encode" OR command_line:"/b /e:jscript.encode") AND (filemod_count:>0 OR netconn_count:>0)
+process_name:"mshta.exe" AND (command_line:"javascript:" OR command_line:"file://") AND (filemod_count:>0 OR netconn_count:>0)
+process_name:"regsvr32.exe" AND command_line:"/u /i:http://" AND netconn_count:>0
+
+Webshell:
+process_name:"aspnet_compiler.exe" AND (command_line:"-v" OR command_line:"-u") AND filemod_count:>0
+process_name:"cmd.exe" AND (command_line:"/c echo ^<?php eval(base64_decode(" OR command_line:"/c echo ^<?php $") AND (filemod_count:>0 OR netconn_count:>0)
+process_name:"powershell.exe" AND (command_line:"iex(new-object net.webclient).downloadstring" OR command_line:"invoke-expression(new-object net.webclient).downloadstring") AND (filemod_count:>0 OR netconn_count:>0)
+
+Remote access:
+process_name:"mstsc.exe" AND (command_line:"/admin" OR command_line:"/restrictedadmin") AND netconn_count:>0
+process_name:"psexec.exe" AND (command_line:"/accepteula" OR command_line:"/accepteula \\*") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"/node:" OR command_line:"/node:^" OR command_line:"/node:@") AND netconn_count:>0
+
+Insider threat:
+process_name:"powershell.exe" AND (command_line:"get-content" OR command_line:"select-string") AND filemod_count:>0 AND user_name:(NOT "SYSTEM")
+process_name:"net.exe" AND command_line:"user" AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0) AND user_name:(NOT "SYSTEM")
+process_name:"wmiprvse.exe" AND command_line:"" AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0) AND user_name:(NOT "SYSTEM")
+
+Exploit kits:
+process_name:"iexplore.exe" AND (command_line:"mshtml:" OR command_line:"javascript:") AND netconn_count:>0
+process_name:"chrome.exe" AND (command_line:"--profile-directory=" OR command_line:"--disable-extensions") AND netconn_count:>0 AND (query:"http://" OR query:"https://")
+process_name:"firefox.exe" AND (command_line:"-new-tab" OR command_line:"-new-window") AND netconn_count:>0 AND (query:"http://" OR query:"https://")
+
+Cryptojacking:
+process_name:"powershell.exe" AND command_line:"iex (new-object net.webclient).downloadstring" AND netconn_count:>0
+process_name:"taskmgr.exe" AND command_line:"/c netstat -nao" AND netconn_count:>0
+process_name:"chrome.exe" AND command_line:"--disable-infobars --disable-background-networking" AND (filemod_count:>0 OR netconn_count:>0)
+
+Malicious insiders:
+process_name:"cmd.exe" AND command_line:"/c net user" AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0) AND user_name:(NOT "SYSTEM")
+process_name:"explorer.exe" AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0) AND user_name:(NOT "SYSTEM")
+process_name:"powershell.exe" AND (command_line:"get-process" OR command_line:"stop-process") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0) AND user_name:(NOT "SYSTEM")
+
+Password spraying:
+process_name:"cmd.exe" AND (command_line:"/c net user" OR command_line:"/c ping") AND netconn_count:>0
+process_name:"powershell.exe" AND command_line:"new-aduser" AND netconn_count:>0
+process_name:"ssh" AND query:"login:" AND netconn_count:>0
+
+Reconnaissance:
+process_name:"powershell.exe" AND (command_line:"test-connection" OR command_line:"nslookup" OR command_line:"resolve-dnsname") AND netconn_count:>0
+process_name:"ping.exe" AND (command_line:"-n" OR command_line:"-l") AND netconn_count:>0
+process_name:"tracert.exe" AND netconn_count:>0
+
+Command and control:
+process_name:"mshta.exe" AND (command_line:"javascript:" OR command_line:"file://") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"iex (new-object net.webclient).downloadstring" OR command_line:"invoke-expression (new-object net.webclient).downloadstring") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"certutil -urlcache -split -f" OR command_line:"bitsadmin /transfer") AND netconn_count:>0
+
+Malware:
+process_name:"winword.exe" AND (command_line:"/mFileSaveAsWebPage" OR command_line:"/mFilePrintDefault") AND netconn_count:>0
+process_name:"chrome.exe" AND (command_line:"--disable-extensions --disable-web-security" OR command_line:"--disable-web-security") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"iex (new-object net.webclient).downloadstring" OR command_line:"invoke-expression (new-object net.webclient).downloadstring") AND netconn_count:>0
+
+Data manipulation:
+process_name:"powershell.exe" AND (command_line:"add-content" OR command_line:"set-content" OR command_line:"get-content") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+process_name:"cmd.exe" AND (command_line:"certutil -decode" OR command_line:"certutil -encode") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+process_name:"reg.exe" AND (command_line:"add" OR command_line:"delete") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Password stealing:
+process_name:"mimikatz.exe" AND (command_line:"privilege::debug" OR command_line:"sekurlsa::logonpasswords" OR command_line:"lsadump::sam") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"get-winevent" OR command_line:"get-eventlog") AND netconn_count:>0
+process_name:"cmdkey.exe" AND (command_line:"/list" OR command_line:"/add") AND netconn_count:>0
+
+Network scanning:
+process_name:"nmap.exe" AND netconn_count:>0
+process_name:"ping.exe" AND netconn_count:>0 AND (query:"ping" OR query:"-n" OR query:"-c")
+process_name:"net.exe" AND (command_line:"/user" OR command_line:"/view" OR command_line:"/domain") AND netconn_count:>0
+
+Web application attacks:
+process_name:"python.exe" AND (command_line:"manage.py runserver" OR command_line:"./manage.py runserver") AND netconn_count:>0
+process_name:"iexplore.exe" AND (command_line:"/s" OR command_line:"/n") AND netconn_count:>0
+process_name:"chrome.exe" AND (command_line:"--disable-infobars --disable-background-networking" OR command_line:"--disable-web-security --user-data-dir") AND netconn_count:>0
+
+Ransomware:
+process_name:"vssadmin.exe" AND (command_line:"delete shadows" OR command_line:"delete shadows /all" OR command_line:"resize shadowstorage") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"get-childitem -recurse" OR command_line:"get-content -path") AND netconn_count:>0
+process_name:"taskmgr.exe" AND command_line:"/c netstat -nao" AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"invoke-expression" OR command_line:"new-object system.net.webclient; $client.DownloadString") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"vssadmin delete shadows /all /quiet" OR command_line:"wmic shadowcopy delete") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"kernel32.dll" OR command_line:"msvcrt.dll") AND netconn_count:>0
+
+Exploits:
+process_name:"cmd.exe" AND (command_line:"mshta http://" OR command_line:"wmic process call create") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"iex (new-object net.webclient).downloadstring" OR command_line:"invoke-expression (new-object net.webclient).downloadstring") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"javascript:" OR command_line:"data:") AND netconn_count:>0
+
+Brute force attacks:
+process_name:"powershell.exe" AND (command_line:"get-aduser" OR command_line:"test-connection") AND netconn_count:>0
+process_name:"ssh" AND query:"login:" AND netconn_count:>0
+process_name:"sqlcmd.exe" AND (command_line:"-S" OR command_line:"-U" OR command_line:"-P") AND netconn_count:>0
+
+Endpoint attacks:
+process_name:"svchost.exe" AND (command_line:"netsvcs" OR command_line:"wscsvc") AND netconn_count:>0
+process_name:"mshta.exe" AND (command_line:"mhtml:" OR command_line:"about:") AND netconn_count:>0
+process_name:"reg.exe" AND (command_line:"add" OR command_line:"delete") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Webshell:
+process_name:"iexplore.exe" AND command_line:"-k" AND netconn_count:>0
+process_name:"cmd.exe" AND command_line:"powershell -nop -c "$client = New-Object Net.WebClient; $client.DownloadString('http://" AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"iex (new-object net.webclient).downloadstring" OR command_line:"invoke-expression (new-object net.webclient).downloadstring") AND netconn_count:>0
+
+File integrity monitoring:
+process_name:"powershell.exe" AND (command_line:"new-item -type file" OR command_line:"copy-item" OR command_line:"move-item" OR command_line:"remove-item") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+process_name:"cmd.exe" AND (command_line:"expand" OR command_line:"comp") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+process_name:"reg.exe" AND (command_line:"add" OR command_line:"delete") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Advanced persistent threats:
+process_name:"powershell.exe" AND (command_line:"invoke-expression" OR command_line:"new-object System.Net.WebClient") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"xcopy" OR command_line:"bitsadmin") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"process call create" OR command_line:"os get") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Phishing:
+process_name:"powershell.exe" AND (command_line:"invoke-expression (New-Object Net.WebClient).DownloadString" OR command_line:"iex (New-Object Net.WebClient).DownloadString") AND netconn_count:>0
+
+process_name:"iexplore.exe" AND (command_line:"-noframemerging" OR command_line:"-noframemerging -extoff") AND netconn_count:>0
+
+process_name:"msedge.exe" AND (command_line:"-noframemerging" OR command_line:"-noframemerging -extoff") AND netconn_count:>0
+
+process_name:"winword.exe" AND command_line:"/mFileNewDefault" AND netconn_count:>0
+
+Insider threats:
+process_name:"powershell.exe" AND (command_line:"get-winevent" OR command_line:"get-eventlog") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"net user" OR command_line:"net localgroup administrators") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"C:\ProgramData\temp.dll" OR command_line:"C:\ProgramData\temp.dll,entry") AND netconn_count:>0
+
+Privilege escalation:
+process_name:"powershell.exe" AND (command_line:"start-process" OR command_line:"$s=New-Object" OR command_line:"Set-ItemProperty") AND netconn_count:>0
+process_name:"net.exe" AND command_line:"use" AND netconn_count:>0
+process_name:"reg.exe" AND (command_line:"add" OR command_line:"delete") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Command and control:
+process_name:"powershell.exe" AND (command_line:"new-object System.Net.Sockets.TcpClient" OR command_line:"new-object Net.Sockets.TcpClient" OR command_line:"new-object System.Net.WebClient") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"url.dll,OpenURL") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"nslookup" OR command_line:"tracert" OR command_line:"ping") AND netconn_count:>0
+
+Data exfiltration:
+process_name:"powershell.exe" AND (command_line:"$client.UploadFile" OR command_line:"$client.DownloadFile") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"bitsadmin" OR command_line:"certutil") AND netconn_count:>0
+process_name:"outlook.exe" AND (command_line:"/a" OR command_line:"/f" OR command_line:"/attach") AND netconn_count:>0
+
+Suspicious activity:
+process_name:"powershell.exe" AND (command_line:"invoke-webrequest" OR command_line:"invoke-restmethod") AND netconn_count:>0
+process_name:"mshta.exe" AND (command_line:"mhtml:" OR command_line:"about:") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"os get" OR command_line:"process call create") AND netconn_count:>0
+
+Malware:
+process_name:"powershell.exe" AND (command_line:"invoke-expression (new-object system.net.webclient).downloadfile" OR command_line:"new-object system.net.webclient; $client.DownloadFile") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"dllname.dll, entrypoint") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"certutil" OR command_line:"bitsadmin") AND netconn_count:>0
+
+Network scanning:
+process_name:"nmap.exe" AND netconn_count:>0
+process_name:"ping.exe" AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"test-netconnection" OR command_line:"test-connection") AND netconn_count:>0
+
+Suspicious network activity:
+netconn_count:>50
+protocol:icmp AND netconn_count:>0
+protocol:udp AND netconn_count:>0
+
+Active directory reconnaissance:
+process_name:"powershell.exe" AND (command_line:"get-adgroupmember" OR command_line:"get-adcomputer" OR command_line:"get-aduser") AND netconn_count:>0
+process_name:"net.exe" AND (command_line:"group" OR command_line:"user") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"useraccount" OR command_line:"computer") AND netconn_count:>0
+
+Suspicious logins:
+process_name:"powershell.exe" AND (command_line:"get-winevent -FilterHashTable" OR command_line:"get-eventlog -newest") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"net user" OR command_line:"net localgroup administrators") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"C:\ProgramData\temp.dll" OR command_line:"C:\ProgramData\temp.dll,entry") AND netconn_count:>0
+
+Malicious activity:
+process_name:"powershell.exe" AND (command_line:"new-object net.webclient" OR command_line:"(new-object net.webclient).downloadstring") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"msvcrt.dll" OR command_line:"kernel32.dll") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"bitsadmin" OR command_line:"certutil") AND netconn_count:>0
+
+Data infiltration:
+process_name:"powershell.exe" AND (command_line:"$client.UploadFile" OR command_line:"$client.DownloadFile") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"bitsadmin" OR command_line:"certutil") AND netconn_count:>0
+process_name:"outlook.exe" AND (command_line:"/a" OR command_line:"/f" OR command_line:"/attach") AND netconn_count:>0
+
+Suspicious outgoing traffic:
+process_name:"powershell.exe" AND (command_line:"invoke-webrequest" OR command_line:"invoke-restmethod") AND netconn_count:>0
+process_name:"mshta.exe" AND (command_line:"mhtml:" OR command_line:"about:") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"os get" OR command_line:"process call create") AND netconn_count:>0
+
+Suspicious PowerShell usage:
+process_name:"powershell.exe" AND (command_line:"-nop -exec bypass" OR command_line:"-w hidden -enc") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"Get-Content" OR command_line:"Add-Type") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"set-executionpolicy unrestricted" OR command_line:"enable-psremoting -force") AND netconn_count:>0
+
+
+SPLUNK Queries
+This is a compilation of Splunk queries that I've collected and used over time. These can be used for threat hunting (e.g. Zerologon or lateral movement) or detecting suspicious behavior (e.g. a large number of failed logins in a short amount of time). I'll add to this list as I find more.
+
+Detection Surface for any security-aware data source
+| tstats count where index=any TERM(exploit) by index, sourcetype, _time span=1d | eval matches="exploit"
+| append [ | tstats count where index=any TERM(malware) by index, sourcetype, _time span=1d | eval matches="malware" ]
+| append [ | tstats count where index=any TERM(virus) by index, sourcetype, _time span=1d | eval matches="virus" ]
+| append [ | tstats count where index=any TERM(attack)  by index, sourcetype, _time span=1d | eval matches="attack" ]
+| append [ | tstats count where index=any TERM(brute) by index, sourcetype, _time span=1d | eval matches="brute" ]
+| append [ | tstats count where index=any TERM(alert) by index, sourcetype, _time span=1d | eval matches="alert" ]
+| append [ | tstats count where index=any TERM(violation) by index, sourcetype, _time span=1d | eval matches="violation" ]
+| append [ | tstats count where index=any TERM(critical) by index, sourcetype, _time span=1d | eval matches="critical" ]
+| append [ | tstats count where index=any TERM(detected) by index, sourcetype, _time span=1d | eval matches="detected" ]
+| append [ | tstats count where index=any TERM(botnet) by index, sourcetype, _time span=1d | eval matches="botnet" ]
+| append [ | tstats count where index=any TERM(risk) by index, sourcetype, _time span=1d | eval matches="risk" ]
+| stats sparkline, sum(count) AS event_count, values(matches) AS matches by index, sourcetype
+
+Detecting Beaconing
+index=proxy sourcetype=whatever url=*
+| eval current_time=_time
+| sort 0 + current_time
+| streamstats global=f window=2 current=f last(current_time) AS previous_time by src, url
+| eval diff_time=current_time-previous_time
+| eventstats count, stdev(diff_time) AS std by src, url 
+| where std<5 AND count>100
+| stats count AS conn_count, dc(src) AS unique_sources, values(http_method) AS methods, values(http_user_agent) AS agents, values(std) AS diff_deviation, values(category) AS category BY url
+RDP Terminal Service
+index=* sourcetype=WinEventLog EventCode=4648 TERMSRV Additional_Information=termsrv* 
+| eval src_user=lower(trim(mvindex(Account_Name,0)))
+| eval dest_user=lower(trim(mvindex(Account_Name,1)))
+| eval host=lower(trim(replace(host, "\..+", "")))
+| eval dest_nt_host=lower(trim(replace(dest_nt_host, "\..+", "")))
+| dedup 1 src_user host dest_user dest_nt_host
+| eval src_user__dest_user=src_user."->".dest_user
+| appendpipe [ | stats count AS sessions BY host src_user__dest_user | rename host AS source, src_user__dest_user AS target ]
+| appendpipe [ | stats count AS sessions BY src_user__dest_user dest_nt_host | rename src_user__dest_user AS source, dest_nt_host AS target ]
+| where sessions>0
+| table source target sessions Zerologon
+index="your index name here" (sourcetype="<windows_sourcetype_security>" OR source="windows_source_security") EventCode="4742" OR EventCode="4624" AND (src_user="*anonymous*" OR member_id="*S-1-0*")
+| eval local_system=mvindex(upper(split(user,"$")),0)
+| search host=local_system
+| table _time EventCode dest host ComputerName src_user Account_Name local_system user Security_ID member_id src_nt_domain dest_nt_domain
+
+Track (un)signed PowerShell
+index=* sourcetype=wineventlog EventCode=4104 ScriptBlock_ID=* Path=*
+| eval Message=replace(Message, "[\r\n]+", "")
+| eval blocks=replace(Message,".*Creating Scriptblock text \(\d+ of (\d+)\).*", "\1")
+| stats values(Message) AS script BY Path, ScriptBlock_ID, host, blkcount
+| eval signed=if(NOT match(script, "#\s+(SIG|Begin signature block)") AND (blkcount=mvcount(script)), 0, 1)
+| stats values(Path) AS script BY host, signed
+
+Username guessing brute force attack
+index="your index name here" sourcetype=windows EventCode=4625 OR EventCode=4624 
+ | bin _time span=5m as minute 
+ | rex "Security ID:\s*\w*\s*\w*\s*Account Name:\s*(?<username>.*)\s*Account Domain:" 
+ | stats count(Keywords) as Attempts,
+ count(eval(match(Keywords,"Audit Failure"))) as Failed,
+ count(eval(match(Keywords,"Audit Success"))) as Success by minute username
+ | where Failed>=4
+ | stats dc(username) as Total by minute 
+ | where Total>5
+
+
+Successful file access (must have object access auditing enabled)
+index="your index name here" sourcetype=WinEventLog (Relative_Target_Name!="\\""" Relative_Target_Name!="*.ini") user!="*$" | bucket span=1d _time | stats count by Relative_Target_Name, user, _time, status | rename _time as Day | convert ctime(Day)
+
+Successful Logons
+index="your index name here" source="WinEventLog:security" EventCode=4624 Logon_Type IN (2,7,10,11) NOT user IN ("DWM-*", "UMFD-*")
+| eval Workstation_Name=lower(Workstation_Name)
+| eval host=lower(host)
+| eval hammer=_time 
+| bucket span=12h hammer 
+| stats values(Logon_Type) as "Logon Type" count sparkline by user host, hammer, Workstation_Name
+| rename hammer as "12 hour blocks" host as "Target Host" Workstation_Name as "Source Host"
+| convert ctime("12 hour blocks")
+| sort - "12 hour blocks"
+
+
+Failed Logons
+index="your index name here" source="WinEventLog:security" EventCode=4625
+| eval Workstation_Name=lower(Workstation_Name)
+| eval host=lower(host) 
+| eval hammer=_time 
+| bucket span=5m hammer 
+| stats count sparkline by user host, hammer, Workstation_Name
+| rename hammer as "5 minute blocks" host as "Target Host" Workstation_Name as "Source Host"
+| convert ctime("5 minute blocks")
+
+User Logon, Logoff, and Duration
+index="your index name here" source="wineventlog:security" action=success Logon_Type=2 (EventCode=4624 OR EventCode=4634 OR EventCode=4779 OR EventCode=4800 OR EventCode=4801 OR EventCode=4802 OR EventCode=4803 OR EventCode=4804 ) user!="anonymous logon" user!="DWM-*" user!="UMFD-*" user!=SYSTEM user!=*$ (Logon_Type=2 OR Logon_Type=7 OR Logon_Type=10)
+| convert timeformat="%a %B %d %Y" ctime(_time) AS Date 
+| streamstats earliest(_time) AS login, latest(_time) AS logout by Date, host
+| eval session_duration=logout-login 
+| eval h=floor(session_duration/3600) 
+| eval m=floor((session_duration-(h*3600))/60) 
+| eval SessionDuration=h."h ".m."m " 
+| convert timeformat=" %m/%d/%y - %I:%M %P" ctime(login) AS login 
+| convert timeformat=" %m/%d/%y - %I:%M %P" ctime(logout) AS logout 
+| stats count AS auth_event_count, earliest(login) as login, max(SessionDuration) AS sesion_duration, latest(logout) as logout, values(Logon_Type) AS logon_types by Date, host, user
+
+
+Timechart of the Status of a Locked Out Account
+index="your index name here" sourcetype="WinEventLog:Security" EventCode=4625 AND Status=0xC0000234 
+| timechart count by user 
+| sort -count
+
+AD Password Change Attempts
+index="your index name here" source="WinEventLog:Security" "EventCode=4723" src_user!="*$" src_user!="_svc_*" 
+| eval daynumber=strftime(_time,"%Y-%m-%d") 
+| chart count by daynumber, status 
+| eval daynumber = mvindex(split(daynumber,"-"),2)
+
+PTH Detection
+index="your index name here" ( EventCode=4624 Logon_Type=3 ) OR ( EventCode=4625 Logon_Type=3 ) Authentication_Package="NTLM" NOT Account_Domain=YOURDOMAIN NOT Account_Name="ANONYMOUS LOGON"
+
+Find Passwords Entered As Usernames
+index="your index name here" source=WinEventLog:Security TaskCategory=Logon Keywords="Audit Failure" 
+| eval password=if(match(User_Name, "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\W])(?=.{10,})"), "Yes", "No") 
+| stats count by password User_Name 
+| search password=Yes
+
+Failed Attempt to Login To A Disabled Account
+index="your index name here" source="WinEventLog:security" EventCode=4625 (Sub_Status="0xc0000072" OR Sub_Status="0xC0000072") Security_ID!="NULL SID" Account_Name!="*$" 
+| eval Date=strftime(_time, "%Y/%m/%d")
+| rex "Which\sLogon\sFailed:\s+\S+\s\S+\s+\S+\s+Account\sName:\s+(?<facct>\S+)" 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| stats count by Date, facct, host, Keywords 
+| rename facct as "Target Account" host as "Host" Keywords as "Status" count as "Count"
+
+See when Windows Audit Logs are Cleared
+index="your index name here" source=WinEventLog:security (EventCode=1102 OR EventCode=517) 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| stats count by Client_User_Name, host, index, Date 
+| sort - Date 
+| rename Client_User_Name as "Account Name"
+
+Failed RDP Attempt
+index="your index name here" source=WinEventLog:Security sourcetype=WinEventLog:security Logon_Type=10 EventCode=4625 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| rex "Failed:\s+.*\s+Account\sName:\s+(?<TargetAccount>\S+)\s" 
+| stats count by Date, TargetAccount, Failure_Reason, host 
+| sort - Date
+
+Disabled Account Re-enabled
+index="your index name here" sourcetype=WinEventLog:Security (EventCode=4722) 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+|rex "ID:\s+\w+\\\(?<sourceaccount>\S+)\s+" 
+| rex "Account:\s+Security\sID:\s+\w+\\\(?<targetaccount>\S+)\s+" 
+| stats count by Date, sourceaccount, targetaccount, Keywords, host 
+| rename sourceaccount as "Source Account" 
+| rename targetaccount as "Target Account" 
+| sort - Date
+
+Account Deleted within 24 hours of Creation
+index="your index name here" sourcetype=WinEventLog:Security (EventCode=4726 OR EventCode=4720) 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| rex "Subject:\s+\w+\s\S+\s+\S+\s+\w+\s\w+:\s+(?<SourceAccount>\S+)" 
+| rex "Target\s\w+:\s+\w+\s\w+:\s+\S+\s+\w+\s\w+:\s+(?<DeletedAccount>\S+)" 
+| rex "New\s\w+:\s+\w+\s\w+:\s+\S+\s+\w+\s\w+:\s+(?<NewAccount>\S+)" 
+| eval SuspectAccount=coalesce(DeletedAccount,NewAccount) 
+| transaction SuspectAccount startswith="EventCode=4720" endswith="EventCode=4726" 
+| eval duration=round(((duration/60)/60)/24, 2) 
+| eval Age=case(duration<=1, "Critical", duration>1 AND duration<=7, "Warning", duration>7, "Normal")
+| table Date, index, host, SourceAccount, SuspectAccount, duration, Age 
+| rename duration as "Days Account was Active" 
+| sort + "Days Account was Active"
+
+File Deletion Attempts
+index="your index name here" sourcetype="WinEventLog:Security" EventCode=564 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| stats count by Date, Image_File_Name, Type, host 
+| sort - Date
+
+New Service Installation on Windows
+index="your index name here" sourcetype=WinEventLog:Security (EventCode=4697 OR EventCode=601) 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| eval Status=coalesce(Keywords,Type) 
+| stats count by Date, Service_Name, Service_File_Name, Service_Account, host, Status
+
+Changes to Windows User Group by Account
+index="your index name here" sourcetype=WinEventLog:Security (EventCode=4728 OR EventCode=4732 OR EventCode=4746 OR EventCode=4751 OR EventCode=4756 OR EventCode=4161 OR EventCode=4185) 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| rex "Member:\s+\w+\s\w+:.*\\\(?<TargetAccount>.*)" 
+| rex "Account\sName:\s+(?<SourceAccount>.*)" 
+| stats count by Date, TargetAccount, SourceAccount, Group_Name, host, Keywords 
+| sort - Date 
+| rename SourceAccount as "Administrator Account" 
+| rename TargetAccount as "Target Account"
+
+Failed Authentication to Non-Existing Account
+index="your index name here" source="WinEventLog:security" sourcetype="WinEventLog:Security" EventCode=4625 Sub_Status=0xC0000064 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| rex "Which\sLogon\sFailed:\s+Security\sID:\s+\S.*\s+\w+\s\w+\S\s.(?<uacct>\S.*)" 
+| stats count by Date, uacct, host 
+| rename count as "Attempts" 
+| sort - Attempts
+
+
+Time Between Account Creation and Deletion
+index="your index name here" sourcetype=WinEventLog:Security (EventCode=4726 OR EventCode=4720) 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| rex "Subject:\s+\w+\s\S+\s+\S+\s+\w+\s\w+:\s+(?<SourceAccount>\S+)" 
+| rex "Target\s\w+:\s+\w+\s\w+:\s+\S+\s+\w+\s\w+:\s+(?<DeletedAccount>\S+)" 
+| rex "New\s\w+:\s+\w+\s\w+:\s+\S+\s+\w+\s\w+:\s+(?<NewAccount>\S+)" 
+| eval SuspectAccount=coalesce(DeletedAccount,NewAccount) 
+| transaction SuspectAccount startswith="EventCode=4720" endswith="EventCode=4726" |eval duration=round(duration/60, 2) 
+| eval Age=case(duration<=240, "Critical", duration>240 AND duration<=1440, "Warning", duration>1440, "Normal")
+| table Date, index, host, SourceAccount, SuspectAccount, duration, Age 
+| rename duration as "Minutes Account was Active" 
+| rename index as "SSP or Index" 
+| sort + "Minutes Account was Active"
+
+Weekend User Activity
+index="your index name here" sourcetype="WinEventLog:Security" (date_wday=saturday OR date_wday=sunday) 
+| stats count by Account_Name, date_wday
+
+Time Between Rights Granted and Revoked
+index="your index name here" sourcetype=WinEventLog:Security (EventCode=4717 OR EventCode=4718) 
+| rex "Access\sGranted:\s+Access\sRight:\s+(?\w+)"
+| rex "Access\sRemoved:\s+Access\sRight:\s+(?\w+)"
+| eval Rights=coalesce(RightGranted,RightRemoved) 
+| eval status=case(EventCode=4717, "New Rights Granted by:", EventCode=4718, "Rights Removed by:")
+| transaction Rights user startswith="Granted" endswith="Removed" 
+| where duration > 0
+| eval duration = duration/60 
+| eval n=round(duration,2) 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| table Date, host, status, Security_ID, user, Rights, n 
+| rename Security_ID as "Source Account" 
+| rename user as "Target Account" 
+| rename n as "Minutes between Rights Granted Then Removed" 
+| sort - date
+
+Console Lock Duration
+index="your index name here" sourcetype=WinEventLog:Security (EventCode=4800 OR EventCode=4801) 
+| eval Date=strftime(_time, "%Y/%m/%d") 
+| transaction host Account_Name startswith=EventCode=4800 endswith=EventCode=4801 
+| eval duration = duration/60 
+| eval duration=round(duration,2)
+| table host, Account_Name, duration, Date 
+| rename duration as "Console Lock Duration in Minutes" 
+| sort - date
+
+
+
+Privilege Escalation Detection
+index="your index name here" sourcetype="WinEventLog:Security" (EventCode=576 OR EventCode=4672 OR EventCode=577 OR EventCode=4673 OR EventCode=578 OR EventCode=4674) 
+| stats count by user
+
+Number of Accounts Created in Windows Environment
+index="your index name here" sourcetype=WinEventLog:Security (EventCode=624 OR EventCode=4720) 
+| eval NewAccount=case(EventCode=624, "New Account Created", EventCode=4720, "New Account Created") 
+| stats count(NewAccount) as creation 
+| gauge creation 1 5 15 25
+
+Data Exfiltration
+index=fortigate sourcetype="fortigate_traffic" type="traffic" dstcountry!="Reserved"
+| stats earliest(_time) as earliest latest(_time) as latest sum(sentbyte) as total_bytes_out  sum(rcvdbyte) as total_bytes_in  sum(duration) as duration by srcip dstip dstport policyname action
+|eval total_bytes_in = ROUND((total_bytes_in/pow(1024,3)),1),
+    total_bytes_out = ROUND((total_bytes_out/pow(1024,3)),1),
+    total_transferred = (total_bytes_in + total_bytes_out)
+| where total_bytes_out >= 0.2
+| sort - total_transferred
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(earliest) ctime(latest) 
+| table earliest, latest, srcip, dstip, dstport, total_bytes_out, total_bytes_in, total_transferred, duration, policyname, action
+
+SMTP-Request
+index=fortigate app!="PING" action!=allowed
+        (dstport=25) NOT srcip IN (10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12, 100.64.0.0/10)
+| stats
+    earliest(_time) as earliest 
+    latest(_time) as latest 
+    values(action) as action 
+    values(app) as app 
+    values(dest_port) as dest_port 
+    values(sourcetype) as sourcetype
+    values(filename) as filename
+    count 
+    by srcip dstip
+| eventstats max(latest) as maxlatest
+    ```This is 2022-04-09 00:00:00``` 
+    ``` 
+| eval comparisonTime="-1d@d" ``` 
+| eval isOutlier=if(earliest >= relative_time(maxlatest, comparisonTime), 1, 0)
+| sort -count
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(earliest),ctime(latest) ,ctime(maxlatest)
+| table earliest, latest, srcip, dstip, dest_port, app, action, filename, sourcetype, isOutlier, count, maxlatest
+
+VPN Connection
+index=fortigate type="traffic" appcat="Proxy" NOT action IN (deny, blocked)
+| stats Count  values(dstip) as DestinationIP first(_raw) as Rawlog by srcip app service
+| rename srcip AS SourceIP app AS  Type service AS Service
+| sort -Count
+| table SourceIP DestinationIP Service Type Count Rawlog
+
+Sysmon - Network Connections
+index=sysmon EventCode=3 source="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational"  NOT process_exec IN ("Microsoft.SharePoint.exe", "AgentUpgrader.exe", "OneDrive.exe"m "OneDriveStandaloneUpdater.exe")
+| fields User, SourceIp, DestinationIp, DestinationPort, process_exec, DestinationPortName, protocol, direction, count
+| stats count VALUES(protocol) as protocol by process_exec, User, SourceIp, DestinationIp, DestinationPort, DestinationPortName, direction 
+| sort -_time
+
+Sysmon  - Suspicious Domain Query
+index=sysmon EventCode=22 NOT QueryName IN ("*.office.com", "*amazonaws.com", "*cloudfront.aws.a2z.com", "*cloudapp.azure.com", "*dropbox.com", "*cloudflare.net") 
+| stats count by Computer QueryName 
+| where len(QueryName) > 32 
+
+WinEventLog  - Event Code 5156  (Process Connection)
+index=wineventlog EventCode=5156 NOT Application_Name IN ("system", "*windows\\system32\\svchost.exe", "*\\program files\\splunkuniversalforwarder\\bin\\splunkd.exe", "*\\program files \(x86\)\\symantec\\symantec endpoint protection*", "\\device\\harddiskvolume2\\program files \(x86\)\\common files\\solarwinds\\*.exe", "\\device\\harddiskvolume2\\program files \(x86\)\\solarwinds\\*.exe", "*\\program files \(x86\)\\google\\update\\googleupdate.exe", "\\device\\harddiskvolume2\\program files \(x86\)\\veeam\\backup transport\\x64\\veeamagent.exe") NOT Source_Address IN ("::1", "127.0.0.1", "fe80::*") NOT Destination_Address IN ("10.0.0.0/8","172.16.0.0/12", "224.0.0.251", "224.0.0.252", "127.0.0.1", "	192.168.200.*") 
+| fields Application_Name Source_Address Destination_Address Destination_Port Direction status 
+| stats count by Application_Name Source_Address Destination_Address Destination_Port Direction status 
+| sort +count
+
+WinEventLog  - Kerberos Authentication Failure
+index=wineventlog source=WinEventLog:Security EventCode IN (4768, 4771) user!="*$"
+| eval FailureResultCode=mvappend(Failure_Code, Result_Code)
+| stats count
+        earliest(_time) as earliest 
+        latest(_time) as latest
+        by user  FailureResultCode
+| eval  description = CASE((FailureResultCode="0x18"),"Pre-authentication information was invalid (bad password)",
+                          (FailureResultCode="0x25"),"Workstation’s clock too far out of sync with the DC’s",
+                          (FailureResultCode="0x12"),"Account disabled, expired, locked out, logon hours",
+                          (FailureResultCode="0x17"),"The user’s password has expired",
+                          (FailureResultCode="0x6"),"Bad user name, or new computer/user account has not replicated to DC yet",
+                          1<2, "Should be attend!")
+| where FailureResultCode!="0x0"
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(earliest),ctime(latest)
+| sort -latest
+| table earliest, latest, user, FailureResultCode, description, count
+
+WinEventLog  - Other User Password Reset
+index=wineventlog EventCode=4724
+|  stats count values(user) AS TargetUser latest(_time) AS LatestTime by src_user
+| rename src_user AS SrcUser
+| sort -count
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(LatestTime) 
+| table LatestTime SrcUser TargetUser count 
+
+WinEventLog  - Suspicious Successful Logon
+index=wineventlog source=WinEventLog:Security EventCode=4624 NOT Account_Name IN ("-", "*$$")
+((Logon_Type=10 Source_Network_Address IN ("127.*", ::1)) ```  mostly RDP tunneling ```
+OR
+(Logon_Type=10 Source_Network_Address!="10.0.0.0/24") ``` Remote Interactive ```
+OR
+(Logon_Type IN (3, 10) Workstation_Name=*)) ``` Only if both source work station names and destination are end user machines ```
+```OR
+(Logon_Type IN (10 , 2) Account_Name="*$$"))  Type 2 ( A user logged on to this computer ) and account name has ends with $$ , Example: SOC$$ , Possible fake machine account. ```
+ | stats count VALUES(Source_Network_Address) AS Source_Network_Address by Workstation_Name Account_Name Logon_Type 
+ | eval Description = 
+     CASE((Logon_Type=3),"Logged on from the network",
+         (Logon_Type=10 AND Source_Network_Address="127.*"), "Mostly RDP tunneling",
+             1<2, "Should be attend!") | table Account_Name Workstation_Name Source_Network_Address Logon_Type Description count | sort -count | where count>5
+
+WinEventLog  - User Creation
+index=wineventlog source=WinEventLog:Security EventCode=4720
+| table _time host Account_Name SAM_Account_Name
+
+Admin Tracking via 4688
+index=X sourcetype=Y EventCode=4688 Token_Elevation_Type="*(2)"
+
+
+MITRE ATT&CK TTP & Detection Analytics
+TTP
+MITRE ATT&CK
+Detection SPL
+T1053.003
+Scheduled Task/Job: Cron
+index=hosts sourcetype=linux_messages process=CROND 
+| rex field=_raw "((crond|CROND)\D[0-9]{4,5}\D:\s\D[a-z]{3,}\D\s)(?<action>\w+)\s\((?<CronCommand>.*(?=\)))"
+| where isnotnull(action)
+| search action=CMD
+| rex field=CronCommand "(?<url>https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*))" 
+| where isnotnull(url)
+| dedup host url
+| search NOT url="http://127.0.0.1*"
+| table _time host action CronCommand  url
+T1190
+Exploit Public-Facing Application
+index=hosts sourcetype="linux:audit" ((type=SYSCALL OR type=EXECVE) AND euid=33) OR (type=PATH AND (name="/var/www/html" OR name=*.php))
+| table _time host type syscall euid pid ppid comm
+
+
+Vulnerabilities & Detection Analytics
+Vulnerability
+Advisory
+Detection SPL
+CVE-2022-42889
+CVE-2022-42889 Advisory
+index=web sourcetype IN (nginx, waf_logs)
+| eval actual=urldecode(_raw)
+| rex field=actual "(?<payloadIdentified>\$\{(script|dns|url)\:[^\"]*)" max_match=0
+| where isnotnull(payloadIdentified)
+| table _time src_ip dest payloadIdentified status request url user_agent referrer
+CVE-2022-41082
+CVE-2022-41082 Advisory
+index=web sourcetype IN (nginx, waf_logs)
+| eval actual=urldecode(_raw)
+| rex field=actual "(?<payloadIdentified>\$\{(script|dns|url)\:[^\"]*)" max_match=0
+| where isnotnull(payloadIdentified)
+| table _time src_ip dest payloadIdentified status request url user_agent referrer
+CVE-2022-22954
+CVE-2022-22954 Advisory
+index=web_apps (sourcetype=nginx OR sourcetype=webapp_firewall) 
+| rex field=url "(?<webRCEData>(?<=\/verify\?error=&deviceUdid=).*%22.*)" 
+| where isnotnull(webRCEData) 
+| eval urlDecoded = urldecode(webRCEData) 
+| eval Domain = mvappend(dest, domain)
+| table _time src Domain status sourcetype webRCEData urlDecoded
+CVE-2022-22965
+CVE-2022-22965 Advisory
+Detection for Spring4Shell
+Splunk detection SPL for CVE-2022-22965 (Spring4Shell) webshell -- PoC Exploit
+index=web_apps (sourcetype=nginx OR sourcetype=webapp_firewall) status=200
+| rex field=url "(?<webShell>\/.*\.(jsp|class)\?.*=.*)" 
+| rex field=uri "(?<webShell>\/.*\.(jsp|class)\?.*=.*)"
+| where isnotnull(webShell) 
+| eval Domain = mvappend(dest, domain), fullURL = mvappend(url, uri)
+| table _time src_ip Domain status method webShell fullURL sourcetype
+
+Splunk detection SPL for CVE-2022-22965 (Spring4Shell) PoC Exploit attempting to change Tomcat logging
+index=web_apps (sourcetype=nginx OR sourcetype=webapp_firewall) (method=POST OR method=GET) url="*?class.module.classloader.resources.context.parent.pipeline.first.pattern=*"
+| table _time src_ip dest_domain url headers user_agent status
+
+Detection based on Linux audit logs (untested).  If you find suspicious files being created, correlate with type=CWD & check the 'cwd' path. Check if the path is your webapps' ROOT/ directory. Correlate with other above detection rules (nginx/web app firewall) to identify source IP.
+index=linux_index sourcetype="linux:auditd" type=PATH name="*.jsp"
+| table _time host type name
+
+Detection for CVE-2022-22965 (Spring4Shell) PoC Exploit
+index=web_apps (sourcetype=nginx OR sourcetype=webapp_firewall) status=200 (method=POST OR method=GET) (url=*.jsp* OR url=*.class*)
+| table _time src_ip dest_domain url headers
+CVE-2022-22963
+CVE-2022-22963 Advisory
+Detection for CVE-2022-22963 (not Spring4Shell)
+Detecting from Linux syslog (CVE-2022-22963, not Spring4Shell)
+index=linux_index sourcetype=linux_messages_syslog 
+| rex field=_raw "(?<execData>(?<=\.)getRuntime\(\)\.exec[^;]*)"
+| where isnotnull(execData)
+| table _time host execData
+
+Detection for POC exploit (CVE-2022-22963, not Spring4Shell) -- PoC Exploit
+index=web_apps (sourcetype=nginx OR sourcetype=webapp_firewall) (status=200 OR status=500) method=POST url="/functionRouter" // Better not to specify URL as anyone can change this
+| rex field=headers "(?<execData>(?<=\.)getRuntime\(\)\.exec[^;]*)"
+| table _time src_ip dest_domain execData url
+CVE-2022-2185
+CVE-2022-2185 Advisory
+index=web_apps (sourcetype=nginx OR sourcetype=webapp_firewall) status IN (20*, 30*) method=POST url="https://your-internal-gitlab/import/*"
+| table _time src_ip dest_domain url headers
+CVE-2022-33891
+CVE-2022-33891 Advisory
+PoC for CVE-2022-33891, with ability to set custom payloads.
+Not vulnerable by default; vulnerable when:
+./spark-submit --conf spark.acls.enable=TRUE ____
+
+index=web sourcetype IN (nginx, waf_logs) url=*/?doAs*
+| eval decodedIndicators=urldecode(url)
+| table _time src_ip dest status request url decodedIndicators
+
+
+Malware Detection Analytics
+Malware
+Reference
+Detection SPL
+BPFDoor
+BPFDoor ATT&CK Community Presentation
+index=linux_index sourcetype=linux:audit (type=SYSCALL AND (((SYSCALL=socket AND a0=17 AND a1=3) OR (SYSCALL=setsockopt AND a1=1 AND a2=26)) AND (exe="/dev/shm/kdmtmpflush" OR comm=“kdmtmpflush”))) OR (type=CWD AND (cwd="/var/run/haldrund.pid" OR cwd="/dev/shm/kdmtmpflush"))
+| eval attackIndicators=mvappend(command,cwd)
+| rename pid as processID ppid as parentProcessID
+| table _time host SYSCALL attackIndicators processID parentProcessID action
+VIRTUALPITA & VIRTUALPIE
+Mandiant Report - Investigating Novel Malware Persistence Within ESXi Hypervisors
+index=syslog sourcetype=vmkwarning.log 
+| rex field=message "(?<time_Stamp>\d+-\d+-\d+T\d+:\d+:\d+\.\d+Z)\s(?<host_Name>.*)\svmkwarning:\s(?<metadata>.*)\)(?<severity_Level>\w+):\s(?<event_Message>.*)"
+| search (event_Message="* image profile with validation disabled. *" OR event_Message="* image profile bypassing signing and acceptance level verification. *" OR event_Message="* vib without valid signature, *")
+| table time_Stamp host_Name severity_Level event_Message
+Linux Ransomware/Wiper
+Linux Ransomware Report from UPTYCS
+index=host_logs sourcetype=linux_audit type=SYSCALL SYSCALL=fcntl exe!="/usr/sbin/logrotate"
+| stats count values(SYSCALL) by host exe comm
+| where count > 20
+RTM Locker for Linux/ESXi
+RTM Locker Ransomware as a Service (RaaS) Now on Linux - Uptycs
+Detecting vm process enumeration, process kills, & reverse shells on ESXi
+
+index=syslog source=vmware_vsphere (sourcetype="*shell.log" OR sourcetype="*crond.log") 
+| rex field=_raw "\d+-\d+-\d+T\d+:\d+:\d+Z\s(\w|\.)+\s\w+\[\d+\]:\s\[(?<user>(\w|\d)+)\]:\s(?<shell_Command>.*)$" 
+| rex field=_raw "\d+-\d+-\d+T\d+:\d+:\d+Z\s(\w|\.)+\s\w+\[\d+\]:\s(?<esxicli_Command>.*$)" 
+| eval command=mvappend(esxicli_Command, shell_Command) 
+| where isnotnull(command) 
+| search (command IN 
+    ("esxcli vm process list >>*", 
+    "esxcli vm process kill -t=force -w", 
+    "*vm process list*", 
+    "*vm process kill*", 
+    "* esxcli vm process list >>*", 
+    "* esxcli vm process kill -t=force -w",
+    "esxcli system permission list*",
+    "*system permission list*",
+    "esxcli system account list*",
+    "*system account list*",
+    "esxcli system account set -i * -s t*",
+    "*system account set -i * -s t*",
+    "esxcli system settings encryption set --require-secure-boot=F*",
+    "*system settings encryption set --require-secure-boot=F*",
+    "esxcli system settings encryption set --require-exec-installed-only=F*",
+    "*system settings encryption set --require-exec-installed-only=F*",
+    "esxcli system settings kernel set -s execInstalledOnly -v F*",
+    "*system settings kernel set -s execInstalledOnly -v F*",
+    "esxcli system account add*",
+    "*system account add*",
+    "esxcli system account remove*",
+    "*system account remove*",
+    "esxcli network firewall set –enabled f*",
+    "*network firewall set –enabled f*",
+    "esxcli system auditrecords local disable*",
+    "*system auditrecords local disable*",
+    "*rm *",
+    "kill *", 
+    "*bash -i >& /dev/tcp/*", 
+    "*/dev/tcp/*", 
+    "*/dev/udp/*", 
+    "*/socat exec:'bash -li'*", 
+    "*socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"))*", 
+    "*new IO::Socket::INET(PeerAddr*", 
+    "*python -c 'import socket*")) 
+| stats values(time_Stamp) as time_Stamp values(command) as commands values(user) as user by host
+
+Detecting SSH authentication brute force on ESXi
+
+index=syslog source=vmware_vsphere sourcetype="*/sshd.log"
+| rex field=_raw "\d+-\d+-\d+T\d+:\d+:\d+Z\s(\w|\.)+\s\w+\[\d+\]:\spam_unix\(sshd:auth\):\s(?<auth_events>.*$)"
+| rex field=_raw "\d+-\d+-\d+T\d+:\d+:\d+Z\s(\w|\.)+\s\w+\[\d+\]:\s(?<auth_debug>Failed\skeyboard.*$)" 
+| search (auth_debug="Failed keyboard-interactive/pam for *") OR (auth_events="authentication failure; *")
+| eval log_match_match = mvappend(auth_events, auth_debug)
+| stats count values(log_match_match) as log_matches by host
+| where count > 10
+
+
+
+Threat Hunting Dashboard
+<dashboard theme="light">
+  <label>ThreatHunting</label>
+  <row>
+    <panel>
+      <title>EventCode_4624_4625</title>
+      <chart>
+        <search>
+          <query>index=wineventlog EventCode IN (4624, 4625) | timechart span=10m count as count by EventCode</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">auto</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.overlayFields">4625</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisStart</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">0</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+    <panel>
+      <title>Kerberos_Authentication_Failure_Chart</title>
+      <chart>
+        <search>
+          <query>index=wineventlog source=WinEventLog:Security EventCode IN (4768, 4771) user!="*$$"
+
+| timechart span=10m count as events by EventCode</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.abbreviation">none</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.abbreviation">none</option>
+        <option name="charting.axisY2.enabled">1</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.overlayFields">4768</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisStart</option>
+        <option name="charting.legend.mode">standard</option>
+        <option name="charting.legend.placement">right</option>
+        <option name="charting.lineWidth">2</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Windows_Unsuccessful_Login</title>
+      <table>
+        <search>
+          <query>index=wineventlog source=WinEventLog:Security EventCode=4625 NOT Account_Name IN ("*$") Logon_Type IN (3, 10) 
+| stats count  by user Workstation_Name Source_Network_Address Sub_Status Logon_Type
+| eval Description = if(Logon_Type=3,"Logged on from the network", "Logged on remotely") 
+| table user Workstation_Name Source_Network_Address Sub_Status Description count 
+| sort -count 
+| where count&gt;12</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" minColor="#FFFFFF"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format type="color" field="Description">
+          <colorPalette type="map">{"Logged on from the network":#708794}</colorPalette>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <title>Windows_Unsuccessful_Login_Diagram</title>
+      <viz type="sankey_diagram_app.sankey_diagram">
+        <search>
+          <query>index=wineventlog source=WinEventLog:Security EventCode=4625 NOT Account_Name IN ("*$$")  Logon_Type IN (3, 10) 
+| stats count by user  Source_Network_Address | where count&gt;11</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="sankey_diagram_app.sankey_diagram.colorMode">sequential</option>
+        <option name="sankey_diagram_app.sankey_diagram.maxColor">#dc4e41</option>
+        <option name="sankey_diagram_app.sankey_diagram.minColor">#f8be34</option>
+        <option name="sankey_diagram_app.sankey_diagram.numOfBins">4</option>
+        <option name="sankey_diagram_app.sankey_diagram.showBackwards">false</option>
+        <option name="sankey_diagram_app.sankey_diagram.showLabels">true</option>
+        <option name="sankey_diagram_app.sankey_diagram.showLegend">true</option>
+        <option name="sankey_diagram_app.sankey_diagram.showSelf">false</option>
+        <option name="sankey_diagram_app.sankey_diagram.showTooltip">true</option>
+        <option name="sankey_diagram_app.sankey_diagram.styleBackwards">true</option>
+        <option name="sankey_diagram_app.sankey_diagram.useColors">true</option>
+        <option name="trellis.enabled">0</option>
+        <option name="trellis.scales.shared">1</option>
+        <option name="trellis.size">medium</option>
+      </viz>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Kerberos_Authentication_Failure</title>
+      <table>
+        <search>
+          <query>index=wineventlog source=WinEventLog:Security EventCode IN (4768, 4771)
+| regex user="\w+\.\w+"
+| eval FailureResultCode=mvappend(Failure_Code, Result_Code)
+| stats count
+        earliest(_time) as earliest 
+        latest(_time) as latest
+        by user  FailureResultCode
+| eval  description = CASE((FailureResultCode="0x18"),"Pre-authentication information was invalid (bad password)",
+                          (FailureResultCode="0x25"),"Workstation’s clock too far out of sync with the DC’s",
+                          (FailureResultCode="0x12"),"Account disabled, expired, locked out, logon hours",
+                          (FailureResultCode="0x17"),"The user’s password has expired",
+                          (FailureResultCode="0x6"),"Bad user name, or new computer/user account has not replicated to DC yet",
+                          1&lt;2, "Should be attend!")
+| where count &gt; 10 AND FailureResultCode!="0x0"
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(earliest),ctime(latest)
+| sort -count
+| table earliest, latest, user, FailureResultCode, description, count</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" minColor="#FFFFFF"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format type="color" field="description">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Kerberos_Relay_Up_Activity</title>
+      <event>
+        <search>
+          <query>index=wineventlog EventCode=4624 Authentication_Package="Kerberos" Logon_Type=3 Security_ID="*500" Source_Network_Address IN ("127.0.0.1","::1")</query>
+          <earliest>-120m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">50</option>
+        <option name="list.drilldown">none</option>
+        <option name="list.wrap">1</option>
+        <option name="maxLines">5</option>
+        <option name="raw.drilldown">full</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">1</option>
+        <option name="table.drilldown">all</option>
+        <option name="table.sortDirection">asc</option>
+        <option name="table.wrap">1</option>
+        <option name="type">list</option>
+      </event>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Data_Exfiltration</title>
+      <table>
+        <search>
+          <query>index=fortigate sourcetype="fortigate_traffic" type="traffic" dstcountry!="Reserved"
+| stats earliest(_time) as earliest latest(_time) as latest sum(sentbyte) as total_bytes_out  sum(rcvdbyte) as total_bytes_in  sum(duration) as duration by srcip dstip dstport policyname action
+|eval total_bytes_in = ROUND((total_bytes_in/pow(1024,3)),1),
+    total_bytes_out = ROUND((total_bytes_out/pow(1024,3)),1),
+    total_transferred = (total_bytes_in + total_bytes_out)
+| where total_bytes_out &gt;= 0.2
+| sort - total_transferred
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(earliest) ctime(latest) 
+| table earliest, latest, srcip, dstip, dstport, total_bytes_out, total_bytes_in, total_transferred, duration, policyname, action</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="total_bytes_out">
+          <colorPalette type="list">[#CBA700,#D94E17,#D41F1F]</colorPalette>
+          <scale type="threshold">1,2</scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>SMTP_Requests</title>
+      <table>
+        <search>
+          <query>index=fortigate app!="PING"
+        dstport IN (25,467,587) (srcip!=10.0.0.0/8 dstip!=srcip.16.0.0/12 srcip!=192.168.0.0/16 srcip!=100.64.0.0/10 srcip!=8.8.8.8 srcip!=4.2.2.4 srcip!=8.8.4.4)
+| stats
+    earliest(_time) as earliest 
+    latest(_time) as latest 
+    values(action) as action 
+    values(app) as app 
+    values(dest_port) as dest_port 
+    values(sourcetype) as sourcetype
+    values(filename) as filename
+    count 
+    by srcip dstip
+| eventstats max(latest) as maxlatest
+    ```This is 2021-12-09 00:00:00``` 
+    ``` 
+| eval comparisonTime="-1d@d" ``` 
+| eval isOutlier=if(earliest &gt;= relative_time(maxlatest, comparisonTime), 1, 0)
+| sort -count
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(earliest),ctime(latest) ,ctime(maxlatest)
+| table earliest, latest, srcip, dstip, dest_port, app, action, filename, sourcetype, isOutlier, count, maxlatest</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="dest_port">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="action">
+          <colorPalette type="map">{"blocked":#DC4E41,"allowed":#53A051}</colorPalette>
+        </format>
+        <format type="color" field="app">
+          <colorPalette type="map"></colorPalette>
+        </format>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#53A051" minColor="#FFFFFF"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format type="color" field="srcip">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>New_User_Creation</title>
+      <table>
+        <search>
+          <query>index=wineventlog source=WinEventLog:Security EventCode=4720 | table _time host user_name SAM_Account_Name | sort -_time | rename user_name AS Creator SAM_Account_Name AS Created_Account</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+   <row>
+    <panel>
+      <title>Zeek_DNS_Mining_Pool</title>
+      <table>
+        <search>
+          <query>index=zeek ((query="*monerohash.com" OR query="*do-dear.com" OR query="*xmrminerpro.com" OR query="*secumine.net" OR query="*xmrpool.com" OR query="*minexmr.org" OR query="*hashanywhere.com" OR query="*xmrget.com" OR query="*mininglottery.eu" OR query="*minergate.com" OR query="*moriaxmr.com" OR query="*multipooler.com" OR query="*moneropools.com" OR query="*xmrpool.eu" OR query="*coolmining.club" OR query="*supportxmr.com" OR query="*minexmr.com" OR query="*hashvault.pro" OR query="*xmrpool.net" OR query="*crypto-pool.fr" OR query="*xmr.pt" OR query="*miner.rocks" OR query="*walpool.com" OR query="*herominers.com" OR query="*gntl.co.uk" OR query="*semipool.com" OR query="*coinfoundry.org" OR query="*cryptoknight.cc" OR query="*fairhash.org" OR query="*baikalmine.com" OR query="*tubepool.xyz" OR query="*fairpool.xyz" OR query="*asiapool.io" OR query="*coinpoolit.webhop.me" OR query="*nanopool.org" OR query="*moneropool.com" OR query="*miner.center" OR query="*prohash.net" OR query="*poolto.be" OR query="*cryptoescrow.eu" OR query="*monerominers.net" OR query="*cryptonotepool.org" OR query="*extrmepool.org" OR query="*webcoin.me" OR query="*kippo.eu" OR query="*hashinvest.ws" OR query="*monero.farm" OR query="*linux-repository-updates.com" OR query="*1gh.com" OR query="*dwarfpool.com" OR query="*hash-to-coins.com" OR query="*pool-proxy.com" OR query="*hashfor.cash" OR query="*fairpool.cloud" OR query="*litecoinpool.org" OR query="*mineshaft.ml" OR query="*abcxyz.stream" OR query="*moneropool.ru" OR query="*cryptonotepool.org.uk" OR query="*extremepool.org" OR query="*extremehash.com" OR query="*hashinvest.net" OR query="*unipool.pro" OR query="*crypto-pools.org" OR query="*monero.net" OR query="*backup-pool.com" OR query="*mooo.com" OR query="*freeyy.me" OR query="*cryptonight.net" OR query="*shscrypto.net") AND  NOT (((answers="127.0.0.1" OR answers="0.0.0.0") OR rejected="true")))
+| table _time id.orig_h,id.resp_h,query,answers,qtype_name,rcode_name
+| sort -_time</query>
+          <earliest>-2d</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="query">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="answers">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Zeek_Uri_Inbound</title>
+      <table>
+        <search>
+          <query>index=zeek source="/var/log/nsm/zeek/current/http.log" uri=* NOT src_ip IN ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")
+| stats dc(uri) as dc values(uri) as uri earliest(_time) as Earliest latest(_time) as Latest by src_ip dest_ip
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(Earliest),ctime(Latest)
+| sort -Latest
+| table Earliest Latest src_ip dest_ip dc uri</query>
+          <earliest>-12h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Suspicious_Successful_Logons</title>
+      <table>
+        <search>
+          <query>index=wineventlog source=WinEventLog:Security EventCode=4624 Account_Name!="-" Account_Name!="*$$"
+((Logon_Type=10 Source_Network_Address IN ("127.*", ::1)) ```  mostly RDP tunneling ```
+OR
+(Logon_Type=10 Source_Network_Address!="10.0.0.0/24") ``` Remote Interactive ```
+OR
+(Logon_Type IN (3, 10) Workstation_Name=*)) ``` Only if both source work station names and destination are end user machines ```
+```OR
+(Logon_Type IN (10 , 2) Account_Name="*$$"))  Type 2 ( A user logged on to this computer ) and account name has ends with $$ , Example: SOC$$ , Possible fake machine account. ```
+ | stats count VALUES(Source_Network_Address) AS Source_Network_Address by Workstation_Name Account_Name Logon_Type 
+ | eval Description = 
+     CASE((Logon_Type=3),"Logged on from the network",
+         (Logon_Type=10 AND Source_Network_Address="127.*"), "Mostly RDP tunneling",
+             1&lt;2, "Should be attend!") | table Account_Name Workstation_Name Source_Network_Address Logon_Type Description count | sort -count | where count&gt;5</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" minColor="#FFFFFF"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format type="color" field="Description">
+          <colorPalette type="map">{"Logged on from the network":#708794}</colorPalette>
+        </format>
+        <format type="color" field="Logon_Type">
+          <colorPalette type="map"></colorPalette>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Zeek_Post_Requests</title>
+      <table>
+        <search>
+          <query>index=zeek source="/var/log/nsm/zeek/current/http.log" uri=* method=POST id.resp_h="10.*" NOT id.orig_h IN ("10.*", "172.16.0.0/12","192.168.0.0/16")
+| stats count
+        earliest(_time) AS earliest
+        VALUES(origin) as origin 
+        VALUES(referrer) AS referrer 
+        VALUES(request_body_len) AS request_body_len 
+        VALUES(response_body_len) AS response_body_len 
+        VALUES(status_code) AS status_code 
+        by src dest uri _time method
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(earliest)
+| sort -_time
+| table earliest src dest uri method request_body_len response_body_len origin referer status_code</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="uri">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>High_DNS_Requests_Rate</title>
+      <table>
+        <search>
+          <query>index=zeek source="/var/log/nsm/zeek/current/dns.log" dest_port="53" NOT id.orig_h IN (10.100.135.135, 77.104.125.190, 10.108.16.137, 10.112.56.249) NOT query IN ("*.10.in-addr.arpa", "*.172.in-addr.arpa", "monitoring", "*.ab.net") 
+| bin span=1h _time 
+| stats count as val by src_ip _time
+| where val &gt; 1000
+| sort -val
+| table _time src_ip val</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="val">
+          <colorPalette type="minMidMax" maxColor="#5A4575" midColor="#FFFFFF" minColor="#708794"></colorPalette>
+          <scale type="minMidMax" midType="percentile" midValue="50"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>    
+  <row>
+    <panel>
+      <title>Suspicious_Domain_Query</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=22 QueryName="*.*" NOT QueryName IN ("*.office.com", "*amazonaws.com", "*cloudfront.aws.a2z.com", "*cloudapp.azure.com", "*dropbox.com", "*cloudflare.net") 
+| stats count by Computer QueryName
+| sort -_time</query>
+          <earliest>-60m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="Computer">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Other_User_Password_Changing</title>
+      <table>
+        <search>
+          <query>index=wineventlog EventCode=4724 user!="healthmailbox*"
+|  stats count values(user) AS TargetUser latest(_time) AS LatestTime by src_user
+| rename src_user AS SrcUser
+| sort -count
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(LatestTime) 
+| table LatestTime SrcUser TargetUser count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Sysmon_Network_Connections</title>
+      <table>
+        <search>
+          <query>index=sysmon EventCode=3 source="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" 
+| stats count VALUES(protocol) as protocol by process_exec, User, SourceIp, DestinationIp, DestinationPort, DestinationPortName, direction 
+| sort -_time
+| table User, SourceIp, DestinationIp, DestinationPort, process_exec, DestinationPortName, protocol, direction, count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="process_exec">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="count">
+          <colorPalette type="list">[#53A051,#006D9C,#F8BE34,#F1813F,#DC4E41]</colorPalette>
+          <scale type="threshold">0,30,70,100</scale>
+        </format>
+        <format type="color" field="DestinationPortName">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Services_Ports</title>
+      <table>
+        <search>
+          <query>index=zeek service=* NOT service IN ("*$$", "*_*", "*,*", "*.*", "*/*") 
+| chart count AS Requests over service by dest_port | sort -count</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>DNS_DataExfiltration</title>
+      <table>
+        <search>
+          <query>index=zeek query=* NOT query IN ("*.172.in-addr.arpa", "*.10.in-addr.arpa", "*.192.in-addr.arpa", "*.amazonaws.com", "*.ip6.arpa", "*.microsoft.com", "*.akadns.net", "*.azureedge.us", "*.dropbox.com", "*.smg.ultra.brightmail.com", "*.office.com","*cloudfront.aws.a2z.com", "*cloudapp.azure.com", "*cafebazaar.cloud", "*cloudflare.net", "*.trafficmanager.net", "*.edgekey.net", "") 
+| mvexpand query 
+| eval queryLength=len(query)
+| where queryLength &gt; 40
+| stats count values(query) as queries by queryLength, src, dest
+| sort -queryLength, count
+| fields src dest queries queryLength count
+| head 80</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="count">
+          <colorPalette type="minMidMax" maxColor="#DC4E41" minColor="#FFFFFF"></colorPalette>
+          <scale type="minMidMax"></scale>
+        </format>
+        <format type="color" field="queryLength">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>EventCode_5156</title>
+      <table>
+        <search>
+          <query>index=wineventlog EventCode=5156 NOT Source_Address IN ("::1", "127.0.0.1", "fe80::*") NOT Destination_Address IN ("10.0.0.0/8","172.16.0.0/12", "224.0.0.251", "224.0.0.252", "127.0.0.1", "	192.168.200.*") 
+| fields Application_Name Source_Address Destination_Address Destination_Port Direction status 
+| stats count by Application_Name Source_Address Destination_Address Destination_Port Direction status 
+| sort +count</query>
+          <earliest>-2h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>15m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="status">
+          <colorPalette type="map">{"success":#53A051}</colorPalette>
+        </format>
+        <format type="color" field="Destination_Port">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="Source_Address">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="Application_Name">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Teredo_Tunneling_IPv6_Over_IPv4</title>
+      <table>
+        <search>
+          <query>index=zeek action="Tunnel::DISCOVER" tunnel_type="Tunnel::IP" 
+| eval idx="zeek"
+| append [search index=suricata "alert.signature"="ET POLICY Protocol 41 IPv6 encapsulation potential 6in4 IPv6 tunnel active" | stats count VALUES(dest) as dest by src src_port dest_port proto| eval idx="suricata"]
+| stats count VALUES(dest) as dest VALUES(idx) as idx VALUES(proto) as proto by src src_port dest_port
+|  head 10
+| table src src_port dest dest_port tunnel_type proto idx count | sort -count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>DNS_queries_sparkline</title>
+      <table>
+        <search>
+          <query>index=zeek source="/var/log/nsm/zeek/current/dns.log" NOT query IN ("*.microsoft.com", "*.firefox.com", "*.live.com", "*.mikrotik.com", "*.vmware.com", "*.windowsupdate.com", "*.root-servers.net", "*.googleapis.com", "*.intel.com", "*.centos.com", "*.in-addr.arpa", "*.google.com", "*.symantec.com", "*.mozilla.com", "*.mozilla.net", "*.mozilla.org", "*.akamai.net", "*.norton.com", "*.ntp.org", "*.edgekey.net", "*.eset.com", "*.msn.com", "*.centos.org", "*.trafficmanager.net", "*.akadns.net", "*.yahoo.com", "*.cisco.com", "*.yahoodns.net", "*.azure.com","*.skype.com","*.gstatic.com","*.office.com", "dns.msftncsi.com", "*.cwfservice.net","*.mozaws.net", "*grafana.com","*.cloudapp.net","github.com","*.akamaiedge.net","*.verisign.com","*.anydesk.com","*.adobe.com","*.arvancloud.com", "*.cloudfront.net","*.ip6.arpa","*.abplus.net","*.mozgcp.net") query="*.*" 
+| stats sparkline count by query 
+| sort -count</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Files_Over_Network_Inbound</title>
+      <table>
+        <search>
+          <query>index=zeek  source="/var/log/nsm/zeek/current/files.log" mime_type IN (application/x-7z-compressed, application/zip, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/x-tar, application/x-sh, application/vnd.rar, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, application/vnd.apple.installer+xml, text/javascript, application/java-archive, application/gzip, application/msword, application/x-csh, application/x-bzip2, application/octet-stream) NOT rx_hosts{} IN ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "104.66.89.155", "114.119.189.29", "142.250.180.35", "142.250.181.163", "142.250.184.195", "142.250.185.35") tx_hosts{}="10.0.0.0/8" | stats sparkline count by rx_hosts{} tx_hosts{} mime_type sha1 | sort -count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="mime_type">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Files_Over_Network_Outbound</title>
+      <table>
+        <search>
+          <query>index=zeek source="/var/log/nsm/zeek/current/files.log" mime_type IN (application/x-7z-compressed, application/zip, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/x-tar, application/x-sh, application/vnd.rar, application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation, application/vnd.apple.installer+xml, text/javascript, application/java-archive, application/gzip, application/msword, application/x-csh, application/x-bzip2, application/octet-stream) NOT tx_hosts{} IN ("10.0.0.0/8", "172.16.0.0/12", "104.66.89.155", "114.119.189.29", "142.250.180.35", "142.250.181.163", "142.250.184.195", "142.250.185.35", "163.171.132.202", "192.168.0.0/16", "77.104.125.190", "163.171.137.16", "163.171.132.42")  
+| stats sparkline count by rx_hosts{} tx_hosts{} mime_type sha1 
+| sort -count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>5m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="mime_type">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>MySQL_logs</title>
+      <table>
+        <search>
+          <query>index=zeek  source="/var/log/nsm/zeek/current/mysql.log" | stats latest(_time) as QTime count values(response) as response by src dest arg | convert ctime(QTime) | table QTime src dest arg response count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Arvan_Crawling_Detection</title>
+      <table>
+        <search>
+          <query>index=arvan uri IN ("*.php", "*.asp", "*.html", "*.aspx", "*admin*", "*backup*") NOT uri IN ("*wp-login.php", "/applications/Common/pages/clientEventHandlers.aspx", "/include/*", "/Loader.aspx", "/applications/*", "/Userlogin.aspx", "/owa/auth/logon.aspx") status IN (200,301,302)
+| stats count by ip domain uri referer method status _time 
+| sort -_time 
+| rename _time AS ETime
+| convert ctime(ETime) 
+| table ETime ip method domain uri referer status</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>2m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Unauthorized_Query_sl/ANY/IN</title>
+      <table>
+        <search>
+          <query>index=zeek source="/var/log/nsm/zeek/current/dns.log" qtype=255 
+|  stats count VALUES(query) as queries by src_ip
+| sort -count
+| table src_ip queries count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
+Resources
+https://github.com/secnnet/CrowdStrike-Falcon-Search-Queries
+https://github.com/shauntdergrigorian/splunkqueries
+https://github.com/signorrayan/SplunkThreatHunting
+https://github.com/inodee/threathunting-spl/tree/master/hunt-queries
+https://github.com/west-wind/Threat-Hunting-With-Splunk/tree/main
+https://github.com/inodee/threathunting-spl/blob/master/Splunk%20ES%20Correlation%20Searches%20Best%20Practices%20v1.3.pdf
+

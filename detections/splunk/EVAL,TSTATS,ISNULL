@@ -1,0 +1,42 @@
+2. Basic Search Commands
+Find events containing an IP:
+index=main sourcetype=access_combined clientip="192.168.1.100"
+Count events by a field:
+index=main sourcetype=access_combined
+| stats count by clientip
+Filter IPs starting with 192.168:
+index=main sourcetype=access_combined clientip="192.168.*"
+3. Useful Commands Explained
+eval: Create or transform fields
+Example:
+| eval is_internal=if(like(clientip, "192.168.%"), "Yes", "No")
+sort: Sort results
+Ascending: | sort count
+Descending: | sort -count
+head: Limit results to top N rows
+| head 5
+4. Advanced: tstats Command
+Fast searches on accelerated data models or indexed fields
+Example: count events by host
+| tstats count where index=main by host
+Using with data model:
+| tstats count from datamodel=Network_Traffic.All_Traffic by All_Traffic.src, All_Traffic.dest
+Combine with eval and stats:
+| tstats count from datamodel=Authentication.Authentication by Authentication.user, Authentication.src
+| eval user_status=if(isnull('Authentication.user'), "Missing Username", "Has Username")
+| stats sum(count) as total by user_status
+5. Checking Available Data Models
+List data models:
+| datamodel
+Use | from datamodel if no acceleration:
+| from datamodel:"internal_audit_logs.Audit"
+| stats count by user
+6. isnull() Function
+Checks if a field is missing or empty
+Usage example:
+| eval missing_field=if(isnull(src_ip), "Missing", "Present")
+Tips
+Acceleration is required for tstats to work efficiently. Check under Settings → Data Models.
+Use | from datamodel as a fallback if acceleration is off, but expect slower performance.
+
+I can save this for you — want me to create the file now in your project folder?

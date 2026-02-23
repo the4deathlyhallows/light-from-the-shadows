@@ -1,0 +1,4 @@
+// suspicious_parent_process.kql
+DeviceProcessEvents
+| where ParentProcessName in ("cmd.exe", "powershell.exe") and ProcessName == "rundll32.exe"
+| project Timestamp, DeviceName, InitiatingProcessFileName=ParentProcessName, ProcessName

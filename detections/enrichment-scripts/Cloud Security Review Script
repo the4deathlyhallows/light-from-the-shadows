@@ -1,0 +1,15 @@
+pip install boto3
+
+import boto3
+
+ec2 = boto3.client('ec2')
+
+response = ec2.describe_instances()
+
+for reservation in response['Reservations']:
+    for instance in reservation['Instances']:
+        instance_id = instance['InstanceId']
+        security_groups = instance.get('SecurityGroups', [])
+        print(f"Instance ID: {instance_id}")
+        for sg in security_groups:
+            print(f"  Security Group: {sg['GroupName']} ({sg['GroupId']})")
