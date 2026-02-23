@@ -1,4 +1,0 @@
-DeviceProcessEvents
-| where ProcessCommandLine has_any ("sekurlsa", "kerberos", "mimikatz")
-| where FileName endswith ".exe"
-| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountName

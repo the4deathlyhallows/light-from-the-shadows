@@ -1,8 +1,0 @@
-index=* | stats count by src_ip | sort -count
-
-
-index=* error earliest=-24h@h latest=now
-| top limit=5 _raw
-
-index=* error earliest=-24h@h latest=now
-| top limit=5 _raw

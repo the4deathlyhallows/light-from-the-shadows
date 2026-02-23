@@ -1,4 +1,0 @@
-union DeviceEvents,DeviceProcessEvents
-|where ProcessCommandLine contains "Svc"
-|limit 1000
-| summarize count() by AccountName, ProcessCommandLine
