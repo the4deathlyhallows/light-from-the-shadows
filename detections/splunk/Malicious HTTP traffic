@@ -1,0 +1,11 @@
+index=web OR index=apache sourcetype=access_combined OR sourcetype=apache:access
+| eval uri=coalesce(uri, request, request_uri), useragent=coalesce(useragent, agent), clientip=coalesce(clientip, clientip, src)
+| eval has_susp_ext=if(match(uri,"(?i)\\.(php|pht|phtml|asp|aspx|jsp|jspx|cgi|pl)(\\?|$)"),1,0)
+| eval encoded_payload=if(match(uri,"(?i)(%3C|%3E|%3Cscript%3E|base64|%2Fbin%2Fbash|\\b(cmd|bash|powershell)\\b)"),1,0)
+| eval long_uri=if(len(uri)>200,1,0)
+| eval suspicious_ua=if(match(useragent,"(?i)curl|python-requests|nikto|sqlmap|acunetix|wget|fimap|masscan|nmap"),1,0)
+| eval score=has_susp_ext + encoded_payload + long_uri + suspicious_ua
+| where score>0
+| stats count, values(score) AS scores by clientip, useragent, uri, status
+| sort -count
+| where count>=3 OR max(scores)>=2
