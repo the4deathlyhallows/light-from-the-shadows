@@ -1,0 +1,20 @@
+let lookback = 14d;
+let innerBad = dynamic(["hta","vbs","js","jse","wsf","ps1","bat","cmd","scr","msi","iso","img","lnk"]);
+let outerCover = dynamic(["png","jpg","jpeg","gif","mp3","mp4","wav","webp","mov"]);
+DeviceFileEvents
+| where TimeGenerated >= ago(lookback)
+| where ActionType in ("FileCreated","FileRenamed")
+| extend FileLower = tolower(FileName)
+| where FileLower matches regex @"\.[a-z0-9]{1,6}\.[a-z0-9]{1,6}$"
+| extend Ext1 = extract(@"\.([a-z0-9]{1,6})\.[a-z0-9]{1,6}$", 1, FileLower)  // inner
+| extend Ext2 = extract(@"\.[a-z0-9]{1,6}$", 0, FileLower)                     // outer (with dot)
+| extend Ext2Clean = trim_start(".", Ext2)
+| where Ext1 in~ (innerBad) and Ext2Clean in~ (outerCover)
+| summarize hits=count(),
+          first_time=min(TimeGenerated),
+          last_time=max(TimeGenerated),
+          example=any(FileName),
+          example_path=any(FolderPath),
+          sha1=any(SHA1)
+  by DeviceName, AccountName
+| order by hits desc, last_time desc
