@@ -1,0 +1,15 @@
+let lookback = 7d;
+let scriptHosts = dynamic(["mshta.exe","wscript.exe","cscript.exe","powershell.exe","pwsh.exe","cmd.exe","rundll32.exe"]);
+let susFileExt = dynamic([".hta",".vbs",".ps1",".bat",".cmd",".msi",".zip",".html"]);
+DeviceProcessEvents
+| where TimeGenerated >= ago(lookback)
+| where FileName in~ (scriptHosts)
+| extend Cmd = tolower(tostring(ProcessCommandLine))
+| where Cmd has_any (susFileExt)
+| summarize launches=count(),
+          first_time=min(TimeGenerated),
+          last_time=max(TimeGenerated),
+          sample_cmd=any(ProcessCommandLine),
+          parent=any(InitiatingProcessFileName)
+  by DeviceName, AccountName, FileName
+| order by launches desc, last_time desc
