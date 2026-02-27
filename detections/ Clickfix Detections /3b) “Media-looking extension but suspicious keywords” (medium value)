@@ -1,0 +1,17 @@
+let lookback = 14d;
+let mediaExt = dynamic([".png",".jpg",".jpeg",".mp3",".mp4",".wav",".gif",".webp",".mov"]);
+let lureWords = dynamic(["update","fix","captcha","verify","security","invoice","payment","doc","document","resume","urgent"]);
+DeviceFileEvents
+| where TimeGenerated >= ago(lookback)
+| where ActionType in ("FileCreated","FileRenamed")
+| extend FileLower = tolower(FileName)
+| where FileLower has_any (mediaExt)
+| where FileLower has_any (lureWords)
+| where tolower(FolderPath) has @"\downloads\" or tolower(FolderPath) has @"\appdata\local\temp\"
+| summarize hits=count(),
+          first_time=min(TimeGenerated),
+          last_time=max(TimeGenerated),
+          example=any(FileName),
+          example_path=any(FolderPath)
+  by DeviceName, AccountName
+| order by hits desc, last_time desc
