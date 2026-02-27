@@ -1,0 +1,178 @@
+rule press_clickfix_runmru_lolbin_hunt {
+  meta:
+    description = "Hunt: RunMRU entries indicating ClickFix-style command execution using LOLBins / PowerShell web+exec cmdlets"
+    severity = "MEDIUM"
+
+  events:
+    $e.metadata.event_type = "REGISTRY_MODIFICATION"
+    and re.regex($e.target.registry.key_path,
+      `(?i)\\software\\microsoft\\windows\\currentversion\\explorer\\runmru(\\|$)`
+    )
+    and (
+      re.regex($e.target.registry.value, `(?i)\b(powershell|pwsh|mshta|rundll32|wscript|cscript|curl|wget)\b`)
+      or re.regex($e.target.registry.value, `(?i)\b(iwr|irm|iex|invoke-webrequest|invoke-restmethod|invoke-expression)\b`)
+      or re.regex($e.target.registry.value, `(?i)\s-(enc|encodedcommand)\b`)
+      or re.regex($e.target.registry.value, `(?i)(downloadstring|frombase64string)`)
+    )
+
+  match:
+    $e over 24h
+    by $e.principal.hostname, $e.principal.user.userid
+
+  outcome:
+    $hits = count($e)
+    $first_time = min($e.metadata.event_timestamp)
+    $last_time  = max($e.metadata.event_timestamp)
+
+  condition:
+    $hits > 0
+}
+
+rule press_clickfix_runmru_high_signal {
+  meta:
+    description = "High-signal: RunMRU includes LOLBin AND web/exec indicators (iwr/irm/iex/-enc/etc.)"
+    severity = "HIGH"
+
+  events:
+    $e.metadata.event_type = "REGISTRY_MODIFICATION"
+    and re.regex($e.target.registry.key_path,
+      `(?i)\\software\\microsoft\\windows\\currentversion\\explorer\\runmru(\\|$)`
+    )
+    and re.regex($e.target.registry.value, `(?i)\b(powershell|pwsh|mshta|rundll32|wscript|cscript|curl|wget)\b`)
+    and re.regex($e.target.registry.value, `(?i)\b(iwr|irm|iex|invoke-webrequest|invoke-restmethod|invoke-expression)\b|\s-(enc|encodedcommand)\b|downloadstring|frombase64string`)
+
+  match:
+    $e over 24h
+    by $e.principal.hostname, $e.principal.user.userid
+
+  outcome:
+    $hits = count($e)
+    $first_time = min($e.metadata.event_timestamp)
+    $last_time  = max($e.metadata.event_timestamp)
+
+  condition:
+    $hits > 0
+}
+
+SELECT
+  hostname,
+  user_name,
+  COUNT(*) AS hits,
+  MIN(event_ts) AS first_time,
+  MAX(event_ts) AS last_time
+FROM registry_events
+WHERE event_ts >= (CURRENT_TIMESTAMP - INTERVAL '24' HOUR)
+  AND LOWER(key_path) LIKE '%\\software\\microsoft\\windows\\currentversion\\explorer\\runmru%'
+  AND (
+    REGEXP_LIKE(LOWER(value_data), '\\b(powershell|pwsh|mshta|rundll32|wscript|cscript|curl|wget)\\b')
+    OR REGEXP_LIKE(LOWER(value_data), '\\b(iwr|irm|iex|invoke-webrequest|invoke-restmethod|invoke-expression)\\b')
+    OR REGEXP_LIKE(LOWER(value_data), '\\s-(enc|encodedcommand)\\b')
+    OR REGEXP_LIKE(LOWER(value_data), '(downloadstring|frombase64string)')
+  )
+GROUP BY hostname, user_name
+ORDER BY hits DESC, last_time DESC;
+
+SELECT
+  hostname,
+  user_name,
+  COUNT(*) AS hits,
+  MIN(event_ts) AS first_time,
+  MAX(event_ts) AS last_time
+FROM registry_events
+WHERE event_ts >= (CURRENT_TIMESTAMP - INTERVAL '24' HOUR)
+  AND LOWER(key_path) LIKE '%\\software\\microsoft\\windows\\currentversion\\explorer\\runmru%'
+  AND REGEXP_LIKE(LOWER(value_data), '\\b(powershell|pwsh|mshta|rundll32|wscript|cscript|curl|wget)\\b')
+  AND (
+    REGEXP_LIKE(LOWER(value_data), '\\b(iwr|irm|iex|invoke-webrequest|invoke-restmethod|invoke-expression)\\b')
+    OR REGEXP_LIKE(LOWER(value_data), '\\s-(enc|encodedcommand)\\b')
+    OR REGEXP_LIKE(LOWER(value_data), '(downloadstring|frombase64string)')
+  )
+GROUP BY hostname, user_name
+ORDER BY hits DESC, last_time DESC;
+
+
+let lookback = 24h;
+let lolbins = dynamic(["powershell","pwsh","mshta","rundll32","wscript","cscript","curl","wget"]);
+let psIndicators = dynamic([" iwr", " irm", " iex", "invoke-webrequest", "invoke-restmethod", "invoke-expression", " -enc", " -encodedcommand", "downloadstring", "frombase64string"]);
+DeviceRegistryEvents
+| where TimeGenerated >= ago(lookback)
+| where RegistryKey has @"\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
+| extend RunText = tostring(RegistryValueData)
+| extend RunTextLower = tolower(RunText)
+| where RunTextLower has_any (lolbins) or RunTextLower has_any (psIndicators)
+| summarize hits=count(),
+          first_time=min(TimeGenerated),
+          last_time=max(TimeGenerated),
+          sample_run=any(RunText)
+  by DeviceName, AccountName
+| order by hits desc, last_time desc
+
+
+let lookback = 24h;
+let lolbins = dynamic(["powershell","pwsh","mshta","rundll32","wscript","cscript","curl","wget"]);
+let execOrWeb = dynamic([" iwr", " irm", " iex", "invoke-webrequest", "invoke-restmethod", "invoke-expression", " -enc", " -encodedcommand", "downloadstring", "frombase64string"]);
+DeviceRegistryEvents
+| where TimeGenerated >= ago(lookback)
+| where RegistryKey has @"\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
+| extend RunText = tostring(RegistryValueData)
+| extend RunTextLower = tolower(RunText)
+| where RunTextLower has_any (lolbins)
+| where RunTextLower has_any (execOrWeb)
+| summarize hits=count(),
+          first_time=min(TimeGenerated),
+          last_time=max(TimeGenerated),
+          sample_run=any(RunText)
+  by DeviceName, AccountName
+| order by hits desc, last_time desc
+
+
+let lookback = 24h;
+let window = 5m;
+
+let lolbins = dynamic(["powershell.exe","pwsh.exe","mshta.exe","rundll32.exe","wscript.exe","cscript.exe","curl.exe","wget.exe"]);
+let psSusp = dynamic([" -enc", " -encodedcommand", " iwr", " irm", " iex", "invoke-webrequest", "invoke-restmethod", "invoke-expression", "downloadstring", "frombase64string"]);
+
+let RunMRU =
+    DeviceRegistryEvents
+    | where TimeGenerated >= ago(lookback)
+    | where RegistryKey has @"\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
+    | extend RunText = tostring(RegistryValueData)
+    | extend RunTextLower = tolower(RunText)
+    | where RunTextLower has_any (dynamic(["powershell","pwsh","mshta","rundll32","wscript","cscript","curl","wget"]))
+    | project DeviceId, DeviceName, AccountName, RunMRUTime=TimeGenerated, RunText;
+
+let Proc =
+    DeviceProcessEvents
+    | where TimeGenerated >= ago(lookback)
+    | where FileName in~ (lolbins)
+    | extend CmdLower = tolower(tostring(ProcessCommandLine))
+    | extend ParentLower = tolower(tostring(InitiatingProcessFileName))
+    | project DeviceId, DeviceName, AccountName,
+              ProcTime=TimeGenerated, FileName, ProcessCommandLine,
+              InitiatingProcessFileName, InitiatingProcessCommandLine;
+
+RunMRU
+| join kind=innerunique Proc on DeviceId, AccountName
+| where ProcTime between (RunMRUTime .. RunMRUTime + window)
+| where
+    (FileName in~ ("powershell.exe","pwsh.exe") and tolower(ProcessCommandLine) has_any (psSusp))
+    or FileName in~ ("mshta.exe","rundll32.exe","wscript.exe","cscript.exe","curl.exe","wget.exe")
+| summarize correlated_hits=count(),
+          first_runmru=min(RunMRUTime),
+          last_proc=max(ProcTime),
+          sample_run=any(RunText),
+          sample_cmd=any(ProcessCommandLine),
+          sample_parent=any(InitiatingProcessFileName)
+  by DeviceName, AccountName
+| order by correlated_hits desc, last_proc desc
+
+
+let lookback = 24h;
+DeviceRegistryEvents
+| where TimeGenerated >= ago(lookback)
+| where RegistryKey has @"\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
+| extend RunText = tostring(RegistryValueData)
+| extend RunTextLower = tolower(RunText)
+| where RunTextLower has_any (dynamic(["powershell","pwsh","mshta","rundll32","wscript","cscript","curl","wget"," iwr"," irm"," iex"," -enc","downloadstring","frombase64string"]))
+| project TimeGenerated, DeviceName, AccountName, RegistryValueName, RegistryValueData
+| order by TimeGenerated desc
