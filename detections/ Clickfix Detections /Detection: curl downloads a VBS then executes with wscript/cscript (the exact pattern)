@@ -1,0 +1,13 @@
+let lookback = 14d;
+DeviceProcessEvents
+| where TimeGenerated >= ago(lookback)
+| where FileName in~ ("cmd.exe","powershell.exe","pwsh.exe","wscript.exe","cscript.exe","curl.exe")
+| extend Cmd = tolower(tostring(ProcessCommandLine))
+| where
+    // curl drops a .vbs
+    (Cmd has "curl" and Cmd has ".vbs" and (Cmd has " -o " or Cmd has " --output "))
+    // and immediately chains to wscript/cscript (&& or &)
+    and (Cmd has "&& wscript" or Cmd has "& wscript" or Cmd has "&& cscript" or Cmd has "& cscript")
+| project TimeGenerated, DeviceName, AccountName, FileName, ProcessCommandLine,
+          InitiatingProcessFileName, InitiatingProcessCommandLine, SHA1
+| order by TimeGenerated desc
