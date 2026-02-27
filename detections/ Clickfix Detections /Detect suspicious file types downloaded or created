@@ -1,0 +1,17 @@
+let lookback = 7d;
+let susExt = dynamic([".html",".hta",".txt",".zip",".msi",".bat",".ps1",".vbs"]);
+DeviceFileEvents
+| where TimeGenerated >= ago(lookback)
+| where ActionType in ("FileCreated","FileRenamed","FileModified")
+| extend FileLower = tolower(FileName)
+| extend FolderLower = tolower(FolderPath)
+| where FileLower has_any (susExt)
+| where FolderLower has @"\users\" and (FolderLower has @"\downloads\" or FolderLower has @"\appdata\local\temp\" or FolderLower has @"\desktop\")
+| summarize hits=count(),
+          first_time=min(TimeGenerated),
+          last_time=max(TimeGenerated),
+          sample_path=any(FolderPath),
+          sample_file=any(FileName),
+          sha1=any(SHA1)
+  by DeviceName, AccountName
+| order by hits desc, last_time desc
