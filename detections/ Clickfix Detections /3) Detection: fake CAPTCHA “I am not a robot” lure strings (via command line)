@@ -1,0 +1,18 @@
+let lookback = 30d;
+let lureTerms = dynamic([
+  "i am not a robot",
+  "recaptcha verification id",
+  "captcha verification uid",
+  "human, not a robot",
+  "turnstile",
+  "verification id",
+  "verification uid",
+  "cloud identificator"
+]);
+DeviceProcessEvents
+| where TimeGenerated >= ago(lookback)
+| extend Cmd = tolower(tostring(ProcessCommandLine))
+| where Cmd has_any (lureTerms)
+| project TimeGenerated, DeviceName, AccountName, FileName, ProcessCommandLine,
+          InitiatingProcessFileName, InitiatingProcessCommandLine
+| order by TimeGenerated desc
