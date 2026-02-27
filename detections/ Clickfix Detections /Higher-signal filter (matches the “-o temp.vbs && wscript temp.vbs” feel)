@@ -1,0 +1,9 @@
+let lookback = 14d;
+DeviceProcessEvents
+| where TimeGenerated >= ago(lookback)
+| extend Cmd = tolower(tostring(ProcessCommandLine))
+| where Cmd matches regex @"curl\s+https?://\S+\s+(-o|--output)\s+\S+\.vbs"
+| where Cmd matches regex @"(&&|&)\s*(wscript|cscript)\s+\S+\.vbs"
+| project TimeGenerated, DeviceName, AccountName, FileName, ProcessCommandLine,
+          InitiatingProcessFileName, InitiatingProcessCommandLine
+| order by TimeGenerated desc
