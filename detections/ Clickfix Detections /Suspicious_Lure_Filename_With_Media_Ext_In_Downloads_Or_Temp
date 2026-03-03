@@ -1,0 +1,39 @@
+rule Suspicious_Lure_Filename_With_Media_Ext_In_Downloads_Or_Temp
+{
+  meta:
+    author = "converted from KQL"
+    description = "File create/rename in Downloads or Temp where filename contains lure word + media extension"
+    severity = "medium"
+    timeframe_lookback = "14d"
+
+  events:
+    $e.metadata.event_type = "FILE_EVENT"
+
+    // Action types (adjust to match your normalized values if needed)
+    $e.security_result.action = $action
+
+    // Core fields
+    $e.principal.hostname = $device
+    $e.principal.user.userid = $user
+    $e.target.file.name = $fname
+    $e.target.file.full_path = $fpath
+
+  match:
+    // Aggregate similar to summarize ... by DeviceName, AccountName
+    $device, $user over 14d
+
+  condition:
+    // where ActionType in ("FileCreated","FileRenamed")
+    ($action == "FileCreated" or $action == "FileRenamed")
+    and
+    // Downloads or AppData\Local\Temp
+    re.regex($fpath, `(?i)\\downloads\\`)
+    or re.regex($fpath, `(?i)\\appdata\\local\\temp\\`)
+    and
+    // FileLower has_any(mediaExt) AND has_any(lureWords)
+    (
+      re.regex($fname, `(?i)\.(png|jpg|jpeg|mp3|mp4|wav|gif|webp|mov)\b`)
+      and
+      re.regex($fname, `(?i)\b(update|fix|captcha|verify|security|invoice|payment|doc|document|resume|urgent)\b`)
+    )
+}
