@@ -1,0 +1,27 @@
+Click fix final 
+
+rule clickfix_lure_file_double_extension_or_script_disguised
+{
+  meta:
+    description = "ClickFix: Suspicious lure drops with double extensions or script disguised as media in Downloads/Temp"
+    severity = "MEDIUM"
+    tactic = "Initial Access"
+    technique = "T1204.002"
+
+  events:
+    $e.metadata.event_type = "FILE_CREATE"
+    and $e.principal.hostname != ""
+
+    and (
+      // Common staging locations
+      re.regex($e.target.file.full_path, `(?i)\\users\\[^\\]+\\downloads\\`)
+      or re.regex($e.target.file.full_path, `(?i)\\appdata\\local\\temp\\`)
+    )
+
+    and (
+      // Media-looking name followed by script/executable extension: invoice.mp4.ps1, captcha.png.hta, etc.
+      re.regex($e.target.file.name, `(?i)\.(png|jpg|jpeg|gif|webp|mp3|mp4|wav|mov)\.(ps1|vbs|js|jse|hta|bat|cmd|exe|dll|msi|lnk)$`)
+      // Or classic double-extension: invoice.pdf.exe, resume.docx.lnk, etc.
+      or re.regex($e.target.file.name, `(?i)\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|rtf|zip)\.(exe|dll|msi|lnk|bat|cmd|js|jse|vbs|ps1|hta)$`)
+    )
+}
