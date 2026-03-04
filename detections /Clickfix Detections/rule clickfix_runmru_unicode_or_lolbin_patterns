@@ -1,0 +1,70 @@
+rule clickfix_runmru_unicode_or_lolbin_patterns
+{
+  meta:
+    description = "RunMRU: Explorer.exe setting RunMRU values with ClickFix indicators (unicode lure/emoji + LOLBins + encoded/obfuscated patterns)"
+    severity = "MEDIUM"
+    tactic = "Defense Evasion"
+    technique = "T1112"
+
+  events:
+    // DeviceRegistryEvents | where ActionType == RegistryValueSet
+    $e.metadata.event_type = "REGISTRY_MODIFICATION"
+    and $e.principal.hostname != ""
+
+    // where InitiatingProcessFileName == explorer.exe
+    and re.regex($e.principal.process.file.full_path, `(?i)\\explorer\.exe$`)
+
+    // where RegistryKey has "\CurrentVersion\Explorer\RunMRU"
+    and re.regex($e.target.registry.key_path, `(?i)\\currentversion\\explorer\\runmru(\\|$)`)
+
+    and (
+      // RegistryValueData has "✅"
+      re.regex($e.target.registry.registry_value_data, `✅`)
+
+      or
+      (
+        // (RegistryValueData has_any ("powershell", "mshta", "curl", "msiexec", "^")
+        //  and RegistryValueData matches regex "[<unicode ranges>]")
+        re.regex($e.target.registry.registry_value_data, `(?i)\b(powershell|mshta|curl|msiexec)\b|\^`)
+        and re.regex(
+          $e.target.registry.registry_value_data,
+          `[\u0400-\u04FF\u0370-\u03FF\u0590-\u05FF\u0600-\u06FF\u0E00-\u0E7F\u2C80-\u2CFF\u13A0-\u13FF\u0530-\u058F\u10A0-\u10FF\u0900-\u097F]`
+        )
+      )
+
+      or
+      (
+        // (RegistryValueData has "mshta" and RegistryValueName != "MRUList"
+        //  and RegistryValueData !in ("mshta.exe\1", "mshta\1"))
+        re.regex($e.target.registry.registry_value_data, `(?i)\bmshta\b`)
+        and $e.target.registry.value_name != "MRUList"
+        and not re.regex($e.target.registry.registry_value_data, `(?i)^mshta(\.exe)?\\1$`)
+      )
+
+      or
+      (
+        // (RegistryValueData has_any ("bitsadmin", "forfiles", "ProxyCommand=") and RegistryValueName != "MRUList")
+        re.regex($e.target.registry.registry_value_data, `(?i)\b(bitsadmin|forfiles)\b|ProxyCommand=`)
+        and $e.target.registry.value_name != "MRUList"
+      )
+
+      or
+      (
+        // ((RegistryValueData startswith "cmd" or startswith "powershell")
+        //  and (... has_any (...) or matches encoded regex))
+        re.regex($e.target.registry.registry_value_data, `(?i)^(cmd|powershell)\b`)
+        and
+        (
+          re.regex(
+            $e.target.registry.registry_value_data,
+            `(?i)(-W Hidden | -eC |curl|E:jscript|ssh|Invoke-Expression|UtcNow|Floor|DownloadString|DownloadFile|FromBase64String|System\.IO\.Compression|System\.IO\.MemoryStream|\biex\b|Invoke-WebRequest|\biwr\b|Get-ADDomainController|InstallProduct|-w h|-X POST|Invoke-RestMethod|-NoP -W|\.InVOKe|-useb|\birm\b|\^|\[char\]|\[scriptblock\]|-UserAgent|UseBasicParsing|\.Content)`
+          )
+          or re.regex(
+            $e.target.registry.registry_value_data,
+            // Encoded/obfuscated flag + base64-ish blob (supports -, /, and en-dash)
+            `(?i)[-/\u2013][Ee\^]{1,2}[NnCcOoDdEeMmAa\^]*\s[A-Za-z0-9+/=]{15,}`
+          )
+        )
+      )
+    )
+}
