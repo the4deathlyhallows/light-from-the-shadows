@@ -1,0 +1,22 @@
+rule clickfix_runmru_suspicious_commands
+{
+  meta:
+    description = "ClickFix: RunMRU entries indicating copy/paste command execution of suspicious LOLBins/PowerShell web+exec"
+    severity = "MEDIUM"
+    tactic = "Defense Evasion"
+    technique = "T1112"
+
+  events:
+    $e.metadata.event_type = "REGISTRY_MODIFICATION"
+    and $e.principal.hostname != ""
+
+    and re.regex($e.target.registry.key_path, `(?i)\\software\\microsoft\\windows\\currentversion\\explorer\\runmru(\\|$)`)
+
+    and (
+      re.regex($e.target.registry.value, `(?i)\b(powershell|pwsh|mshta|rundll32|wscript|cscript|curl|wget)\b`)
+      or re.regex($e.target.registry.value, `(?i)\b(iwr|irm|iex|invoke-webrequest|invoke-restmethod)\b`)
+      or re.regex($e.target.registry.value, `(?i)\s-(enc|encodedcommand)\b`)
+      or re.regex($e.target.registry.value, `(?i)\b(downloadstring|frombase64string)\b`)
+      or re.regex($e.target.registry.value, `(?i)\bhttps?://`)
+    )
+}
