@@ -1,0 +1,21 @@
+rule clickfix_mshta_bitsadmin_chain {
+  meta:
+    author = "Nelnet Detection Engineering"
+    description = "Detects mshta.exe spawning cmd, bitsadmin, or powershell"
+    severity = "CRITICAL"
+    mitre_attack = "T1218.005, T1197"
+    platform = "MICROSOFT_DEFENDER"
+    logsource = "MICROSOFT_DEFENDER_ENDPOINT, MICROSOFT_DEFENDER_CLOUD_ALERTS"
+
+  events:
+    $e.metadata.event_type = "PROCESS_LAUNCH"
+    $e.principal.process.file.full_path = /mshta\.exe$/i
+    $e.target.process.file.full_path = /(?:cmd|bitsadmin|powershell)\.exe$/i
+
+  condition:
+    $e
+
+  outcome:
+    $risk_score = 95
+    $event_count = count_distinct($e.metadata.id)
+}
