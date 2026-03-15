@@ -1,0 +1,44 @@
+rule PT_CLICKFIX_CORRELATED_EXECUTION_CHAIN_TUNED
+{
+  meta:
+    author = "OpenAI"
+    description = "Tuned ClickFix validation rule correlating suspicious RunMRU changes with Explorer child process execution"
+    severity = "CRITICAL"
+    tactic = "Execution"
+    technique = "T1204.002"
+    validation_type = "Purple Team"
+    platform = "Windows"
+    rule_version = "1.0"
+
+  events:
+    $reg.metadata.event_type = "REGISTRY_MODIFICATION"
+    $reg.principal.hostname != ""
+    $reg.principal.user.userid != ""
+    re.regex($reg.target.registry.registry_key, `(?i)\\currentversion\\explorer\\runmru(\\|$)`)
+    re.regex($reg.principal.process.file.full_path, `(?i)\\explorer\.exe$`)
+    re.regex(
+      $reg.target.registry.registry_value_data,
+      `(?i)(powershell|pwsh|mshta|rundll32|curl|wget|invoke-webrequest|invoke-restmethod|downloadstring|downloadfile|frombase64string|-enc\b|-encodedcommand\b)`
+    )
+
+    $proc.metadata.event_type = "PROCESS_LAUNCH"
+    $proc.principal.hostname = $reg.principal.hostname
+    re.regex($proc.principal.process.file.full_path, `(?i)\\explorer\.exe$`)
+    re.regex(
+      $proc.target.process.file.full_path,
+      `(?i)\\(powershell|pwsh|mshta|rundll32|curl|wget)\.exe$`
+    )
+    re.regex(
+      $proc.target.process.command_line,
+      `(?i)(invoke-webrequest|invoke-restmethod|downloadstring|downloadfile|frombase64string|-enc\b|-encodedcommand\b|-w\s+hidden|-windowstyle\s+hidden)`
+    )
+
+  match:
+    $reg, $proc over 3m
+
+  condition:
+    $reg and $proc
+
+  outcome:
+    $risk_score = 90
+}
