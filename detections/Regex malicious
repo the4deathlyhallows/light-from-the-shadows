@@ -1,0 +1,21 @@
+and re.regex($e.principal.process.command_line, `(?i)-w\s+hidden.*-nop.*-(c|command)`)
+and re.regex($e.principal.process.command_line, `(?i)\[byte\[\]\]\s*\(`)
+and re.regex($e.principal.process.command_line, `(?i)-bxor`)
+and re.regex($e.principal.process.command_line, `(?i)foreach\s*\(\$b\s+in\s+\$enc\)|foreach\s*\(`)
+and re.regex($e.principal.process.command_line, `(?i)New-Object\s+\$dec|\$wc\s*=\s*New-Object`)
+and re.regex($e.principal.process.command_line, `(?i)Headers\.Add\s*\(\s*['"]User-Agent['"]`)
+
+and re.regex(
+  $e.principal.process.command_line,
+  `(?i)(captcha|recaptcha).{0,40}(verification|human|robot|challenge)|i\s*am\s*not\s*a\s*robot|verify\s*(you\s*are\s*)?human|cloud\s*(identifier|identificator)`
+)
+
+and re.regex(
+  $e.principal.process.command_line,
+  `(?i)(i\s*am\s*not\s*a\s*robot|captcha\s*verification|recaptcha|cloud\s*(identifier|identificator))`
+)
+and re.regex(
+  $e.principal.process.command_line,
+  `(?i)(powershell|iex|downloadstring|invoke-webrequest|curl|mshta)`
+)
+
