@@ -1,0 +1,105 @@
+index=aws_bespin sourcetype=aws:cloudtrail
+| spath
+| search eventName IN (
+    "DeleteInstanceProfile",
+    "RemoveRoleFromInstanceProfile",
+    "DeleteRole",
+    "AttachRolePolicy",
+    "PutRolePolicy",
+    "AddRoleToInstanceProfile",
+    "CreateInstanceProfile",
+    "StopLogging",
+    "DeleteTrail",
+    "UpdateTrail",
+    "PutEventSelectors"
+)
+| table _time, userIdentity.arn, sourceIPAddress, eventSource, eventName, requestParameters.instanceProfileName, requestParameters.roleName, requestParameters.policyArn, requestParameters.name, errorCode
+| sort 0 _time
+
+index=aws_bespin sourcetype=aws:cloudtrail
+| spath
+| search eventName IN (
+    "DeleteInstanceProfile",
+    "RemoveRoleFromInstanceProfile",
+    "DeleteRole",
+    "AttachRolePolicy",
+    "PutRolePolicy",
+    "AddRoleToInstanceProfile",
+    "CreateInstanceProfile",
+    "StopLogging",
+    "DeleteTrail",
+    "UpdateTrail",
+    "PutEventSelectors"
+)
+| stats
+    count
+    values(eventName) as actions
+    values(eventSource) as services
+    values(userAgent) as user_agents
+    values(awsRegion) as regions
+    values(errorCode) as errors
+    values(requestParameters.instanceProfileName) as instance_profiles
+    values(requestParameters.roleName) as roles
+    values(requestParameters.policyArn) as policy_arns
+    values(requestParameters.name) as trail_names
+    min(_time) as firstSeen
+    max(_time) as lastSeen
+by userIdentity.arn, sourceIPAddress
+| eval firstSeen=strftime(firstSeen,"%Y-%m-%d %H:%M:%S")
+| eval lastSeen=strftime(lastSeen,"%Y-%m-%d %H:%M:%S")
+| eval risk=case(
+    mvfind(actions,"StopLogging")>=0 OR mvfind(actions,"DeleteTrail")>=0, "critical",
+    mvfind(actions,"DeleteInstanceProfile")>=0 AND mvfind(actions,"DeleteRole")>=0, "high",
+    mvfind(actions,"DeleteInstanceProfile")>=0 AND mvcount(actions)>=3, "high",
+    mvfind(actions,"DeleteInstanceProfile")>=0, "medium",
+    true(), "informational"
+)
+| sort - count
+
+
+index=aws_bespin sourcetype=aws:cloudtrail
+| spath
+| search eventName IN (
+    "DeleteInstanceProfile",
+    "RemoveRoleFromInstanceProfile",
+    "DeleteRole",
+    "AttachRolePolicy",
+    "PutRolePolicy",
+    "AddRoleToInstanceProfile",
+    "CreateInstanceProfile",
+    "StopLogging",
+    "DeleteTrail",
+    "UpdateTrail",
+    "PutEventSelectors"
+)
+| stats
+    count
+    values(eventName) as actions
+    values(eventSource) as services
+    values(sourceIPAddress) as src_ips
+    values(userAgent) as user_agents
+    values(awsRegion) as regions
+    values(errorCode) as errors
+    values(requestParameters.instanceProfileName) as instance_profiles
+    values(requestParameters.roleName) as roles
+    values(requestParameters.policyArn) as policy_arns
+    values(requestParameters.name) as trail_names
+    min(_time) as firstSeen
+    max(_time) as lastSeen
+by userIdentity.arn
+| eval firstSeen=strftime(firstSeen,"%Y-%m-%d %H:%M:%S")
+| eval lastSeen=strftime(lastSeen,"%Y-%m-%d %H:%M:%S")
+| eval risk=case(
+    mvfind(actions,"StopLogging")>=0 OR mvfind(actions,"DeleteTrail")>=0, "critical",
+    mvfind(actions,"DeleteInstanceProfile")>=0 AND mvfind(actions,"DeleteRole")>=0, "high",
+    mvfind(actions,"DeleteInstanceProfile")>=0 AND mvcount(actions)>=3, "high",
+    mvfind(actions,"DeleteInstanceProfile")>=0, "medium",
+    true(), "informational"
+)
+| sort - count
+
+
+index=aws_bespin sourcetype=aws:cloudtrail
+| spath
+| search eventName="DeleteInstanceProfile"
+| stats count by userIdentity.arn, sourceIPAddress, awsRegion
