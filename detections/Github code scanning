@@ -1,0 +1,44 @@
+rule N0816_GithubCodeScanning_ALERT {
+    meta:
+        author = "RC_NELNET"
+        description = "Nelnet detects GitHub code scanning alerts and enriches them with the workflow run user associated with the code-scanning workflow."
+        short_description = "GitHub code scanning alert with workflow user"
+        date = "03-17-2026"
+        severity = "Medium"
+        tactic = "{'TA0043': 'Reconnaissance'}"
+        technique = "{'T1595': 'Active Scanning'}"
+        mitigation = "{'M1013': 'Application Developer Guidance'}"
+        log_type = "GITHUB"
+        reference = "https://docs.github.com/en/code-security/concepts/code-scanning/about-code-scanning-alerts"
+
+    events:
+        $e.metadata.log_type = "GITHUB"
+        $e.metadata.product_event_type = /code_scanning/
+        $e.target.resource.name = $repo
+        $e.target.resource.name != ""
+        not re.regex($e.target.resource.name, `(?i)(internal|testing|terraform)`)
+
+        $work.metadata.log_type = "GITHUB"
+        $work.metadata.product_event_type = /workflows\.completed_workflow_run/
+        $work.target.resource.name = $repo
+        $work.target.resource.name != ""
+        re.regex($work.additional.fields["name"], `(?i)code-scanning`)
+        $work.additional.fields["Source_User"] != ""
+
+    match:
+        $repo over 1h
+
+    outcome:
+        $risk_score = max(65)
+        $mitre_attack_tactic = "Reconnaissance"
+        $mitre_attack_technique = "Active Scanning"
+        $mitre_attack_technique_id = "T1595"
+        $security_result_summary = array_distinct($e.security_result.summary)
+        $repository = array_distinct($repo)
+        $workflow_user = array_distinct($work.additional.fields["Source_User"])
+        $workflow_name = array_distinct($work.additional.fields["name"])
+        $code_scanning_event_type = array_distinct($e.metadata.product_event_type)
+
+    condition:
+        $e and $work
+}
