@@ -1,0 +1,224 @@
+let lookback = 30d;
+let interpreters = dynamic(["powershell","pwsh","cmd","mshta","wscript","cscript","rundll32"]);
+let exec_patterns = dynamic(["iex","invoke-webrequest","invoke-restmethod","downloadstring","net.webclient","-enc","encodedcommand","-w hidden","-windowstyle hidden","downloadfile","start-bitstransfer","invoke-expression","iwr","irm"]);
+let hidden_switches = dynamic(["-w hidden","-w h","-windowstyle hidden","-windowstyle h"]);
+let ps_download_patterns = dynamic(["iex","invoke-expression","downloadstring","invoke-webrequest","invoke-restmethod","irm","iwr","net.webclient","webclient","downloadfile","start-bitstransfer","add-type","dllimport","kernel32.dll","virtualalloc","createthread","-enc","encodedcommand"]);
+
+let ps_hidden_download =
+DeviceProcessEvents
+| where TimeGenerated >= ago(lookback)
+| extend cmd = tolower(ProcessCommandLine)
+| extend proc = tolower(FileName)
+| where proc in~ ("powershell.exe","pwsh.exe","powershell","pwsh")
+    or cmd has_any (dynamic(["powershell","pwsh"]))
+| where cmd has_any (hidden_switches)
+| where cmd has_any (ps_download_patterns)
+| extend DetectionName = "N0435_powershell_hidden_download"
+| extend Severity = "High"
+| extend Tactic = "Execution"
+| extend Technique = "T1059.001"
+| project
+    TimeGenerated,
+    DeviceName,
+    DetectionName,
+    Severity,
+    Tactic,
+    Technique,
+    AccountName,
+    InitiatingProcessAccountName,
+    FileName,
+    ProcessCommandLine,
+    InitiatingProcessFileName,
+    InitiatingProcessCommandLine,
+    SHA1,
+    MD5,
+    FolderPath,
+    ReportId;
+
+let runmru_exec =
+DeviceRegistryEvents
+| where TimeGenerated >= ago(lookback)
+| where RegistryKey has @"\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
+| extend cmd = tolower(RegistryValueData)
+| where cmd has_any (interpreters)
+| where cmd has_any (exec_patterns)
+| extend DetectionName = "N0435_runmru_interpreter_exec"
+| extend Severity = "High"
+| extend Tactic = "Execution"
+| extend Technique = "T1112"
+| project
+    TimeGenerated,
+    DeviceName,
+    DetectionName,
+    Severity,
+    Tactic,
+    Technique,
+    AccountName,
+    InitiatingProcessAccountName,
+    RegistryKey,
+    RegistryValueName,
+    RegistryValueData,
+    InitiatingProcessFileName,
+    InitiatingProcessCommandLine,
+    ReportId;
+
+union isfuzzy=true ps_hidden_download, runmru_exec
+| order by TimeGenerated desc
+
+let lookback = 30d;
+let interpreters = dynamic(["powershell","pwsh","cmd","mshta","wscript","cscript","rundll32"]);
+let exec_patterns = dynamic(["iex","invoke-webrequest","invoke-restmethod","downloadstring","net.webclient","-enc","encodedcommand","-w hidden","-windowstyle hidden","downloadfile","start-bitstransfer","invoke-expression","iwr","irm"]);
+let hidden_switches = dynamic(["-w hidden","-w h","-windowstyle hidden","-windowstyle h"]);
+let ps_download_patterns = dynamic(["iex","invoke-expression","downloadstring","invoke-webrequest","invoke-restmethod","irm","iwr","net.webclient","webclient","downloadfile","start-bitstransfer","add-type","dllimport","kernel32.dll","virtualalloc","createthread","-enc","encodedcommand"]);
+
+let ps_hidden_download =
+DeviceProcessEvents
+| where TimeGenerated >= ago(lookback)
+| extend cmd = tolower(ProcessCommandLine)
+| extend proc = tolower(FileName)
+| where proc in~ ("powershell.exe","pwsh.exe","powershell","pwsh")
+    or cmd has_any (dynamic(["powershell","pwsh"]))
+| where cmd has_any (hidden_switches)
+| where cmd has_any (ps_download_patterns)
+| extend DetectionName = "N0435_powershell_hidden_download"
+| extend Severity = "High"
+| extend Tactic = "Execution"
+| extend Technique = "T1059.001"
+| project
+    TimeGenerated,
+    DeviceName,
+    DetectionName,
+    Severity,
+    Tactic,
+    Technique,
+    AccountName,
+    InitiatingProcessAccountName,
+    FileName,
+    ProcessCommandLine,
+    InitiatingProcessFileName,
+    InitiatingProcessCommandLine,
+    SHA1,
+    MD5,
+    FolderPath,
+    ReportId;
+
+let runmru_exec =
+DeviceRegistryEvents
+| where TimeGenerated >= ago(lookback)
+| where RegistryKey has @"\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU"
+| extend cmd = tolower(RegistryValueData)
+| where cmd has_any (interpreters)
+| where cmd has_any (exec_patterns)
+| extend DetectionName = "N0435_runmru_interpreter_exec"
+| extend Severity = "High"
+| extend Tactic = "Execution"
+| extend Technique = "T1112"
+| project
+    TimeGenerated,
+    DeviceName,
+    DetectionName,
+    Severity,
+    Tactic,
+    Technique,
+    AccountName,
+    InitiatingProcessAccountName,
+    RegistryKey,
+    RegistryValueName,
+    RegistryValueData,
+    InitiatingProcessFileName,
+    InitiatingProcessCommandLine,
+    ReportId;
+
+union isfuzzy=true ps_hidden_download, runmru_exec
+| order by TimeGenerated desc
+
+rule N0435_powershell_hidden_download_or_rmr_u_exec {
+  meta:
+    author = "Nelnet Detection Engineering"
+    description = "Detects PowerShell hidden-window download/execute behavior or suspicious RunMRU registry entries containing interpreter and execution patterns"
+    severity = "HIGH"
+    mitre_attack = "T1059.001, T1112"
+    platform = "MICROSOFT_DEFENDER, WINDOWS_SYSMON"
+    logsource = "MICROSOFT_DEFENDER_ENDPOINT, WINDOWS_SYSMON"
+
+  events:
+    (
+      $e.metadata.log_type = "MICROSOFT_DEFENDER_ENDPOINT" or
+      $e.metadata.log_type = "WINDOWS_SYSMON"
+    )
+
+    and
+    (
+      /* Branch 1: PowerShell hidden download/execute behavior */
+      (
+        re.regex(
+          $e.principal.process.command_line,
+          `(?i)powershell(?:\.exe)?.*?(?:-w|-windowstyle)\s+(?:hidden|h).*?(?:-nop|-noprofile).*?(?:-(?:c|command)\b).*?(?:Add-Type.*?(?:DllImport|kernel32\.dll).*?(?:VirtualAlloc|CreateThread)|IEX|Invoke-Expression|DownloadString|Invoke-WebRequest|Invoke-RestMethod|irm|iwr|Net\.WebClient|WebClient|DownloadFile|Start-BitsTransfer)`
+        )
+        or
+        (
+          re.regex(
+            $e.principal.process.command_line,
+            `(?i)(?:powershell|pwsh)(?:\.exe)?`
+          )
+          and re.regex(
+            $e.principal.process.command_line,
+            `(?i)(?:-w\s+hidden|-w\s+h|-windowstyle\s+hidden|-windowstyle\s+h)`
+          )
+          and re.regex(
+            $e.principal.process.command_line,
+            `(?i)(?:IEX|Invoke-Expression|DownloadString|Invoke-WebRequest|Invoke-RestMethod|irm|iwr|Net\.WebClient|WebClient|DownloadFile|Start-BitsTransfer|-enc|encodedcommand)`
+          )
+        )
+      )
+
+      or
+
+      /* Branch 2: KQL-equivalent suspicious RunMRU execution strings */
+      (
+        $e.metadata.event_type = "REGISTRY_MODIFICATION"
+        and re.regex(
+          $e.target.registry.registry_key,
+          `(?i)\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RunMRU`
+        )
+        and re.regex(
+          $e.target.registry.registry_value_data,
+          `(?i)(powershell|pwsh|cmd|mshta|wscript|cscript|rundll32)`
+        )
+        and re.regex(
+          $e.target.registry.registry_value_data,
+          `(?i)(iex|invoke-webrequest|invoke-restmethod|downloadstring|net\.webclient|-enc|encodedcommand|-w\s+hidden|-windowstyle\s+hidden)`
+        )
+      )
+    )
+
+  outcome:
+    /* Entity context */
+    $hostname = array_distinct($e.principal.hostname)
+    $userid = array_distinct($e.principal.user.userid)
+    $username = array_distinct($e.principal.user.user_display_name)
+    $principal_ip = array_distinct($e.principal.ip)
+
+    /* Process context */
+    $process_path = array_distinct($e.target.process.file.full_path)
+    $process_command_line = array_distinct($e.target.process.command_line)
+
+    /* Parent / initiating process context */
+    $parent_process_path = array_distinct($e.principal.process.file.full_path)
+    $parent_command_line = array_distinct($e.principal.process.command_line)
+    $parent_process_name = array_distinct($e.principal.process.file.full_path)
+
+    /* Registry context */
+    $registry_key = array_distinct($e.target.registry.registry_key)
+    $registry_value_name = array_distinct($e.target.registry.registry_value_name)
+    $registry_value_data = array_distinct($e.target.registry.registry_value_data)
+
+    /* Indicators */
+    $powershell_indicator = "powershell_or_pwsh"
+    $window_hiding_indicator = "hidden_window_argument_present"
+    $download_execute_indicator = "download_or_invoke_pattern_present"
+    $runmru_indicator = "suspicious_runmru_execution_pattern"
+
+  condition:
+    $e
+}
