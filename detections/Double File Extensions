@@ -1,0 +1,50 @@
+rule _suspicious_double_extension_execution_mde
+{
+  meta:
+    author = "Threat Hunt: Detection Engineering"
+    description = "Detects suspicious double-extension execution or module loads from Microsoft Defender telemetry, including masqueraded files such as document or media names ending in executable or DLL content."
+    severity = "HIGH"
+    log_type = "MICROSOFT_DEFENDER_ENDPOINT, MICROSOFT_DEFENDER_CLOUD_ALERTS"
+    tactic = "Defense Evasion"
+    technique = "T1036"
+    mitre_attack = "T1036, T1036.007"
+    created_date = "2026-03-13"
+    last_modified = "2026-03-17"
+
+  events:
+    (
+      $e.metadata.log_type = "MICROSOFT_DEFENDER_ENDPOINT" or
+      $e.metadata.log_type = "MICROSOFT_DEFENDER_CLOUD_ALERTS"
+    )
+
+    (
+      re.regex($e.principal.process.command_line, `(?i)\.(pdf|txt|doc|docx|xls|xlsx|ppt|pptx|rtf|jpg|jpeg|png|gif|mp3|mp4|zip|htm|html|wav|avi|svg|com)\.(exe|scr|bat|cmd|com|pif|js|vbs|msi|jar|cpl|msc|reg|wsf|ws|jse|vbe|hta|htm|html)\b`)
+      or
+      (
+        $e.metadata.event_type = "PROCESS_MODULE_LOAD" and
+        re.regex($e.target.file.full_path, `(?i)\.(pdf|txt|doc|docx|xls|xlsx|ppt|pptx|rtf|jpg|jpeg|png|gif|mp3|mp4|zip|htm|html|wav|avi|svg|com)\.(exe|dll)$`)
+      )
+    )
+
+    $principal_file_name = re.capture(strings.to_lower($e.principal.process.file.full_path), `([^\\/]+)$`)
+    $target_file_name = re.capture(strings.to_lower($e.target.file.full_path), `([^\\/]+)$`)
+    $target_command = $e.target.process.command_line
+
+    not re.regex($e.principal.process.file.full_path, `(?i)jet(brains|logs)|intellij|kofax|^/bin/(bash|sh)$|ngen\.exe$|git\.exe$|signtool\.exe$|photos\.exe$`)
+    not re.regex($e.principal.process.command_line, `(?i)nabconnect\.nab\.com\.au|retire-js|Meeting Recording\.mp4\.html$|platform-loader|prowatch|nbs\.common|chocolatey|kofax`)
+    not re.regex($target_file_name, `(?i)(microsoft|windows|kofax|jetbrains|leadtools|image|aspose|avalonia|bluebeam|c1|corgent|crystaldecisions|fedex|grapecity|nbs|persits|sharpgen|telerik|ionic|mindfusion|nop|itext)\.[a-zA-Z0-9. -]+\.dll$`)
+    not re.regex($principal_file_name, `(?i)^dngrep\.exe$|snagit|^signtool\.exe$|^mscorsvw\.exe$`)
+
+  outcome:
+    $first_seen = timestamp.get_timestamp(min($e.metadata.event_timestamp.seconds), "%m-%d")
+    $last_seen = timestamp.get_timestamp(max($e.metadata.event_timestamp.seconds), "%m-%d")
+    $event_types = array_distinct($e.metadata.event_type)
+    $target_file_names = array_distinct($target_file_name)
+    $target_commands = array_distinct($target_command)
+    $hostnames = array_distinct($e.principal.hostname)
+    $users = array_distinct($e.principal.user.userid)
+    $t_ct = count($e.metadata.id)
+
+  condition:
+    $e
+}
