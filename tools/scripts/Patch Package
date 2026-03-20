@@ -1,0 +1,111 @@
+import os
+import subprocess
+import shutil
+from pathlib import Path
+
+def run_cmd(cmd):
+    """
+    Run a command and return (returncode, stdout, stderr).
+    """
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        return proc.returncode, proc.stdout, proc.stderr
+    except FileNotFoundError:
+        return 127, "", f"Command not found: {cmd[0]}"
+    except Exception as e:
+        return 1, "", str(e)
+
+def check_for_updates():
+    print("Checking for updates...")
+
+    if os.name == "posix":
+        # Prefer apt if available (Debian/Ubuntu). If not, tell the user.
+        if shutil.which("apt") is None:
+            print("apt not found. This Unix-like system may not support apt-based updates.")
+            return None
+
+        # Update package lists (may require sudo/admin)
+        code, out, err = run_cmd(["apt", "update"])
+        if code != 0:
+            print("Failed to run 'apt update'. You may need admin privileges (sudo).")
+            print(err.strip() or out.strip())
+            return None
+
+        # Check upgradable packages
+        code, out, err = run_cmd(["apt", "list", "--upgradable"])
+        if code != 0:
+            print("Failed to check upgradable packages.")
+            print(err.strip() or out.strip())
+            return None
+
+        # Heuristic: output usually includes a "Listing..." line; more lines => upgrades exist
+        lines = [line.strip() for line in out.splitlines() if line.strip()]
+        upgrades_available = len(lines) > 1
+
+        if not upgrades_available:
+            print("System is up to date.")
+        else:
+            print("Updates are available. Example output:")
+            print("\n".join(lines[:10]))  # show first few lines
+
+        return upgrades_available
+
+    elif os.name == "nt":
+        # Windows: there isn't a single universal package manager.
+        # Try winget if available; otherwise print guidance.
+        if shutil.which("winget") is None:
+            print("winget not found. Install App Installer from Microsoft Store or use your org's patch tooling.")
+            return None
+
+        # List upgrades (winget doesn't require admin just to list)
+        code, out, err = run_cmd(["winget", "upgrade"])
+        if code != 0:
+            print("Failed to check upgrades via winget.")
+            print(err.strip() or out.strip())
+            return None
+
+        # winget prints a table; if it contains "No installed package found" etc, interpret accordingly
+        upgrades_available = "No upgrades available" not in out
+
+        if not upgrades_available:
+            print("System is up to date (per winget).")
+        else:
+            print("Updates may be available. Example output:")
+            print("\n".join(out.splitlines()[:15]))
+
+        return upgrades_available
+
+    else:
+        print("Unsupported OS for automatic updates.")
+        return None
+
+def apply_patches(patch_file, destination_path):
+    print("Applying patches...")
+
+    patch_path = Path(patch_file)
+    dest_path = Path(destination_path)
+
+    if not patch_path.exists():
+        print(f"No patch file found at: {patch_path}")
+        return False
+
+    try:
+        dest_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(patch_path, dest_path)
+        print(f"Patch applied successfully to: {dest_path}")
+        return True
+    except PermissionError:
+        print("Permission denied while applying the patch. Try running as admin/root.")
+        return False
+    except Exception as e:
+        print(f"Failed to apply patch: {e}")
+        return False
+
+if __name__ == "__main__":
+    upgrades = check_for_updates()
+
+    # Example usage (change these paths)
+    apply_patches(
+        patch_file="path/to/patch/file",
+        destination_path="/destination/path" if os.name == "posix" else r"C:\destination\path\patch.file"
+    )
