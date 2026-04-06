@@ -1,48 +1,77 @@
-# Light From The Shadows
+# Azure Detection Engineering Playbook v2
 
-Welcome to **Light From The Shadows**, my detection engineering portfolio dedicated to uncovering hidden threats lurking in the darkness. This repo showcases detection rules, enrichment scripts, and playbooks designed to bring light where cyber adversaries hide.
+A Git-ready Azure detection engineering repository for **Microsoft Sentinel** and **Microsoft Defender XDR**.
 
-## What You’ll Find Here
+## What this repo gives you
 
-- **Detection Rules:** KQL, Splunk SPL, and Sigma queries targeting stealthy adversary behaviors.  
-- **Enrichment Scripts:** Python tools to augment and automate threat detection workflows.  
-- **Playbooks & Documentation:** My personal methodologies and MITRE ATT&CK mappings.
+- a practical operating model for Azure detections
+- 10 starter detections written in KQL-backed rule specs
+- Sentinel rule YAMLs you can version and refine
+- Defender XDR detection specs you can keep in Git
+- Bicep starter files for Sentinel analytics rule deployment
+- testing, triage, tuning, and promotion guidance
+- a lightweight GitHub Actions workflow skeleton
 
-## Philosophy
+## Suggested workflow
 
-Detection is about shining light in the darkest corners of your environment — catching what others miss by blending data, logic, and relentless curiosity.
+1. Write or update the rule in this repo
+2. Test in hunting mode
+3. Review false positives and add exclusions
+4. Promote to production
+5. Deploy Sentinel content with Bicep
+6. Keep Defender XDR query/spec parity with the portal config
 
-> “From darkness comes clarity.”
+## Repo layout
 
+```text
+azure-detection-playbook-v2/
+├── README.md
+├── deployment/
+│   └── bicep/
+│       ├── main.bicep
+│       ├── main.parameters.json
+│       └── modules/
+│           └── scheduledRule.bicep
+├── detections/
+│   ├── sentinel/
+│   │   ├── identity/
+│   │   ├── control-plane/
+│   │   └── data/
+│   └── defender-xdr/
+│       ├── endpoint/
+│       └── correlation/
+├── docs/
+├── templates/
+└── .github/
+    └── workflows/
+```
 
----
+## Detection IDs
 
-##  Philosophy
+- `AZI` = Azure identity
+- `AZC` = Azure control plane
+- `AZD` = Azure data / storage / key vault
+- `AZE` = Azure endpoint
+- `AZX` = Cross-domain / correlation
 
-> **Detection is about shining light in the darkest corners of your environment — catching what others miss by blending data, logic, and relentless curiosity.**
+## The first 10 detections in this pack
 
-_"From darkness comes clarity."_
+### Sentinel
+1. `AZI-0001` Privileged role assignment created or deleted
+2. `AZC-0001` Diagnostic settings tamper
+3. `AZI-0002` Repeated failed sign-ins by IP against multiple users
+4. `AZI-0003` App or service principal credential added
+5. `AZI-0004` New admin caller performing write/delete actions
+6. `AZD-0001` Sensitive Key Vault access by unfamiliar caller
 
----
+### Defender XDR
+7. `AZE-0001` Browser to LOLBIN / interpreter execution chain
+8. `AZE-0002` Encoded or download-capable PowerShell
+9. `AZE-0003` LOLBIN followed by outbound network connection
+10. `AZE-0004` Registry persistence by suspicious parent
 
-## 📂 Repo Status
+## How to use this repo
 
-✔ First IOC enrichment script live  
-⬜ Next: Add real enrichment logic, output formatting  
-⬜ Later: Log parsers, anomaly detection, full MITRE coverage
-
----
-
-##  Author
-
-Robert Clark
-Cyber Threat Hunter | Detection Engineer | Adversary Pursuit  
-🔍 TS/SCI | Python | Splunk | Defender | MDE
-
----
-
-## Contributions & Feedback
-
-Feel free to fork, use, or build on anything here. Star the repo if it sparks ideas — and let me know if you want to collaborate or trade detection logic.
-
----
+- Replace sample allowlists with your real admins, jump hosts, service principals, and maintenance identities
+- Calibrate thresholds with historical data before enabling incidents broadly
+- Treat each detection as a product with ownership, change history, tuning notes, and triage steps
