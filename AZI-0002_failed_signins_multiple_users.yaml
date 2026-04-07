@@ -1,0 +1,68 @@
+id: AZI-0002
+name: Repeated failed sign-ins by IP against multiple users
+description: |
+  Detects potential password spray behavior where a single source IP generates repeated failed sign-ins
+  against multiple accounts in a short period.
+
+status: testing
+kind: Scheduled
+
+metadata:
+  owner: detection-engineering
+  domain: identity
+  platform: sentinel
+  severity: High
+  tactic: TA0006
+  technique: T1110.003
+  data_sources:
+    - SigninLogs
+  false_positives:
+    - misconfigured applications
+    - VPN or proxy concentration points
+  known_benign:
+    - internal testing from approved ranges
+
+requiredDataConnectors:
+  - connectorId: AzureActiveDirectory
+    dataTypes:
+      - SigninLogs
+
+queryFrequency: 15m
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+suppressionDuration: 30m
+suppressionEnabled: false
+
+query: |
+  let timeframe = 1h;
+  let min_failures = 20;
+  let min_users = 5;
+  SigninLogs
+  | where TimeGenerated >= ago(timeframe)
+  | where ResultType != 0
+  | summarize FailedCount=count(), UsersTargeted=dcount(UserPrincipalName), Targets=make_set(UserPrincipalName, 20) by IPAddress, bin(TimeGenerated, 15m)
+  | where FailedCount >= min_failures and UsersTargeted >= min_users
+  | project TimeGenerated, IPAddress, FailedCount, UsersTargeted, Targets
+
+entityMappings:
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: IPAddress
+
+customDetails:
+  RuleId: "AZI-0002"
+  Owner: "detection-engineering"
+
+incidentConfiguration:
+  createIncident: true
+
+eventGroupingSettings:
+  aggregationKind: AlertPerResult
+
+alertDetailsOverride:
+  alertDisplayNameFormat: "AZI-0002 Repeated failed sign-ins by IP against multiple users"
+  alertDescriptionFormat: "Source IP {{IPAddress}} generated {{FailedCount}} failed sign-ins against {{UsersTargeted}} users."
+
+version: 1.0.0

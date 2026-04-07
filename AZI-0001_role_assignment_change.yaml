@@ -1,0 +1,78 @@
+id: AZI-0001
+name: Privileged role assignment created or deleted
+description: |
+  Detects writes or deletes to Azure role assignments. This is a strong signal for privilege escalation,
+  delegation, or cleanup activity and should be reviewed when initiated by nonstandard admin identities.
+
+status: testing
+kind: Scheduled
+
+metadata:
+  owner: detection-engineering
+  domain: identity
+  platform: sentinel
+  severity: High
+  tactic: TA0004
+  technique: T1098
+  data_sources:
+    - AzureActivity
+  false_positives:
+    - approved IAM engineering changes
+    - infrastructure-as-code deployments
+  known_benign:
+    - break-glass maintenance windows
+
+requiredDataConnectors:
+  - connectorId: AzureActivity
+    dataTypes:
+      - AzureActivity
+
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+suppressionDuration: 1h
+suppressionEnabled: false
+
+query: |
+  let timeframe = 1h;
+  let approved_admins = datatable(Caller:string)
+  [
+    "admin1@contoso.com",
+    "admin2@contoso.com"
+  ];
+  AzureActivity
+  | where TimeGenerated >= ago(timeframe)
+  | where CategoryValue == "Administrative"
+  | where OperationNameValue has_any (
+      "Microsoft.Authorization/roleAssignments/write",
+      "Microsoft.Authorization/roleAssignments/delete"
+    )
+  | where Caller !in (approved_admins)
+  | project TimeGenerated, Caller, CallerIpAddress, OperationNameValue, ActivityStatusValue, ResourceGroup, ResourceId, SubscriptionId
+
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: FullName
+        columnName: Caller
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: CallerIpAddress
+
+customDetails:
+  RuleId: "AZI-0001"
+  Owner: "detection-engineering"
+
+incidentConfiguration:
+  createIncident: true
+
+eventGroupingSettings:
+  aggregationKind: AlertPerResult
+
+alertDetailsOverride:
+  alertDisplayNameFormat: "AZI-0001 Privileged role assignment created or deleted"
+  alertDescriptionFormat: "A role assignment write/delete operation was performed by {{Caller}} from {{CallerIpAddress}}."
+
+version: 1.0.0

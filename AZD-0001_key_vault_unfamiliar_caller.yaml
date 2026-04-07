@@ -1,0 +1,75 @@
+id: AZD-0001
+name: Sensitive Key Vault access by unfamiliar caller
+description: |
+  Detects successful Key Vault secret operations by callers not observed accessing the same vault in the prior baseline period.
+
+status: testing
+kind: Scheduled
+
+metadata:
+  owner: detection-engineering
+  domain: data
+  platform: sentinel
+  severity: High
+  tactic: TA0006
+  technique: T1552
+  data_sources:
+    - AzureDiagnostics
+  false_positives:
+    - new application onboarding
+    - planned secret rotation
+  known_benign:
+    - approved migration activities
+
+requiredDataConnectors:
+  - connectorId: AzureDiagnostics
+    dataTypes:
+      - AzureDiagnostics
+
+queryFrequency: 1h
+queryPeriod: 24h
+triggerOperator: gt
+triggerThreshold: 0
+suppressionDuration: 2h
+suppressionEnabled: false
+
+query: |
+  let historical =
+    AzureDiagnostics
+    | where TimeGenerated between (ago(14d) .. ago(1d))
+    | where ResourceProvider == "MICROSOFT.KEYVAULT"
+    | where OperationName has_any ("SecretGet", "SecretList")
+    | summarize by identity_claim_upn_s, Resource;
+  AzureDiagnostics
+  | where TimeGenerated >= ago(1d)
+  | where ResourceProvider == "MICROSOFT.KEYVAULT"
+  | where OperationName has_any ("SecretGet", "SecretList")
+  | where ResultType == "Success"
+  | where strcat(identity_claim_upn_s, "|", Resource) !in (historical | project strcat(identity_claim_upn_s, "|", Resource))
+  | project TimeGenerated, identity_claim_upn_s, CallerIPAddress, OperationName, Resource, _ResourceId
+
+entityMappings:
+  - entityType: Account
+    fieldMappings:
+      - identifier: FullName
+        columnName: identity_claim_upn_s
+  - entityType: IP
+    fieldMappings:
+      - identifier: Address
+        columnName: CallerIPAddress
+
+customDetails:
+  RuleId: "AZD-0001"
+  Owner: "detection-engineering"
+
+incidentConfiguration:
+  createIncident: true
+
+eventGroupingSettings:
+  aggregationKind: AlertPerResult
+
+alertDetailsOverride:
+  alertDisplayNameFormat: "AZD-0001 Sensitive Key Vault access by unfamiliar caller"
+  alertDescriptionFormat: "Unfamiliar caller {{identity_claim_upn_s}} accessed Key Vault resource {{Resource}}."
+
+version: 1.0.0

@@ -1,0 +1,55 @@
+id: AZ?-???? 
+name: <Detection Title>
+description: |
+  <What the detection looks for and why it matters>
+
+status: draft
+kind: Scheduled
+
+metadata:
+  owner: detection-engineering
+  domain: identity|control-plane|data|cross-domain
+  platform: sentinel
+  severity: Low|Medium|High|Critical
+  tactic: <TA####>
+  technique: <T####>
+  data_sources:
+    - <table>
+  false_positives:
+    - <item>
+  known_benign:
+    - <item>
+
+requiredDataConnectors:
+  - connectorId: <connectorId>
+    dataTypes:
+      - <table>
+
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+suppressionDuration: 1h
+suppressionEnabled: false
+
+query: |
+  let timeframe = 1h;
+  <KQL>
+
+entityMappings: []
+
+customDetails:
+  RuleId: "AZ?-????"
+  Owner: "detection-engineering"
+
+incidentConfiguration:
+  createIncident: true
+
+eventGroupingSettings:
+  aggregationKind: AlertPerResult
+
+alertDetailsOverride:
+  alertDisplayNameFormat: "<Detection Title>"
+  alertDescriptionFormat: "<Analyst-facing summary>"
+
+version: 1.0.0
