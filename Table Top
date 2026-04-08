@@ -1,0 +1,12 @@
+Participated in a Department of State tabletop exercise simulating a cyber incident impacting Consular Affairs
+Scenario was loosely based on prior OAuth/Graph API abuse and Exchange compromise, with a new initial access vector via a socially engineered senior advisor MDM device
+Exercise was divided into two sections with multiple modules, using a branching decision model based on team responses
+Teams were organized by function (communications, analysis, incident management, CIO, threat, impact, remediation, engineering)
+Each phase required decisions across the incident lifecycle (initial triage, confirmation of malicious activity, and remediation actions)
+Scenario dynamically evolved depending on how teams responded to prompts
+Gained insight into cross-functional coordination and real-time incident response decision-making
+Key takeaway: balancing containment vs. maintaining visibility to avoid alerting threat actors and risking further compromise or data exfiltration
+Identified gaps in analyst access to long-term historical data (e.g., inability to query data beyond one year)
+Noted limitations in tooling integration, specifically lack of direct querying capability in Databricks using existing Splunk workflows
+Overall, teams responded effectively based on the information available during each phase of the exercise
+Highlighted importance of incident manager role as a buffer between technical teams and executive leadership
