@@ -1,0 +1,53 @@
+rule N1005B_PSEXEC_LATERAL_MOVEMENT_NETWORK {
+  meta:
+    author = "Improved by Claude"
+    description = "Correlates PsExec-style process execution with SMB lateral movement network traffic"
+    severity = "HIGH"
+    mitre_tactic = "Lateral Movement"
+    mitre_technique = "T1021.002"
+    version = "1.0"
+
+  events:
+    // Process-side: PsExec or remote service execution
+    $proc.metadata.event_type = "PROCESS_LAUNCH"
+    (
+      re.regex($proc.principal.process.file.full_path, `(?i)\\psexec(svc|64)?\.exe$`) or
+      re.regex($proc.principal.process.file.full_path, `(?i)\\PSEXESVC\.exe$`) or
+      re.regex($proc.principal.process.command_line, `(?i)\bpsexec(64)?\b`) or
+      re.regex(
+        $proc.principal.process.command_line,
+        `(?i)\\\\[a-zA-Z0-9\.\-]+\\[^\s]+\.(exe|bat|cmd|ps1)`
+      )
+    )
+
+    // Network-side: outbound SMB connection from same host
+    $net.metadata.event_type = "NETWORK_CONNECTION"
+    $net.network.direction = "OUTBOUND"
+    $net.target.port = 445
+    $net.metadata.event_timestamp.seconds >
+      $proc.metadata.event_timestamp.seconds
+
+    // Correlate on source host
+    $proc.principal.hostname = $net.principal.hostname
+    $host = $proc.principal.hostname
+    $user = $proc.principal.user.userid
+
+    // Exclude internal jump servers / known admin hosts (tune this)
+    not re.regex(
+      $net.principal.hostname,
+      `(?i)(jumpbox|bastion|deploy-host)`
+    )
+
+  match:
+    $host, $user over 15m
+
+  outcome:
+    $risk_score = max(
+      if($proc.principal.process.file.full_path = "PSEXESVC.exe", 50) +
+      if($net.target.port = 445, 30) +
+      if(re.regex($proc.principal.process.command_line, `(?i)-enc`), 20)
+    )
+
+  condition:
+    $proc and $net
+}
