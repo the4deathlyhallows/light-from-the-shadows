@@ -1,0 +1,108 @@
+rule N1005_PSEXEC_OR_REMOTE_SERVICE_LATERAL_MOVEMENT {
+  meta:
+    author = "Improved by Claude"
+    description = "Detects PsExec execution or remote-service-based lateral movement via process launch, service creation, and network indicators"
+    severity = "HIGH"
+    mitre_tactic = "Lateral Movement, Execution"
+    mitre_technique = "T1021.002"
+    mitre_technique_2 = "T1569.002"
+    mitre_technique_3 = "T1035"
+    references = "https://attack.mitre.org/techniques/T1021/002/"
+    version = "2.0"
+
+  events:
+    $e.metadata.event_type = "PROCESS_LAUNCH"
+
+    (
+      // Direct PsExec binary execution (covers renamed variants)
+      re.regex(
+        $e.principal.process.file.full_path,
+        `(?i)\\psexec(svc|64)?\.exe$`
+      )
+      or
+
+      // PsExec referenced in command line
+      re.regex(
+        $e.principal.process.command_line,
+        `(?i)\bpsexec(64)?\b`
+      )
+      or
+
+      // PSEXESVC service — installed on target host by PsExec
+      re.regex(
+        $e.principal.process.file.full_path,
+        `(?i)\\PSEXESVC\.exe$`
+      )
+      or
+
+      // Remote UNC path execution (\\host\share\binary.exe)
+      re.regex(
+        $e.principal.process.command_line,
+        `(?i)\\\\[a-zA-Z0-9\.\-]+\\[^\s]+\.(exe|bat|cmd|ps1|vbs|dll)`
+      )
+      or
+
+      // sc.exe used to create/start remote services (common LOTL technique)
+      (
+        re.regex(
+          $e.principal.process.file.full_path,
+          `(?i)\\sc\.exe$`
+        )
+        and
+        re.regex(
+          $e.principal.process.command_line,
+          `(?i)(\\\\[^\s]+).*(create|start|binpath)`
+        )
+      )
+      or
+
+      // WMI-based remote execution (wmic /node: pattern)
+      (
+        re.regex(
+          $e.principal.process.file.full_path,
+          `(?i)\\wmic\.exe$`
+        )
+        and
+        re.regex(
+          $e.principal.process.command_line,
+          `(?i)/node:[^\s]+.*(process call create|service)`
+        )
+      )
+      or
+
+      // cmd/powershell spawned from services.exe or svchost (PsExec child pattern)
+      (
+        re.regex(
+          $e.principal.process.parent_process.file.full_path,
+          `(?i)\\(services|svchost)\.exe$`
+        )
+        and
+        re.regex(
+          $e.principal.process.file.full_path,
+          `(?i)\\(cmd|powershell|pwsh|wscript|cscript)\.exe$`
+        )
+      )
+      or
+
+      // Encoded PowerShell launched remotely (high-confidence malicious)
+      re.regex(
+        $e.principal.process.command_line,
+        `(?i)powershell.*(-enc|-encodedcommand).*\\\\[^\s]+`
+      )
+    )
+
+    // Exclude known legitimate admin tools and hosts (tune to your environment)
+    not re.regex(
+      $e.principal.process.file.full_path,
+      `(?i)(CrowdStrike|SentinelOne|CarbonBlack|SCCM|Ansible|Tanium)`
+    )
+
+    // Exclude known admin/service accounts
+    not re.regex(
+      $e.principal.user.userid,
+      `(?i)(svc_deploy|svc_ansible|svc_sccm|_automation)`
+    )
+
+  condition:
+    $e
+}
