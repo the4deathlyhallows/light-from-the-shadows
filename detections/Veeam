@@ -1,0 +1,54 @@
+rule Storm1175_Veeam_Credential_Access_With_Lateral_Movement {
+
+  meta:
+    author = "Detection Engineering"
+    description = "Detects suspected Storm-1175 style Veeam credential recovery activity followed by lateral movement or ransomware staging commands."
+    severity = "CRITICAL"
+    priority = "CRITICAL"
+    mitre_attack = "T1555, T1021, T1486"
+    false_positives = "Legitimate Veeam administrator activity. Tune by excluding known Veeam service accounts, approved admin hosts, and scheduled backup windows."
+
+  events:
+    $cred.metadata.event_type = "PROCESS_LAUNCH"
+
+    (
+      re.regex($cred.target.process.command_line, `(?i)Veeam\.Backup\.PowerShell`) or
+      re.regex($cred.target.process.command_line, `(?i)Veeam\.Backup\.Common\.CryptoHelper`) or
+      re.regex($cred.target.process.command_line, `(?i)VeeamBackup`) or
+      re.regex($cred.target.process.command_line, `(?i)DbCredentials`) or
+      re.regex($cred.target.process.command_line, `(?i)select.{0,80}(user_name|password).{0,80}(credentials|DbCredentials)`)
+    )
+
+    not re.regex($cred.principal.process.file.full_path, `(?i)Veeam\.Backup\.Service\.exe`)
+    not re.regex($cred.principal.process.file.full_path, `(?i)Veeam\.Backup\.Manager\.exe`)
+
+    $move.metadata.event_type = "PROCESS_LAUNCH"
+    $move.principal.hostname = $cred.principal.hostname
+
+    (
+      re.regex($move.target.process.command_line, `(?i)psexec`) or
+      re.regex($move.target.process.command_line, `(?i)Invoke-Command`) or
+      re.regex($move.target.process.command_line, `(?i)Enter-PSSession`) or
+      re.regex($move.target.process.command_line, `(?i)wmic.{0,50}process\s+call\s+create`) or
+      re.regex($move.target.process.command_line, `(?i)schtasks.{0,50}/create`) or
+      re.regex($move.target.process.command_line, `(?i)net\s+use`) or
+      re.regex($move.target.process.command_line, `(?i)vssadmin.{0,40}delete`) or
+      re.regex($move.target.process.command_line, `(?i)bcdedit.{0,40}/set`) or
+      re.regex($move.target.process.command_line, `(?i)wevtutil.{0,40}cl`)
+    )
+
+  match:
+    $cred.principal.hostname over 30m
+
+  outcome:
+    $risk_score = 95
+    $host = $cred.principal.hostname
+    $user = $cred.principal.user.userid
+    $cred_command = $cred.target.process.command_line
+    $movement_command = $move.target.process.command_line
+    $parent_process = $cred.principal.process.file.full_path
+    $detection_summary = "Veeam credential access behavior followed by lateral movement or ransomware staging command execution."
+
+  condition:
+    $cred and $move
+}
