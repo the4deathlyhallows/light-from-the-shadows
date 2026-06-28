@@ -1,0 +1,153 @@
+// ============================================================
+//  Storm-1175 Veeam Credential Recovery Detection
+//  Format:   YARA-L 2.0 (Google SecOps / Chronicle)
+//  Date:     2026-05-01
+//  MITRE:    T1555 - Credentials from Password Stores
+//            T1021 - Remote Services
+// ============================================================
+
+
+rule Storm1175_Veeam_CredRecovery_Script {
+
+  meta:
+    author       = "Detection Engineering"
+    description  = "Detects files or process command lines referencing Veeam credential store objects — PowerShell snap-in, CryptoHelper, or direct SQL access against DbCredentials"
+    severity     = "HIGH"
+    priority     = "HIGH"
+    mitre_attack = "T1555"
+    reference    = "Storm-1175 Veeam credential harvesting activity"
+    false_positives = "Veeam administrators running legitimate backup PowerShell — scope to non-backup-admin accounts or non-scheduled hours"
+
+  events:
+    (
+      // Process execution events — command line inspection
+      $e.metadata.event_type = "PROCESS_LAUNCH"
+      and (
+        re.regex($e.target.process.command_line, `(?i)Veeam\.Backup\.PowerShell`) or
+        re.regex($e.target.process.command_line, `(?i)Veeam\.Backup\.Common\.CryptoHelper`) or
+        re.regex($e.target.process.command_line, `(?i)Veeam\.Backup\.Core\.dll`) or
+        (
+          re.regex($e.target.process.command_line, `(?i)VeeamBackup`) and
+          re.regex($e.target.process.command_line, `(?i)DbCredentials`)
+        )
+      )
+    )
+    or
+    (
+      // File creation / modification events
+      $e.metadata.event_type = "FILE_CREATION"
+      and (
+        re.regex($e.target.file.full_path, `(?i)\.ps1$`) or
+        re.regex($e.target.file.full_path, `(?i)\.bat$`) or
+        re.regex($e.target.file.full_path, `(?i)\.vbs$`)
+      )
+    )
+
+  condition:
+    $e
+
+}
+
+
+rule Storm1175_Veeam_SQLAccess_CredTable {
+
+  meta:
+    author       = "Detection Engineering"
+    description  = "Detects SQL queries targeting Veeam credential tables (DbCredentials, Credentials) from unexpected processes — indicates direct DB credential extraction"
+    severity     = "CRITICAL"
+    priority     = "CRITICAL"
+    mitre_attack = "T1555"
+    false_positives = "Veeam service account running scheduled maintenance — exclude $e.principal.user.userid matching your Veeam service account"
+
+  events:
+    $e.metadata.event_type = "PROCESS_LAUNCH"
+
+    // Query must reference Veeam DB and credential tables
+    re.regex($e.target.process.command_line, `(?i)VeeamBackup`) and
+    (
+      re.regex($e.target.process.command_line, `(?i)DbCredentials`) or
+      re.regex($e.target.process.command_line, `(?i)select.{0,60}(user_name|password).{0,60}credentials`)
+    )
+
+    // Spawned from a suspicious parent — not the Veeam service itself
+    not re.regex($e.principal.process.file.full_path, `(?i)Veeam\.Backup\.Service\.exe`)
+    not re.regex($e.principal.process.file.full_path, `(?i)Veeam\.Backup\.Manager\.exe`)
+
+  condition:
+    $e
+
+}
+
+
+rule Storm1175_Veeam_LateralMovement_Prep {
+
+  meta:
+    author       = "Detection Engineering"
+    description  = "Detects process execution on a Veeam host that pairs credential access with remote execution primitives — high-confidence pre-ransomware indicator"
+    severity     = "CRITICAL"
+    priority     = "CRITICAL"
+    mitre_attack = "T1555, T1021"
+    false_positives = "Very low — Veeam strings co-occurring with psexec or Invoke-Command outside a backup context is anomalous"
+
+  events:
+    $e.metadata.event_type = "PROCESS_LAUNCH"
+
+    // Must reference Veeam credential objects
+    re.regex($e.target.process.command_line, `(?i)(VeeamBackup|DbCredentials|CryptoHelper)`)
+
+    // AND include a remote execution or ransomware staging primitive
+    (
+      re.regex($e.target.process.command_line, `(?i)psexec`) or
+      re.regex($e.target.process.command_line, `(?i)Invoke-Command`) or
+      re.regex($e.target.process.command_line, `(?i)Enter-PSSession`) or
+      re.regex($e.target.process.command_line, `(?i)wmic.{0,40}process call create`) or
+      re.regex($e.target.process.command_line, `(?i)net use`) or
+      re.regex($e.target.process.command_line, `(?i)vssadmin.{0,20}delete`) or
+      re.regex($e.target.process.command_line, `(?i)bcdedit.{0,20}\/set`) or
+      re.regex($e.target.process.command_line, `(?i)schtasks.{0,40}\/create`)
+    )
+
+  condition:
+    $e
+
+}
+
+
+rule Storm1175_Veeam_AuthFanout {
+
+  meta:
+    author       = "Detection Engineering"
+    description  = "Detects the Veeam server authenticating to an anomalously large number of distinct hosts in a short window — lateral movement signature post credential recovery"
+    severity     = "CRITICAL"
+    priority     = "CRITICAL"
+    mitre_attack = "T1021"
+    false_positives = "Legitimate Veeam backup jobs hitting many targets — tune threshold and exclude known backup windows via scheduling"
+
+  events:
+    $e.metadata.event_type = "USER_LOGIN"
+    $e.metadata.event_timestamp.seconds > 0
+
+    // Auth must originate from the Veeam server
+    // Replace with your actual Veeam server hostname or IP CIDR
+    re.regex($e.principal.hostname, `(?i)veeam`) or
+    net.ip_in_range_cidr($e.principal.ip, "10.0.0.0/8")   // scope to your Veeam server IP
+
+    // Successful auth only — failed attempts are a different rule
+    $e.security_result.action = "ALLOW"
+
+    // Capture the destination for fanout counting
+    $dest = $e.target.hostname
+
+  match:
+    // Sliding 1-hour window per source host
+    $e.principal.hostname over 1h
+
+  outcome:
+    // Alert when the Veeam host authenticates to more than 10 distinct destinations
+    // Tune threshold to your environment's normal backup target count
+    $unique_dest_count = count_distinct($dest)
+
+  condition:
+    $e and $unique_dest_count > 10
+
+}
