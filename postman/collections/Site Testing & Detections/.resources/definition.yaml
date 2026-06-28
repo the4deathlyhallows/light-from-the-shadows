@@ -1,0 +1,21 @@
+$kind: collection
+name: 'Site Testing & Detections'
+variables:
+  - key: baseUrl
+    value: 'https://example.com'
+    description: Base URL for the site under test
+  - key: detectionApi
+    value: 'https://example-detections.api'
+    description: Base URL for the detections API
+  - key: detectionToken
+    value: ''
+    description: Bearer token for detections API (prefer setting in environment)
+  - key: last_health_check_ts
+    value: ''
+    description: Last health check timestamp (ISO)
+  - key: last_status
+    value: ''
+    description: Last health check HTTP status code
+  - key: last_response_time
+    value: '0'
+    description: Last health check response time in ms

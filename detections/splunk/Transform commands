@@ -1,0 +1,6 @@
+index = windows
+| eval
+| rename
+| regex
+| timechart
+| stats 

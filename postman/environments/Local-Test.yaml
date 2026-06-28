@@ -1,0 +1,14 @@
+name: 'Local/Test'
+values:
+  - key: baseUrl
+    value: 'https://example.com'
+    enabled: true
+    type: default
+  - key: detectionApi
+    value: 'https://example-detections.api'
+    enabled: true
+    type: default
+  - key: detectionToken
+    value: ''
+    enabled: true
+    type: secret

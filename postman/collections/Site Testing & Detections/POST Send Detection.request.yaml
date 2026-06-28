@@ -1,0 +1,50 @@
+$kind: http-request
+name: 'POST Send Detection'
+method: POST
+url: '{{detectionApi}}/detections'
+order: 2000
+headers:
+  - key: Authorization
+    value: 'Bearer {{detectionToken}}'
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "event_time": "{{$isoTimestamp}}",
+      "source": "postman-site-check",
+      "target_url": "{{baseUrl}}/",
+      "status_code": "{{last_status}}",
+      "response_time_ms": {{last_response_time}},
+      "severity": "low",
+      "message": "Site health check result"
+    }
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      // This request may run without running the health check first.
+      // Default response time to 0 if it isn't set yet.
+      const rt = pm.collectionVariables.get('last_response_time');
+      if (rt === undefined || rt === null || rt === '') {
+        pm.collectionVariables.set('last_response_time', '0');
+      }
+
+      const status = pm.collectionVariables.get('last_status');
+      if (status === undefined || status === null) {
+        pm.collectionVariables.set('last_status', '');
+      }
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status is 200/201/202', function () {
+        pm.expect([200, 201, 202]).to.include(pm.response.code);
+      });
+
+      console.log('Detection API response:', {
+        code: pm.response.code,
+        body: pm.response.text()
+      });
