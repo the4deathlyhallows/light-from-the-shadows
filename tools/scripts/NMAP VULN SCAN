@@ -1,0 +1,31 @@
+import nmap
+
+def scan_network(target):
+    nm = nmap.PortScanner()
+
+    # Run a TCP SYN scan
+    nm.scan(hosts=target, arguments="-sS")
+
+    # Loop through all discovered hosts
+    for host in nm.all_hosts():
+        print(f"\nHost: {host}")
+        print(f"State: {nm[host].state()}")
+
+        if nm[host].state() != "up":
+            print("Host is down or not responding")
+            continue
+
+        # Loop through protocols (tcp / udp)
+        for proto in nm[host].all_protocols():
+            print(f"\nProtocol: {proto}")
+
+            ports = nm[host][proto].keys()
+
+            for port in sorted(ports):
+                state = nm[host][proto][port]["state"]
+                print(f"Port {port}: {state}")
+
+if __name__ == "__main__":
+    target = input("Please enter the target (IP or range): ")
+    scan_network(target)
+# Example usage:

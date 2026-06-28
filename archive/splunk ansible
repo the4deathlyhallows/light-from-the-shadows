@@ -1,0 +1,19 @@
+index=linux_logs OR index=ansible_logs
+(user="ansible_admin" OR user="linux_admin" OR user="automation_svc")
+| eval hour_of_day = strftime(_time, "%H")
+| stats 
+    count AS event_count,
+    dc(host) AS unique_hosts,
+    values(process) AS processes,
+    values(command) AS commands,
+    avg(len(command)) AS avg_cmd_length
+  BY user, date_mday, hour_of_day
+| eventstats 
+    avg(event_count) AS avg_events, 
+    stdev(event_count) AS stdev_events 
+  BY user
+| eval deviation = abs(event_count - avg_events)
+| eval anomaly_score = if(stdev_events>0, deviation/stdev_events, 0)
+| where anomaly_score >= 3
+| table _time user host event_count avg_events stdev_events anomaly_score commands
+| sort - anomaly_score

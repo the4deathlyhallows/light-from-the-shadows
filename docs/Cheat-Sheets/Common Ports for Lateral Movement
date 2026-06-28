@@ -1,0 +1,12 @@
+🔹 Common Ports for Lateral Movement & Credential Theft
+Protocol / Service	Port(s)	Use in Attacks	Notes / Detection Tips
+SMB / File Sharing	445, 139	Lateral movement, Pass-the-Hash, PsExec	Monitor unusual SMB connections; EventID 3 in Sysmon; correlate with EventID 1 for process execution.
+RPC / DCOM	135	Remote execution, lateral movement	Often used with PsExec or WMI; check firewall and logs for unexpected RPC traffic.
+RDP	3389	Remote interactive logins, lateral movement	Watch EventID 4624 type 10; unusual endpoints = suspicious.
+WinRM / PowerShell Remoting	5985 (HTTP), 5986 (HTTPS)	Remote command execution, lateral movement	Log EventIDs 4104 (PowerShell) and 600 (WinRM); restrict endpoints and accounts.
+LDAP / Active Directory	389, 636 (LDAPS)	Recon, enumeration, SPN discovery	Used in Kerberoasting reconnaissance; monitor high-volume SPN queries.
+Kerberos	88	Authentication, Kerberoasting	EventIDs 4768/4769 in Windows logs; abnormal TGS requests = alert.
+DNS	53	C2 communication, data exfiltration	Unusual query patterns or large volumes can indicate tunneling.
+HTTP / HTTPS	80 / 443	C2, data exfiltration, download malware	Combine with process creation monitoring; watch for unusual binaries connecting outbound.
+SMTPS / SMTP / IMAP	25 / 587 / 993	Exfiltration via mail	Look for unexpected internal-to-external connections.
+NetBIOS Name Service	137–138	Legacy lateral movement	Mostly legacy; still worth monitoring in older environments.

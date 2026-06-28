@@ -1,0 +1,18 @@
+import re
+from collections import defaultdict
+
+log_file = 'sample.log'  # change this to your log file path
+
+ip_pattern = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
+
+ip_counts = defaultdict(int)
+
+with open(log_file, 'r') as f:
+    for line in f:
+        ips = ip_pattern.findall(line)
+        for ip in ips:
+            ip_counts[ip] += 1
+
+print("Unique IPs and counts:")
+for ip, count in ip_counts.items():
+    print(f"{ip}: {count}")

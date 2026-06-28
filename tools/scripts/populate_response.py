@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""
+Simple utility to populate `Soc Responses/response_template.md` from a SIEM CSV export.
+
+Usage examples:
+python3 scripts/populate_response.py --csv siem_export.csv --row 1 --out filled_report.md
+
+CSV must have headers (examples): alert_name, hostname, source_ip_domain, timeframe, category,
+short_summary, evidence, ti_summary, action_taken, recommendation, analyst, attachments, brief_reason
+
+If a header is missing, the script will leave the placeholder as-is.
+"""
+import csv
+import argparse
+import os
+import re
+
+
+class SafeDict(dict):
+    def __missing__(self, key):
+        return '{' + key + '}'
+
+
+def sanitize_filename(s: str) -> str:
+    s = s or 'report'
+    s = re.sub(r'[^A-Za-z0-9._-]+', '_', s)
+    return s.strip('_')[:200]
+
+
+def load_template(path: str) -> str:
+    with open(path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+def read_csv_row(path: str, row_index: int = 0):
+    with open(path, newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        rows = list(reader)
+    if not rows:
+        raise SystemExit('CSV contains no rows')
+    if row_index < 0 or row_index >= len(rows):
+        raise SystemExit('row index out of range')
+    # Normalize keys to uppercase placeholders
+    return {k.strip().upper(): v for k, v in rows[row_index].items()}
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Populate SOC response template from CSV')
+    parser.add_argument('--csv', required=True, help='SIEM CSV export')
+    parser.add_argument('--row', type=int, default=0, help='Zero-based row index to use')
+    parser.add_argument('--template', default='Soc Responses/response_template.md', help='Template path')
+    parser.add_argument('--out', help='Output Markdown file (defaults to filled_{alert}_{host}.md)')
+    args = parser.parse_args()
+
+    template = load_template(args.template)
+    row = read_csv_row(args.csv, args.row)
+
+    # Prepare data mapping; also provide some common fallback keys
+    data = SafeDict({
+        'ALERT_NAME': row.get('ALERT_NAME', ''),
+        'HOSTNAME': row.get('HOSTNAME', '') or row.get('HOST', ''),
+        'SOURCE_IP_DOMAIN': row.get('SOURCE_IP_DOMAIN', '') or row.get('SOURCE_IP', '') or row.get('DOMAIN', ''),
+        'TIMEFRAME': row.get('TIMEFRAME', ''),
+        'CATEGORY': row.get('CATEGORY', ''),
+        'SHORT_SUMMARY': row.get('SHORT_SUMMARY', ''),
+        'EVIDENCE': row.get('EVIDENCE', ''),
+        'TI_SUMMARY': row.get('TI_SUMMARY', ''),
+        'ACTION_TAKEN': row.get('ACTION_TAKEN', ''),
+        'RECOMMENDATION': row.get('RECOMMENDATION', ''),
+        'ANALYST': row.get('ANALYST', ''),
+        'ATTACHMENTS': row.get('ATTACHMENTS', ''),
+        'BRIEF_REASON': row.get('BRIEF_REASON', ''),
+    })
+
+    filled = template.format_map(data)
+
+    out_path = args.out
+    if not out_path:
+        base = sanitize_filename(f"{data.get('ALERT_NAME','')}_{data.get('HOSTNAME','')}")
+        out_path = f'filled_{base or "report"}.md'
+
+    with open(out_path, 'w', encoding='utf-8') as f:
+        f.write(filled)
+
+    print('Wrote:', out_path)
+
+
+if __name__ == '__main__':
+    main()

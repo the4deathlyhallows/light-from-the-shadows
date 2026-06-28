@@ -1,0 +1,32 @@
+💡 Interview Question (APT Context)
+"You’re investigating possible activity from FIN7 (Carbanak Group) inside a Windows enterprise. They’re known for credential theft, lateral movement using WMI, and persistence via scheduled tasks. How would you detect FIN7’s activities in logs or Splunk, and how would you differentiate legitimate admin use from FIN7 tradecraft?"
+✅ Strong Answer
+1. Credential Access (NTLM Dumping – T1003)
+FIN7 TTP: Use tools like Mimikatz to extract NTLM hashes from LSASS.
+Detection:
+EventID 4656 (handle to LSASS).
+Suspicious process creation 4688 with procdump.exe, rundll32, or unusual binaries.
+Splunk Hunt:
+index=wineventlog (EventCode=4656 OR EventCode=4688) 
+Object_Name="*lsass.exe*" 
+| stats count by Account_Name, Process_Name, host
+Baseline vs Malicious: Only AV/EDR should touch LSASS. Non-security processes accessing LSASS = red flag.
+2. Lateral Movement via WMI (T1047)
+FIN7 TTP: Deploy malware remotely through WMI.
+Detection: EventIDs 5858 and 5861 in Microsoft-Windows-WMI-Activity logs.
+Splunk Hunt:
+index=wineventlog (EventCode=5858 OR EventCode=5861) 
+| stats count by Account_Name, ComputerName, Process_Name
+Baseline vs Malicious: Admins may use WMI from jump servers, but workstation-to-workstation WMI execution is unusual and should be flagged.
+3. Persistence via Scheduled Tasks (T1053.005)
+FIN7 TTP: Create scheduled tasks to maintain persistence across reboots.
+Detection:
+EventID 4698 (Task creation).
+EventID 4702 (Task updated).
+Splunk Hunt:
+index=wineventlog (EventCode=4698 OR EventCode=4702) 
+| stats count by Task_Name, Account_Name, host
+Baseline vs Malicious: Regular IT automation tasks usually run under system/admin accounts. A new task created by a low-privileged account = suspicious.
+4. Analyst Closing Point
+“To separate FIN7 from legitimate admin behavior, I would focus on context and chaining: LSASS access + new scheduled task creation + WMI execution from a workstation in close sequence is highly unusual. Correlating these signals would allow me to spot FIN7’s presence even if each event looked benign in isolation.”
+👉 This gives you another full scenario with different techniques — but the same logs → Splunk queries → baseline vs malicious flow.

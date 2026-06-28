@@ -1,0 +1,77 @@
+CIRT Brief Report – Possible Malicious Activity
+
+Metadata
+- Date/Time: [YYYY-MM-DD HH:MM UTC]
+- Analyst: [Name]
+- Alert ID / Ticket: [alert id]
+- Detection Source: [Splunk / Sentinel / Google Cloud / EDR]
+- Alert Name / Rule: [rule name]
+- Hostname / User: [hostname or username]
+- Observed Severity (triage): [Low/Medium/High/Critical]
+
+1) Executive Summary
+- One-line summary: [what happened, primary indicator, suspected impact]
+
+2) Detection Details
+- Alert triggered: [when] — [short description of the event]
+- Process(es): [process name(s) and PID(s)]
+- Command line / Arguments: [full command lines observed]
+- Parent process: [parent process + command line]
+- Network indicators: [IPs, domains, ports]
+- File indicators: [filenames, paths, hashes (MD5/SHA1/SHA256)]
+- Sources queried: [Splunk/SIEM query, EDR logs, firewall logs]
+
+3) Timeline (ordered)
+- [T+0] [YYYY-MM-DD HH:MM] — Alert generated: [brief note]
+- [T+1] [YYYY-MM-DD HH:MM] — Related process spawned: [details]
+- [T+2] [YYYY-MM-DD HH:MM] — Outbound connection to: [IP/domain]
+
+4) Evidence & Enrichment
+- Logs pulled: [list of log sources and time ranges]
+- Screenshots: [attached filenames or reference]
+- Reputation lookups: VirusTotal / Recorded Future / PassiveDNS
+	- IP: [ip] — [reputation summary]
+	- Domain: [domain] — [reputation summary]
+	- Hash: [hash] — [reputation summary]
+- Additional artifacts: [PCAPs, process memory, EDR snapshots]
+
+5) Analysis
+- Observations: [concise bullet points of what the data shows]
+- Why suspicious / why benign: [evidence-backed reasoning]
+- Matches to TTPs: [e.g., PowerShell EncodedCommand, Living off the Land, Lateral Movement]
+- Scope: [single host / user / multiple hosts]
+
+6) Impact Assessment
+- Potential impact: [credential theft, persistence, lateral movement, data exfil]
+- Likely severity if confirmed: [Low/Medium/High]
+
+7) Hypothesis
+- [Short hypothesis summarizing intent and likely next steps of the actor or explanation if benign]
+
+8) Recommended Immediate Actions (Triage)
+- [ ] Isolate host from network (if high confidence)
+- [ ] Create forensic image / preserve volatile memory
+- [ ] Block outbound IP(s) and domain(s) at firewall/Proxy
+- [ ] Quarantine or remove identified files via EDR
+- [ ] Reset impacted credentials / escalate password resets where needed
+- [ ] Increase logging for related hosts/users (enable process command-line logging)
+
+9) Recommended Follow-up Actions
+- Perform focused hunt for same indicators across environment
+- Review authentication logs for suspicious logon patterns
+- Run AV/EDR full scan on affected hosts
+- Reconstruct attacker timeline and map lateral movement
+- Post-incident: patch, harden, and add detections if gap found
+
+10) Communications / Stakeholders
+- Notify: [CIRT, IT Ops, Legal, Affected Business Unit]
+- External reporting required? [Yes/No]
+
+11) Attachments & References
+- Attached evidence: [list of files, screenshots, queries]
+- Relevant queries used: [include exact SIEM/EDR queries]
+
+12) Notes / Next Steps
+- [Analyst notes—e.g., need additional logs, host access, or confirmation from asset owner]
+
+Please review and advise whether this activity is expected for the host/user, or whether CIRT should escalate and perform containment/remediation.

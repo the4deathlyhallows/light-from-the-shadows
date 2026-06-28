@@ -1,0 +1,24 @@
+# MITRE ATT&CK ↔ Sysmon Event ID Mapping
+
+| MITRE Technique | ATT&CK ID | Sysmon Event ID | Notes / Detection Focus |
+|-----------------|-----------|----------------|------------------------|
+| Command and Scripting Interpreter | T1059 | 1 | Process Creation logs PowerShell, cmd, python execution with full command line. |
+| Execution via Scheduled Task | T1053 | 1 | Scheduled task creation spawns process; monitor parent/child relationships. |
+| Credential Dumping (LSASS) | T1003 | 10 | Process Access logs memory access; often triggered by Mimikatz or similar. |
+| PowerShell EncodedCommand | T1059.001 | 1 | Detect encoded or obfuscated PowerShell scripts in command line. |
+| Valid Accounts / Lateral Logins | T1078 | 3 | Network Connection logs RDP, SMB, WinRM sessions. |
+| Exfiltration over C2 channel | T1041 | 3,22 | Event 3 = network connections; Event 22 = DNS queries; monitor abnormal destinations. |
+| DLL Search Order Hijacking | T1038 | 7 | Image Loaded events for unexpected DLL paths. |
+| Persistence via Registry Run Keys | T1547 | 13 | Registry Value Set captures registry persistence entries. |
+| Masquerading | T1036 | 1,7 | Process Creation + DLL loads for renamed binaries. |
+| File and Directory Discovery | T1083 | 11 | File Create events can indicate directory scans or temp file creation. |
+| Process Injection | T1055 | 8 | CreateRemoteThread events show code injection into other processes. |
+| Account Discovery | T1087 | 1 | Process Creation of enumeration tools (net user, PowerView). |
+| System Information Discovery | T1082 | 1 | Processes running systeminfo, hostname, ipconfig, etc. |
+| Brute Force / Credential Stuffing | T1110 | 3 | Network Connection events for repeated failed logins. |
+| Disable Security Tools | T1562 | 1,13 | Process Creation + Registry changes for stopping AV/logging. |
+| Data Encrypted for Impact (Ransomware) | T1486 | 11 | File Create events of large numbers of encrypted files. |
+| Archive Collected Data | T1560 | 11 | File Create of .zip, .7z, .tar archives prior to exfil. |
+| Remote File Copy | T1105/T1021.002 | 3 | Network Connection events showing SMB/SCP transfers. |
+| DNS Beaconing / C2 | T1071.004 | 22 | DNS Query events; watch for unusual query patterns. |
+| Impair System Recovery | T1490 | 11,13 | Deletion of backup files (File Create/Delete) and registry changes for recovery tools. |
