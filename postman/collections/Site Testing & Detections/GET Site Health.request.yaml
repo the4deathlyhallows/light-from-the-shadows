@@ -1,0 +1,24 @@
+
+$kind: http-request
+name: 'GET Site Health'
+method: GET
+url: '{{baseUrl}}/'
+order: 1000
+headers:
+  - key: Accept
+    value: application/json
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test('Status is 2xx/3xx', function () {
+        pm.expect(pm.response.code).to.be.within(200, 399);
+      });
+
+      pm.test('Response time < 2000ms', function () {
+        pm.expect(pm.response.responseTime).to.be.below(2000);
+      });
+
+      pm.collectionVariables.set('last_health_check_ts', new Date().toISOString());
+      pm.collectionVariables.set('last_status', String(pm.response.code));
+      pm.collectionVariables.set('last_response_time', String(pm.response.responseTime));
