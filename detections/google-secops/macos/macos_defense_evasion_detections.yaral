@@ -1,0 +1,294 @@
+// ============================================================
+//  macOS Defense Evasion Detection Rules
+//  Format:   YARA-L 2.0 (Google SecOps / Chronicle)
+//  Date:     2026-06-28
+//  Author:   Detection Engineering - Nelnet SOC
+//  MITRE:    T1553.001 - Gatekeeper Bypass
+//            T1555.001 - Keychain
+//            T1059     - Command and Scripting Interpreter
+//            T1027     - Obfuscated Files or Information
+// ============================================================
+
+
+rule MACOS_QUARANTINE_FLAG_REMOVAL {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0311"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "HIGH"
+    description     = "Detects xattr invoked with -d com.apple.quarantine to remove the Gatekeeper quarantine flag from a file or directory — used by attackers to bypass macOS Gatekeeper checks on downloaded payloads before execution"
+    mitre_tactic    = "Defense Evasion"
+    mitre_technique = "T1553.001"
+    false_positives = "Developers and IT admins removing quarantine flags from internally distributed tools — review parent process and target path"
+    references      = "https://attack.mitre.org/techniques/T1553/001/"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/xattr`)
+    re.regex($exec.target.process.command_line, `(?i)-d`)
+    re.regex($exec.target.process.command_line, `(?i)com\.apple\.quarantine`)
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_GATEKEEPER_SPCTL_DISABLE {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0312"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "CRITICAL"
+    priority        = "CRITICAL"
+    confidence      = "HIGH"
+    description     = "Detects spctl invoked with --disable or --master-disable flags — disables Gatekeeper system-wide, allowing execution of any unsigned or untrusted binary without user prompts. High-confidence indicator of attacker or malware establishing persistent execution capability"
+    mitre_tactic    = "Defense Evasion"
+    mitre_technique = "T1553.001"
+    false_positives = "Very low — no legitimate enterprise use case for disabling Gatekeeper system-wide outside of dedicated research environments"
+    references      = "https://attack.mitre.org/techniques/T1553/001/"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)/usr/sbin/spctl`)
+    (
+      re.regex($exec.target.process.command_line, `(?i)--disable`) or
+      re.regex($exec.target.process.command_line, `(?i)--master-disable`)
+    )
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_CODESIGN_SIGNATURE_REMOVAL {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0313"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "HIGH"
+    description     = "Detects codesign invoked with --remove-signature to strip code signing from a binary — used to modify signed binaries for malicious purposes or to re-sign with an adhoc signature after tampering"
+    mitre_tactic    = "Defense Evasion"
+    mitre_technique = "T1553.002"
+    false_positives = "Security researchers or developers stripping signatures during testing — review target binary path and parent process"
+    references      = "https://attack.mitre.org/techniques/T1553/002/"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/codesign`)
+    re.regex($exec.target.process.command_line, `(?i)--remove-signature`)
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_KEYCHAIN_ACCESS_UNEXPECTED_PROCESS {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0314"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "CRITICAL"
+    priority        = "CRITICAL"
+    confidence      = "HIGH"
+    description     = "Detects the security command line tool used to dump Keychain credentials via find-generic-password or find-internet-password from an unexpected parent process — primary technique for credential harvesting on macOS used by stealers and post-exploitation frameworks"
+    mitre_tactic    = "Credential Access"
+    mitre_technique = "T1555.001"
+    false_positives = "Password managers or IT tooling accessing Keychain items programmatically — whitelist known application signing IDs"
+    references      = "https://attack.mitre.org/techniques/T1555/001/"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/security`)
+    (
+      re.regex($exec.target.process.command_line, `(?i)find-generic-password`) or
+      re.regex($exec.target.process.command_line, `(?i)find-internet-password`) or
+      re.regex($exec.target.process.command_line, `(?i)dump-keychain`)
+    )
+    not re.regex($exec.principal.process.file.full_path, `(?i)com\.apple\.`)
+    not re.regex($exec.principal.process.file.full_path, `(?i)/System/Library/`)
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_KEYCHAIN_DUMP_CHAIN {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0315"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "CRITICAL"
+    priority        = "CRITICAL"
+    confidence      = "HIGH"
+    description     = "Detects multiple Keychain credential queries from the same process within a short window — bulk credential harvesting pattern used by macOS stealers including Atomic Stealer and DPRK-attributed malware families"
+    mitre_tactic    = "Credential Access"
+    mitre_technique = "T1555.001"
+    false_positives = "Password migration tools performing bulk Keychain export — extremely rare in enterprise environments and should be investigated regardless"
+    references      = "https://attack.mitre.org/techniques/T1555/001/"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/security`)
+    (
+      re.regex($exec.target.process.command_line, `(?i)find-generic-password`) or
+      re.regex($exec.target.process.command_line, `(?i)find-internet-password`) or
+      re.regex($exec.target.process.command_line, `(?i)dump-keychain`)
+    )
+    $parent = $exec.principal.process.file.full_path
+
+  match:
+    $parent over 5m
+
+  outcome:
+    $query_count = count($exec.target.process.command_line)
+
+  condition:
+    $exec and $query_count >= 5
+
+}
+
+
+rule MACOS_TMP_UNSIGNED_BINARY_DOWNLOAD_EXEC {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0316"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "CRITICAL"
+    priority        = "CRITICAL"
+    confidence      = "HIGH"
+    description     = "Detects a binary written to /tmp or /private/tmp followed by chmod making it executable, then execution of that binary — classic macOS dropper pattern used by stealers, RATs, and post-exploitation frameworks to stage and execute payloads without writing to persistent locations"
+    mitre_tactic    = "Execution, Defense Evasion"
+    mitre_technique = "T1059, T1027.009"
+    false_positives = "Build systems or CI pipelines compiling and executing binaries in /tmp — scope exclusion to known build agent hostnames"
+    references      = "https://attack.mitre.org/techniques/T1027/009/"
+
+  events:
+    // Stage 1 — file written to /tmp
+    $write.metadata.event_type = "FILE_CREATION"
+    (
+      re.regex($write.target.file.full_path, `(?i)^/tmp/`) or
+      re.regex($write.target.file.full_path, `(?i)^/private/tmp/`) or
+      re.regex($write.target.file.full_path, `(?i)^/var/folders/`)
+    )
+    $write.target.file.full_path = $dropped_path
+
+    // Stage 2 — chmod on the same path
+    $chmod.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($chmod.target.process.file.full_path, `(?i)/bin/chmod`)
+    re.regex($chmod.target.process.command_line, `(?i)\+x`)
+    $chmod.target.process.command_line = /tmp|private\/tmp|var\/folders/
+    $chmod.principal.hostname = $write.principal.hostname
+
+    // Stage 3 — execution of the dropped binary
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    (
+      re.regex($exec.target.process.file.full_path, `(?i)^/tmp/`) or
+      re.regex($exec.target.process.file.full_path, `(?i)^/private/tmp/`) or
+      re.regex($exec.target.process.file.full_path, `(?i)^/var/folders/`)
+    )
+    $exec.target.process.is_platform_binary = false
+    $exec.principal.hostname = $write.principal.hostname
+
+  match:
+    $write.principal.hostname over 10m
+
+  condition:
+    $write and $chmod and $exec
+
+}
+
+
+rule MACOS_TMP_BINARY_DIRECT_EXECUTION {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0317"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "MEDIUM"
+    description     = "Detects execution of a non-platform binary directly from /tmp, /private/tmp, or /var/folders — simpler single-event complement to the three-stage dropper rule, catches cases where chmod is omitted or telemetry gaps exist"
+    mitre_tactic    = "Execution"
+    mitre_technique = "T1059"
+    false_positives = "Package managers, build tools, or update mechanisms staging executables in /tmp — review parent process and binary signing context"
+    references      = "https://attack.mitre.org/techniques/T1059/"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    (
+      re.regex($exec.target.process.file.full_path, `(?i)^/tmp/`) or
+      re.regex($exec.target.process.file.full_path, `(?i)^/private/tmp/`) or
+      re.regex($exec.target.process.file.full_path, `(?i)^/var/folders/`)
+    )
+    $exec.target.process.is_platform_binary = false
+    not re.regex($exec.principal.process.file.full_path, `(?i)Installer`) 
+    not re.regex($exec.principal.process.file.full_path, `(?i)softwareupdate`)
+    not re.regex($exec.principal.process.file.full_path, `(?i)packageinstaller`)
+
+  condition:
+    $exec
+
+}
