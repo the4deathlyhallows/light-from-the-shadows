@@ -1,0 +1,438 @@
+// ============================================================
+//  macOS Open Scripting Architecture (OSA) Detection Rules
+//  Format:   YARA-L 2.0 (Google SecOps / Chronicle)
+//  Date:     2026-06-28
+//  Author:   Detection Engineering - Nelnet SOC
+//  MITRE:    T1059.002 - AppleScript
+//            T1543.001 - Launch Agent
+//            T1082     - System Information Discovery
+//            T1071.001 - Application Layer Protocol
+//            T1620     - Reflective Code Loading
+//  References: Red Canary Detection Series: AppleScript and
+//              the Open Scripting Architecture (2022)
+// ============================================================
+
+
+rule MACOS_OSASCRIPT_CURL_PIPE_EXECUTION {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0300"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "HIGH"
+    description     = "Detects osascript or osacompile executed as a child of curl — primary delivery mechanism for ClickFix and macOS lure-based attacks piping remote content into AppleScript or JXA"
+    mitre_tactic    = "Execution"
+    mitre_technique = "T1059.002"
+    false_positives = "MDM automation scripts using curl and osascript together for legitimate deployment — whitelist known IT service accounts and MDM hostnames"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    (
+      re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/osascript`) or
+      re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/osacompile`)
+    )
+    re.regex($exec.principal.process.file.full_path, `(?i)/usr/bin/curl`)
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_OSASCRIPT_CURL_PIPE_EXECUTION_CMDLINE {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0301"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "HIGH"
+    description     = "Detects shell command lines containing curl piped to osascript — catches pipe syntax where parent appears as sh or zsh rather than curl directly"
+    mitre_tactic    = "Execution"
+    mitre_technique = "T1059.002"
+    false_positives = "Legitimate administrative one-liners using curl pipe to osascript for MDM or IT automation"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    (
+      re.regex($exec.target.process.file.full_path, `(?i)/bin/sh`) or
+      re.regex($exec.target.process.file.full_path, `(?i)/bin/zsh`) or
+      re.regex($exec.target.process.file.full_path, `(?i)/bin/bash`)
+    )
+    re.regex($exec.target.process.command_line, `(?i)curl.{0,200}\|\s*osascript`)
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_OSACOMPILE_RUNONLY_EXECUTION {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0302"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "HIGH"
+    description     = "Detects osacompile invoked with -x (execute-only) and -e (inline command) flags — used to compile obfuscated AppleScript payloads that cannot be decompiled for analysis"
+    mitre_tactic    = "Defense Evasion, Execution"
+    mitre_technique = "T1059.002, T1027"
+    false_positives = "Legitimate developers compiling run-only AppleScript droplets for internal tooling — very rare in enterprise environments"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/osacompile`)
+    re.regex($exec.target.process.command_line, `(?i)-x`)
+    re.regex($exec.target.process.command_line, `(?i)-e\s+`)
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_OSASCRIPT_APP_BUNDLE_LAUNCHD_PARENT {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0303"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "HIGH"
+    description     = "Detects osascript launched by launchd (PID 1) with a path containing AppTranslocation or .app/Contents/MacOS — indicates malicious app bundle execution via Gatekeeper translocation"
+    mitre_tactic    = "Execution, Defense Evasion"
+    mitre_technique = "T1059.002, T1553.001"
+    false_positives = "Legitimate apps embedding osascript launched at login via LaunchAgent — review signing ID and app provenance"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)com\.apple\.osascript`)
+    $exec.principal.process.pid = 1
+    (
+      re.regex($exec.target.process.file.full_path, `(?i)AppTranslocation`) or
+      re.regex($exec.target.process.file.full_path, `(?i)\.app/Contents/MacOS`)
+    )
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_OSA_MEMORY_MAPPING_ADHOC_SIGNED {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0304"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "CRITICAL"
+    priority        = "CRITICAL"
+    confidence      = "HIGH"
+    description     = "Detects an adhoc-signed non-platform binary mapping OSA components into memory — AppleScript.component, JavaScript.component, or StandardAdditions.osax. ESF NOTIFY_MMAP signal for programmatic OSA execution via OSAKit that avoids spawning /usr/bin/osascript"
+    mitre_tactic    = "Execution, Defense Evasion"
+    mitre_technique = "T1059.002, T1620"
+    false_positives = "Legitimate adhoc-signed developer tools using OSAKit API — review process path and signing context"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $mmap.metadata.event_type = "PROCESS_MODULE_LOAD"
+    (
+      re.regex($mmap.target.process.file.full_path, `(?i)/System/Library/Components/AppleScript\.component`) or
+      re.regex($mmap.target.process.file.full_path, `(?i)/System/Library/Components/JavaScript\.component`) or
+      re.regex($mmap.target.process.file.full_path, `(?i)/System/Library/ScriptingAdditions/StandardAdditions\.osax`)
+    )
+    $mmap.principal.process.is_platform_binary = false
+
+  condition:
+    $mmap
+
+}
+
+
+rule MACOS_OSAKIT_PROGRAMMATIC_EXECUTION_CHAIN {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0305"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "CRITICAL"
+    priority        = "CRITICAL"
+    confidence      = "HIGH"
+    description     = "Detects the full OSAKit programmatic execution chain — Python or shell spawning an adhoc-signed Mach-O that loads OSA components into memory without invoking /usr/bin/osascript. Correlates PROCESS_LAUNCH with PROCESS_MODULE_LOAD within a 5-minute window"
+    mitre_tactic    = "Execution, Defense Evasion"
+    mitre_technique = "T1059.002, T1620, T1027"
+    false_positives = "Very low — Python spawning an adhoc-signed binary that immediately loads OSAKit components is anomalous outside of attacker tooling or red team activity"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    (
+      re.regex($exec.principal.process.file.full_path, `(?i)python`) or
+      re.regex($exec.principal.process.file.full_path, `(?i)/bin/sh`) or
+      re.regex($exec.principal.process.file.full_path, `(?i)/bin/zsh`)
+    )
+    $exec.target.process.is_platform_binary = false
+    $exec.target.process.pid = $child_pid
+
+    $mmap.metadata.event_type = "PROCESS_MODULE_LOAD"
+    (
+      re.regex($mmap.target.process.file.full_path, `(?i)/System/Library/Components/AppleScript\.component`) or
+      re.regex($mmap.target.process.file.full_path, `(?i)/System/Library/Components/JavaScript\.component`) or
+      re.regex($mmap.target.process.file.full_path, `(?i)/System/Library/ScriptingAdditions/StandardAdditions\.osax`)
+    )
+    $mmap.principal.process.pid = $child_pid
+
+  match:
+    $child_pid over 5m
+
+  condition:
+    $exec and $mmap
+
+}
+
+
+rule MACOS_OSASCRIPT_JXA_SYSTEM_RECON {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0306"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "MEDIUM"
+    priority        = "MEDIUM"
+    confidence      = "MEDIUM"
+    description     = "Detects osascript invoked with -l JavaScript executing system recon via JXA — systemInfo(), shortUserName, or Application.currentApplication() calls commonly used by macOS implants for initial triage"
+    mitre_tactic    = "Discovery"
+    mitre_technique = "T1082, T1033"
+    false_positives = "IT automation scripts using JXA for inventory or asset management — review parent process and signing context"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/osascript`)
+    re.regex($exec.target.process.command_line, `(?i)-l\s+JavaScript`)
+    (
+      re.regex($exec.target.process.command_line, `(?i)systemInfo\(\)`) or
+      re.regex($exec.target.process.command_line, `(?i)shortUserName`) or
+      re.regex($exec.target.process.command_line, `(?i)Application\.currentApplication`) or
+      re.regex($exec.target.process.command_line, `(?i)includeStandardAdditions`)
+    )
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_OSASCRIPT_LAUNCHED_FROM_BROWSER {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0307"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "CRITICAL"
+    priority        = "CRITICAL"
+    confidence      = "HIGH"
+    description     = "Detects osascript spawned from a browser process — Chrome, Firefox, Safari, or Edge. Browsers should never be a direct ancestor of osascript in a clean environment. Indicates drive-by or ClickFix-style delivery"
+    mitre_tactic    = "Execution, Initial Access"
+    mitre_technique = "T1059.002, T1566.002"
+    false_positives = "Browser extensions with native messaging invoking osascript for legitimate automation — extremely rare and should be investigated regardless"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $exec.metadata.event_type = "PROCESS_LAUNCH"
+    re.regex($exec.target.process.file.full_path, `(?i)/usr/bin/osascript`)
+    (
+      re.regex($exec.principal.process.file.full_path, `(?i)Google Chrome`) or
+      re.regex($exec.principal.process.file.full_path, `(?i)firefox`) or
+      re.regex($exec.principal.process.file.full_path, `(?i)Safari`) or
+      re.regex($exec.principal.process.file.full_path, `(?i)Microsoft Edge`) or
+      re.regex($exec.principal.process.file.full_path, `(?i)Chromium`)
+    )
+
+  condition:
+    $exec
+
+}
+
+
+rule MACOS_OSASCRIPT_NETWORK_CONNECTION_FANOUT {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0308"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "HIGH"
+    description     = "Detects osascript making connections to multiple distinct external destinations within 10 minutes — indicates C2 beaconing or exfiltration via JXA. OSAScript has no legitimate reason to initiate outbound network connections in an enterprise environment"
+    mitre_tactic    = "Command and Control, Exfiltration"
+    mitre_technique = "T1071.001, T1041"
+    false_positives = "IT automation scripts using JXA to poll multiple internal endpoints — add RFC1918 exclusions if needed"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $net.metadata.event_type = "NETWORK_CONNECTION"
+    re.regex($net.principal.process.file.full_path, `(?i)/usr/bin/osascript`)
+    not net.ip_in_range_cidr($net.target.ip, "10.0.0.0/8")
+    not net.ip_in_range_cidr($net.target.ip, "172.16.0.0/12")
+    not net.ip_in_range_cidr($net.target.ip, "192.168.0.0/16")
+    $dest_ip = $net.target.ip
+
+  match:
+    $net.principal.hostname over 10m
+
+  outcome:
+    $unique_dest_count = count_distinct($dest_ip)
+
+  condition:
+    $net and $unique_dest_count > 3
+
+}
+
+
+rule MACOS_OSASCRIPT_WRITES_SCRIPT_FILE {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0309"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "HIGH"
+    priority        = "HIGH"
+    confidence      = "MEDIUM"
+    description     = "Detects osascript writing .scpt, .applescript, or .osa files to disk — indicates staged payload drop where a running OSA script writes a secondary script for persistence or follow-on execution"
+    mitre_tactic    = "Persistence, Execution"
+    mitre_technique = "T1059.002, T1547"
+    false_positives = "Legitimate script development workflows — unlikely on production endpoints outside developer machines"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $file.metadata.event_type = "FILE_CREATION"
+    re.regex($file.principal.process.file.full_path, `(?i)/usr/bin/osascript`)
+    (
+      re.regex($file.target.file.full_path, `(?i)\.scpt$`) or
+      re.regex($file.target.file.full_path, `(?i)\.applescript$`) or
+      re.regex($file.target.file.full_path, `(?i)\.js$`) or
+      re.regex($file.target.file.full_path, `(?i)\.osa$`)
+    )
+
+  condition:
+    $file
+
+}
+
+
+rule MACOS_LAUNCHAGENT_CREATED_BY_OSASCRIPT {
+
+  meta:
+    author          = "<AUTHOR>"
+    rule_id         = "N0310"
+    creation_date   = "2026-06-28"
+    updated_date    = "2026-06-28"
+    version         = "1.0"
+    maturity        = "Stable"
+    status          = "Production"
+    owner           = "Detection Engineering"
+    team            = "Nelnet SOC"
+    platform        = "macOS"
+    severity        = "CRITICAL"
+    priority        = "CRITICAL"
+    confidence      = "HIGH"
+    description     = "Detects osascript writing a plist to LaunchAgents or LaunchDaemons directories — persistence mechanism used by macOS malware families including DPRK-attributed stealers and ClickFix payloads"
+    mitre_tactic    = "Persistence"
+    mitre_technique = "T1543.001"
+    false_positives = "Legitimate installer scripts using osascript to write LaunchAgent plists for sanctioned software — review signing context and destination path"
+    references      = "Red Canary Detection Series: AppleScript and the Open Scripting Architecture (2022)"
+
+  events:
+    $file.metadata.event_type = "FILE_CREATION"
+    re.regex($file.principal.process.file.full_path, `(?i)/usr/bin/osascript`)
+    (
+      re.regex($file.target.file.full_path, `(?i)/Library/LaunchAgents/`) or
+      re.regex($file.target.file.full_path, `(?i)/Library/LaunchDaemons/`) or
+      re.regex($file.target.file.full_path, `(?i)/Users/.+/Library/LaunchAgents/`)
+    )
+
+  condition:
+    $file
+
+}
