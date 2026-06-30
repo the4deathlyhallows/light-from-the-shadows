@@ -1,0 +1,47 @@
+index=* sourcetype=iis status=4* 
+    `src_ip` `dest_ip` 
+| iplocation src_ip 
+| anomalies threshold=0.01 field=status by src_ip 
+| eval threshold=0.01 
+| eval flag=if(unexpectedness>=threshold, "anomalous", "not_anomalous") 
+| stats earliest(_time) as start_time latest(_time) as end_time avg(unexpectedness) as unexpectedness values(host) as orig_host values(dest_ip) as dest_ip values(http_referer) as http_referer values(http_method) as http_method values(status) as status values(uri_path) as uri_path values(Country) as src_country values(cs_User_Agent) as http_user_agent values(cookie) as cookie count as count_findings by index src_ip 
+| eval start_time=strftime(start_time,"%m/%d/%Y %H:%M:%S") 
+| eval end_time=strftime(end_time,"%m/%d/%Y %H:%M:%S") 
+| fields start_time end_time index src_ip dest_ip unexpectedness orig_host http_referer http_method status uri_path src_country count_findings alert md5_hash http_user_agent cookie 
+| rename src_ip as Name 
+| join type=outer Name 
+    [| inputlookup p_default_ip_risklist 
+    | fields Mitre Name Risk] 
+| rename Name as src_ip , Risk AS TI_Risk_Score 
+| tojson Mitre output_field=Mitre_JSON 
+| eval TCode=json_array_to_mv(json_extract(Mitre,"{}.Code")) 
+| eval TCode_Label=json_array_to_mv(json_extract(Mitre,"{}.Label")) , Tag=, Index=
+```| makejson index, orig_host, http_method, http_referer,uri_path,src_country,status,UserAgent,cookie output="Risk_Details" ```
+| eval TI_Risk_Score = if(isnull(TI_Risk_Score),0,TI_Risk_Score), TCode=if(isnull(TCode),"N/A",TCode),  TCode_Label=if(isnull(TCode_Label),"N/A",TCode_Label)
+| table start_time end_time src_ip TI_Risk_Score TCode TCode_Label dest_ip unexpectedness orig_host``` http_referer``` http_method ``` http_user_agent cookie``` status ```uri_path``` src_country count_findings Index Tag
+| sort -unexpectedness, -src_ip 
+| head 10
+
+index=2db sourcetype=iis status=4* `RHEL_Whitelist_src_ip`
+    `src_ip` `dest_ip` 
+| iplocation src_ip 
+| anomalies threshold=0.01 field=status by src_ip 
+| eval threshold=0.01 
+| eval flag=if(unexpectedness>=threshold, "anomalous", "not_anomalous") 
+| stats earliest(_time) as start_time latest(_time) as end_time avg(unexpectedness) as unexpectedness values(host) as orig_host values(dest_ip) as dest_ip values(http_referer) as http_referer values(http_method) as http_method values(status) as status values(uri_path) as uri_path values(Country) as src_country values(cs_User_Agent) as http_user_agent values(cookie) as cookie count as count_findings by index src_ip 
+| eval start_time=strftime(start_time,"%m/%d/%Y %H:%M:%S") 
+| eval end_time=strftime(end_time,"%m/%d/%Y %H:%M:%S") 
+| fields start_time end_time index src_ip dest_ip unexpectedness orig_host http_referer http_method status uri_path src_country count_findings alert md5_hash http_user_agent cookie 
+| rename src_ip as Name 
+| join type=outer Name 
+    [| inputlookup p_default_ip_risklist 
+    | fields Mitre Name Risk] 
+| rename Name as src_ip , Risk AS TI_Risk_Score 
+| tojson Mitre output_field=Mitre_JSON 
+| eval TCode=json_array_to_mv(json_extract(Mitre,"{}.Code")) 
+| eval TCode_Label=json_array_to_mv(json_extract(Mitre,"{}.Label")) , Tag="CIRT", Index="2db"
+```| makejson index, orig_host, http_method, http_referer,uri_path,src_country,status,UserAgent,cookie output="Risk_Details" ```
+| eval TI_Risk_Score = if(isnull(TI_Risk_Score),0,TI_Risk_Score), TCode=if(isnull(TCode),"N/A",TCode),  TCode_Label=if(isnull(TCode_Label),"N/A",TCode_Label)
+| table start_time end_time src_ip TI_Risk_Score TCode TCode_Label dest_ip unexpectedness orig_host``` http_referer``` http_method ``` http_user_agent cookie``` status ```uri_path``` src_country count_findings Index Tag
+| sort -unexpectedness, -src_ip 
+| head 10
