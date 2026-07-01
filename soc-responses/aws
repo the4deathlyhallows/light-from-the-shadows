@@ -7,3 +7,7 @@ index=aws_bespin sourcetype=aws:cloudtrail eventSource="guardduty.amazonaws.com"
 index=aws_bespin sourcetype=aws:cloudtrail eventSource="guardduty.amazonaws.com"
 | stats count values(eventName) as eventName earliest(_time) as first_seen latest(_time) as last_seen by aws_account_id tenant_id
 | convert ctime(first_seen) ctime(last_seen)
+
+
+index=aws_bespin sourcetype="aws:cloudwatch:guardduty"
+| stats count values(detail.resourceDetails.ec2InstanceDetails.clusterArn) as ClusterARN by tenant account accountid
