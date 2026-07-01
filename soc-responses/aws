@@ -15,3 +15,8 @@ index=aws_bespin sourcetype="aws:cloudwatch:guardduty"
 
 index=aws_bespin sourcetype="aws:cloudwatch:guardduty"
 | stats count values(detail.resourceDetails.ec2InstanceDetails.clusterArn) as ClusterARN by tenant account detail.accountId
+
+
+index=aws_bespin sourcetype="aws:cloudwatch:guardduty"
+| stats values(detail.resourceDetails.ec2InstanceDetails.clusterArn) as ClusterARN by tenant detail.accountId
+| stats count as num_accounts values(detail.accountId) as accounts by tenant
