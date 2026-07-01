@@ -11,3 +11,7 @@ index=aws_bespin sourcetype=aws:cloudtrail eventSource="guardduty.amazonaws.com"
 
 index=aws_bespin sourcetype="aws:cloudwatch:guardduty"
 | stats count values(detail.resourceDetails.ec2InstanceDetails.clusterArn) as ClusterARN by tenant account accountid
+
+
+index=aws_bespin sourcetype="aws:cloudwatch:guardduty"
+| stats count values(detail.resourceDetails.ec2InstanceDetails.clusterArn) as ClusterARN by tenant account detail.accountId
