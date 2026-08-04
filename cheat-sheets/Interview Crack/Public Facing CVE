@@ -1,0 +1,18 @@
+Given it's a zero-day with no vendor patch and active public discussion (meaning exploitation risk is rising fast), the priority is containment and detection, not waiting for a patch. Here's the sequence I'd follow:
+
+Immediate (first hour)
+Confirm the vulnerability actually applies to your specific version/config — don't assume from a CVE description alone. Check for a virtual patch or mitigation from the vendor even if a full fix isn't out yet (config change, disabling a module, feature flag). If the affected service/endpoint isn't business-critical, consider taking it offline or restricting access until you have a mitigation.
+
+Contain / reduce attack surface
+Put a WAF rule in front of it if you have one — many WAF vendors push emergency rulesets for actively-discussed vulns within hours. Restrict access by IP allowlist or VPN if the exposed functionality doesn't need to be public. If the vuln is in a specific module/plugin/feature, disable that component if the app can run without it. Segment the server further from internal networks in case it does get popped, so a compromise doesn't cascade.
+
+Detect / hunt
+Pull logs (WAF, web server access logs, EDR/host logs) and check for exploitation attempts or indicators of compromise, especially anything predating your patch — assume it may already have been probed. Search for public PoC code or exploit signatures being shared on Twitter/forums and turn those into detection rules (Suricata/Snort signature, SIEM query, WAF rule) rather than just reading about them. Check threat intel feeds / ISACs for IOCs others have published.
+
+Track for the real fix
+Monitor the vendor's advisory page and CVE entry for patch release; subscribe to their security mailing list if you haven't. Have a plan to patch immediately once available (test window, rollback plan).
+
+Process / comms
+Open an incident ticket even if you haven't confirmed compromise — document what you did and when, for audit and lessons-learned. Loop in whoever owns risk decisions (CISO, IT lead) if downtime or access restriction affects the business. If you find evidence of actual compromise, that shifts into full IR: isolate, preserve evidence, scope blast radius, rotate credentials.
+
+If you tell me which specific CVE/vulnerability and what the server runs (Apache, nginx, a specific CMS, etc.), I can help you find the actual mitigation guidance or draft the WAF rule/config change.
