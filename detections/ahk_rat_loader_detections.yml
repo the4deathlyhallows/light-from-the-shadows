@@ -1,0 +1,373 @@
+title: AutoHotkey Compiled Script Spawning Script Interpreter
+id: 7a1e6f0a-2b3c-4b8e-9e1a-1f2a3b4c5d61
+status: experimental
+description: |
+  Detects a compiled AutoHotkey (AHK) executable spawning WScript/CScript or PowerShell.
+  Reported by Morphisec (May 2021) as the initial stage of a multi-variant RAT delivery
+  campaign (Revenge RAT, LimeRAT, AsyncRAT, Houdini, Vjw0rm) using AHK-compiled loaders
+  that drop and execute VBScript, which in turn loads a PowerShell stage.
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.execution
+    - attack.t1059.005
+    - attack.t1059.001
+    - attack.defense-evasion
+    - attack.t1027
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    parent_ahk:
+        ParentImage|endswith:
+            - '\AutoHotkey.exe'
+            - '\AutoHotkeyU32.exe'
+            - '\AutoHotkeyU64.exe'
+            - '\AutoHotkeyA32.exe'
+        ParentCommandLine|contains: '.ahk'
+    parent_ahk_compiled:
+        # Compiled AHK EXEs embed the AutoHotkey interpreter; many retain PE metadata
+        # referencing AutoHotkey even when renamed to masquerade as a legitimate app.
+        ParentCommandLine|contains: 'AutoHotkey'
+    child_script:
+        Image|endswith:
+            - '\wscript.exe'
+            - '\cscript.exe'
+            - '\powershell.exe'
+            - '\pwsh.exe'
+    condition: (parent_ahk or parent_ahk_compiled) and child_script
+falsepositives:
+    - Legitimate internal tooling built with AutoHotkey that intentionally shells out to
+      WScript/PowerShell. Baseline known business use before enabling in blocking mode.
+level: high
+---
+title: Obfuscated VBScript Spawning PowerShell with Hidden Window
+id: 9b2f7d1b-3c4d-4a9f-8f2b-2a3b4c5d6e72
+status: experimental
+description: |
+  Detects WScript/CScript launching PowerShell with hidden-window and encoded-command
+  flags, matching the AHK loader campaign's decode chain (obfuscated VBS -> PowerShell ->
+  C# payload fetched from a Pastebin-like host) that ultimately installs LimeRAT/AsyncRAT.
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - attack.t1059.005
+    - attack.defense-evasion
+    - attack.t1027
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_parent:
+        ParentImage|endswith:
+            - '\wscript.exe'
+            - '\cscript.exe'
+    selection_child:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+    selection_flags:
+        CommandLine|contains:
+            - '-enc '
+            - '-EncodedCommand'
+            - '-e '
+            - '-nop'
+            - '-noni'
+            - '-w hidden'
+            - '-windowstyle hidden'
+            - 'IEX'
+            - 'Invoke-Expression'
+            - 'DownloadString'
+            - 'DownloadData'
+            - 'FromBase64String'
+    condition: selection_parent and selection_child and selection_flags
+falsepositives:
+    - Legitimate admin or deployment scripts that call PowerShell from a VBS wrapper.
+      Rare outside packaged installers; verify parent script origin and signer.
+level: high
+---
+title: Ingress Tool Transfer From Paste-Style Hosting Service
+id: 3c4d5e6f-7a8b-49c0-9d1e-3b4c5d6e7f83
+status: experimental
+description: |
+  Detects PowerShell or script interpreters retrieving payloads from Pastebin-style raw
+  text hosting services (e.g. stikked.ch, pastebin.com, paste.ee, hastebin, rentry.co).
+  The AHK loader campaign used stikked.ch to host a Base64/obfuscated C# stage that
+  deploys the final RAT.
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.command-and-control
+    - attack.t1105
+    - attack.t1071.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_proc:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+            - '\wscript.exe'
+            - '\cscript.exe'
+            - '\curl.exe'
+            - '\bitsadmin.exe'
+            - '\certutil.exe'
+    selection_hosts:
+        CommandLine|contains:
+            - 'stikked.ch'
+            - 'pastebin.com/raw'
+            - 'paste.ee'
+            - 'hastebin.com'
+            - 'rentry.co'
+            - 'controlc.com'
+    condition: selection_proc and selection_hosts
+falsepositives:
+    - Developers legitimately fetching gists/snippets. Investigate destination content
+      and downstream process activity before treating as benign.
+level: medium
+---
+title: Windows Defender Tampering via Script or Registry
+id: 5e6f7a8b-9c0d-41e2-af3f-5c6d7e8f9a94
+status: experimental
+description: |
+  Detects commands that disable Microsoft Defender real-time protection or stop the
+  WinDefend service, matching one AHK loader variant that dropped a Batch script (invoked
+  via an LNK) to disable Defender before installing the RAT payload.
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.defense-evasion
+    - attack.t1562.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_ps:
+        CommandLine|contains|all:
+            - 'Set-MpPreference'
+            - 'DisableRealtimeMonitoring'
+    selection_sc_stop:
+        Image|endswith: '\sc.exe'
+        CommandLine|contains:
+            - 'stop WinDefend'
+            - 'config WinDefend start= disabled'
+    selection_reg:
+        Image|endswith: '\reg.exe'
+        CommandLine|contains:
+            - 'Windows Defender'
+        CommandLine|contains|any:
+            - 'DisableAntiSpyware'
+            - 'DisableRealtimeMonitoring'
+            - 'DisableAntiVirus'
+    selection_taskkill:
+        Image|endswith: '\taskkill.exe'
+        CommandLine|contains: 'MsMpEng'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized EDR/AV migration scripts run by IT. Should be rare and change-controlled;
+      alert on any instance outside approved maintenance windows.
+level: high
+---
+title: Shortcut (LNK) File Created Pointing to Batch Script
+id: 8f9a0b1c-2d3e-44f5-9a6b-6d7e8f9a0b15
+status: experimental
+description: |
+  Detects creation of a .lnk shortcut whose target is a .bat/.cmd file, a pattern the AHK
+  loader campaign used to trigger a Defender-disabling Batch script (often staged from a
+  compiled AHK dropper into Temp/AppData or the Startup folder).
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.persistence
+    - attack.t1547.009
+    - attack.execution
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection:
+        TargetFilename|endswith: '.lnk'
+    filter_path:
+        TargetFilename|contains:
+            - '\AppData\'
+            - '\Temp\'
+            - '\Startup\'
+    condition: selection and filter_path
+falsepositives:
+    - Many legitimate installers create Startup/AppData shortcuts. Best used correlated
+      with Sysmon EventID 15 (LNK target metadata) or combined with the Defender-tampering
+      rule in this pack for higher fidelity.
+level: low
+---
+title: Hosts File Modified to Block Antivirus Domains
+id: 1a2b3c4d-5e6f-47a8-8b9c-7e8f9a0b1c26
+status: experimental
+description: |
+  Detects modification of the Windows hosts file, used in the AHK loader campaign to
+  sinkhole AV vendor domains to localhost and block cloud-based detection/updates.
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.defense-evasion
+    - attack.t1562.001
+    - attack.t1565.001
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection:
+        TargetFilename|endswith: '\drivers\etc\hosts'
+    filter_main:
+        Image|endswith:
+            - '\notepad.exe'
+            - '\notepad++.exe'
+            - '\code.exe'
+    condition: selection and not filter_main
+falsepositives:
+    - IT admins or endpoint management tools editing hosts for legitimate blocklisting.
+      Diff the file contents against baseline; flag additions resolving AV/security
+      vendor domains to 127.0.0.1 or 0.0.0.0.
+level: medium
+---
+title: PowerShell Fetching In-Memory Loader Consistent With HCrypt/AsyncRAT Stage
+id: 4b5c6d7e-8f9a-40b1-9c2d-8f9a0b1c2d37
+status: experimental
+description: |
+  Detects PowerShell reflectively loading .NET assemblies in memory after a download
+  cradle, consistent with the AHK loader's HCrypt-packed AsyncRAT stage (VBS drops an
+  in-memory PowerShell script that fetches and loads the RAT without touching disk).
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.defense-evasion
+    - attack.t1055
+    - attack.t1620
+    - attack.execution
+    - attack.t1059.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_proc:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+    selection_reflection:
+        CommandLine|contains|all:
+            - '[Reflection.Assembly]'
+            - 'Load'
+    selection_memstream:
+        CommandLine|contains|any:
+            - '[System.Convert]::FromBase64String'
+            - 'IO.MemoryStream'
+            - 'Net.WebClient'
+    condition: selection_proc and (selection_reflection or selection_memstream)
+falsepositives:
+    - Legitimate PowerShell modules that use reflection for signed, known internal tools.
+      Correlate with process ancestry (wscript/cscript parent) for higher confidence.
+level: high
+---
+title: PowerShell Script Block Builds HttpWebRequest Download Cradle to Stikked.ch
+id: 6c7d8e9f-0a1b-42c3-ad4e-9f0a1b2c3d48
+status: experimental
+description: |
+  Detects the deobfuscated PowerShell logic used by the AHK loader's VBS dropper: a
+  System.Net.HttpWebRequest download cradle that reads a stikked.ch paste and pipes it
+  to IEX. Requires PowerShell Script Block Logging (Event ID 4104) enabled, since the
+  VBS wrapper builds this string at runtime via StrReverse() and never writes it to disk
+  or a visible process command line in plaintext.
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - attack.t1059.005
+    - attack.defense-evasion
+    - attack.t1027
+    - attack.command-and-control
+    - attack.t1105
+logsource:
+    category: ps_script
+    product: windows
+    definition: 'Requires PowerShell Script Block Logging (Microsoft-Windows-PowerShell/Operational, Event ID 4104)'
+detection:
+    selection_cradle:
+        ScriptBlockText|contains|all:
+            - 'HttpWebRequest'
+            - 'GetResponseStream'
+            - 'IEX'
+    selection_host:
+        ScriptBlockText|contains: 'stikked.ch'
+    condition: selection_cradle or selection_host
+falsepositives:
+    - Rare. HttpWebRequest + GetResponseStream + IEX chained together is an uncommon
+      combination outside malicious download cradles; treat hits as high-confidence.
+level: critical
+---
+title: Obfuscated VBScript Using StrReverse-Based Decode-and-Execute Pattern
+id: 2d3e4f5a-1b2c-43d4-be5f-0a1b2c3d4e59
+status: experimental
+description: |
+  Detects VBScript source containing the AHK loader campaign's signature obfuscation:
+  repeated StrReverse() calls feeding Execute(), combined with a custom Chr(Asc(Mid(...)))
+  character-shift decoder used to reconstruct variable names and a PowerShell download
+  cradle at runtime. This is a static/content-based rule intended for AMSI content
+  logging, EDR script-content telemetry, or file-scanning pipelines rather than
+  process-creation logs (the malicious string never appears in plaintext on the
+  command line).
+references:
+    - https://blog.morphisec.com/ahk-rat-loader-leveraged-in-unique-delivery-campaigns
+    - https://thehackernews.com/2021/05/experts-warn-about-ongoing-autohotkey.html
+author: Detection Engineering
+date: 2026-08-04
+tags:
+    - attack.execution
+    - attack.t1059.005
+    - attack.defense-evasion
+    - attack.t1027
+logsource:
+    category: file_event
+    product: windows
+    definition: 'Intended for AMSI/script-content or file-scanning telemetry (e.g. Sysmon FileCreate + content scan, EDR script logging), not raw process_creation'
+detection:
+    selection_execute_reverse:
+        FileContent|contains: 'Execute(StrReverse('
+    selection_reverse_count:
+        FileContent|contains: 'StrReverse('
+    selection_char_decoder:
+        FileContent|contains|all:
+            - 'Chr(Asc(Mid('
+    condition: selection_execute_reverse and selection_char_decoder
+falsepositives:
+    - Very low. This exact combination (Execute+StrReverse+custom Chr/Asc decoder) is a
+      niche obfuscation style rarely seen in legitimate VBScript. A companion YARA rule
+      (ahk_loader_vbs_obfuscation.yar) is provided for environments without a Sigma
+      file-content backend.
+level: critical
