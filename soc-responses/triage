@@ -276,6 +276,15 @@ earliest=-2d@d
 | where unsigned="unsigned" OR NOT like(ParentImage, "%Windows%")
 | sort - count
 ```
+
+index=linux sourcetype=*linux* OR sourcetype=*rhel* "failed" "password"
+earliest=-2d@d latest=now
+| eval period=if(_time<1785758400, "before", "after")
+| stats values(period) as seen_in by user, src
+| where mvcount(seen_in)=1 AND seen_in="after"
+| sort user
+
+
 *Benign signal:* processes are signed, standard parent/child relationships (explorer.exe →
 known app, services.exe → known service).
 *Malicious signal:* unsigned binaries, unusual parent/child chains (e.g., `winword.exe` spawning
