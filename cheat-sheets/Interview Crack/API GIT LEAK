@@ -1,0 +1,50 @@
+Thought process
+
+Given it's a zero-day with no vendor patch and active public discussion (meaning exploitation risk is rising fast), the priority is containment and detection, not waiting for a patch. Here's the sequence I'd follow:
+
+Immediate (first hour)
+Confirm the vulnerability actually applies to your specific version/config — don't assume from a CVE description alone. Check for a virtual patch or mitigation from the vendor even if a full fix isn't out yet (config change, disabling a module, feature flag). If the affected service/endpoint isn't business-critical, consider taking it offline or restricting access until you have a mitigation.
+
+Contain / reduce attack surface
+Put a WAF rule in front of it if you have one — many WAF vendors push emergency rulesets for actively-discussed vulns within hours. Restrict access by IP allowlist or VPN if the exposed functionality doesn't need to be public. If the vuln is in a specific module/plugin/feature, disable that component if the app can run without it. Segment the server further from internal networks in case it does get popped, so a compromise doesn't cascade.
+
+Detect / hunt
+Pull logs (WAF, web server access logs, EDR/host logs) and check for exploitation attempts or indicators of compromise, especially anything predating your patch — assume it may already have been probed. Search for public PoC code or exploit signatures being shared on Twitter/forums and turn those into detection rules (Suricata/Snort signature, SIEM query, WAF rule) rather than just reading about them. Check threat intel feeds / ISACs for IOCs others have published.
+
+Track for the real fix
+Monitor the vendor's advisory page and CVE entry for patch release; subscribe to their security mailing list if you haven't. Have a plan to patch immediately once available (test window, rollback plan).
+
+Process / comms
+Open an incident ticket even if you haven't confirmed compromise — document what you did and when, for audit and lessons-learned. Loop in whoever owns risk decisions (CISO, IT lead) if downtime or access restriction affects the business. If you find evidence of actual compromise, that shifts into full IR: isolate, preserve evidence, scope blast radius, rotate credentials.
+
+If you tell me which specific CVE/vulnerability and what the server runs (Apache, nginx, a specific CMS, etc.), I can help you find the actual mitigation guidance or draft the WAF rule/config change.
+
+You get information a user has posted api keys,to a public git repo , and they have been compromised by an attacker, what actions do you take
+
+Thought process
+Thought process
+
+Leaked API keys in a public repo with confirmed compromise is a "assume breach" situation — the priority order is revoke, then scope, then clean up exposure, then hunt for damage.
+
+Immediate — kill the keys
+Revoke or rotate the exposed credentials right away, before anything else. A leaked key that's already been used by an attacker is still live until you kill it, so this comes before investigation. If revocation isn't instant (some services have propagation delay), also lock down the account/permissions tied to that key in parallel.
+
+Scope what the key could touch
+Check what permissions/scopes that key had — what data, systems, or actions it could reach. Pull the provider's audit logs (AWS CloudTrail, GitHub audit log, Stripe logs, whatever the service is) for activity on that key, and look specifically for anything from unfamiliar IPs/regions or actions outside the app's normal behavior pattern, going back to whenever the key was first exposed (not just from when you noticed).
+
+Confirm and size the compromise
+Since you already know it's been compromised, figure out what the attacker actually did with it: data accessed/exfiltrated, resources created (attackers often spin up compute for crypto mining or use SES/SNS for spam), new IAM users/keys created for persistence, config changed. Attackers often create a backdoor (new access key, new user) so revoking the original key isn't enough — check for anything else they added.
+
+Clean up the exposure itself
+Remove the key from the repo, but know that git history keeps it — commit history needs rewriting (git filter-repo / BFG) or the repo needs to go private/be scrubbed, and you should treat the key as permanently burned rather than relying on history cleanup alone. Check if the repo was forked or cached anywhere (GitHub cache, Google indexing, scraper bots — these move fast, sometimes within minutes of a push).
+
+Contain broader blast radius
+Rotate any other credentials that were stored alongside it or that the compromised key had access to provision (e.g., if it's a cloud key, check for other secrets it could have read from a secrets manager). Check billing/usage dashboards for anomalous spend, which is often the fastest signal of misuse.
+
+Root cause / prevention
+Figure out how it got committed — missing .gitignore, no pre-commit secret scanning, no branch protection — and fix that gap. Add automated secret scanning (GitHub secret scanning / push protection, gitleaks, trufflehog) as a hard gate going forward.
+
+Documentation
+Log the incident: what leaked, when, exposure window, what the attacker did, remediation steps, and whether this triggers any disclosure obligation (e.g., if customer data was touched, depending on your regulatory environment).
+
+If you tell me which provider the key was for (AWS, Stripe, GitHub PAT, etc.) and what it had access to, I can get specific about what logs to pull and what to check for.
