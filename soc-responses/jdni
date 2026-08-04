@@ -1,0 +1,48 @@
+Best way to tell: extract the actual callback address embedded in the JNDI payload. Vulnerability scanners (including Log4Shell scanners) work by pointing the callback at a canary server they control — if a vulnerable host connects back, that confirms the vuln. So the domain/IP after jndi:ldap:// (or rmi://, dns://) tells you a lot: a vendor or internal canary domain = scanner; an unfamiliar external domain or raw IP = real attacker infrastructure.
+
+1. Pull the full payload and extract the callback host — do this first:
+
+spl
+index=linux sourcetype=*linux* OR sourcetype=*rhel* "failed" "password"
+user="*jndi*"
+earliest=-2d@d latest=now
+| rex field=_raw "jndi:(?<protocol>\w+)://(?<callback_host>[^/\}]+)"
+| stats count by callback_host, protocol
+| sort - count
+
+What to look for: a domain like *.qualys.com, *.tenable.com, *.rapid7.com, *.insightvm.com, or an internal domain your security team owns (e.g., a canary/collaborator server) = your own scanner. An unfamiliar public domain, a raw external IP, or a newly-registered-looking domain = not your scanner.
+
+2. Check if the source IPs behave like a scanner elsewhere — real scanners hit many hosts/ports broadly around the same time, not just this one signature:
+
+spl
+index=* earliest=-2d@d latest=now
+[ search index=linux sourcetype=*linux* OR sourcetype=*rhel* "failed" "password" user="*jndi*" earliest=-2d@d latest=now
+  | stats count by src | fields src ]
+| stats dc(dest) as hosts_touched dc(dest_port) as ports_touched count by src
+| sort - hosts_touched
+
+A handful of hosts each touching dozens/hundreds of destinations and multiple ports in a short window looks like scanner behavior. A source touching just one or two hosts looks different.
+
+3. Check timing — a scanner sweep is fast and systematic:
+
+spl
+index=linux sourcetype=*linux* OR sourcetype=*rhel* "failed" "password" user="*jndi*"
+earliest=-2d@d latest=now
+| stats count earliest(_time) as first latest(_time) as last by src, dest
+| convert ctime(first) ctime(last)
+| sort first
+
+Many different src/dest pairs completing within a tight window (minutes to a couple hours) supports an automated sweep — either a scanner or a scripted attack tool, so this alone doesn't distinguish the two, but it rules out organic/manual activity.
+
+4. If you have Splunk ES's Asset & Identity framework populated, look up whether the source IPs are tagged as scanning infrastructure:
+
+spl
+index=linux sourcetype=*linux* OR sourcetype=*rhel* "failed" "password" user="*jndi*"
+earliest=-2d@d latest=now
+| stats count by src
+| lookup asset_lookup_by_str ip AS src OUTPUT asset, category, owner
+| table src, asset, category, owner, count
+
+(lookup name depends on how your CMDB/asset lists are configured — check Settings > Lists and Lookups if this doesn't return anything.)
+
+Fastest path overall: query 1 alone is usually decisive — a recognizable scanner vendor domain in the callback closes this out quickly. If the callback domain is unfamiliar, that's your answer too, just the other direction, and it should go to your IR process immediately rather than further self-triage.
