@@ -1,1 +1,380 @@
 
+==========================================================
+HUNT 2: CREDENTIAL ACCESS & PROXY AUTHENTICATION
+==========================================================
+MITRE ATT&CK
+------------
+Techniques
+• T1078 Valid Accounts
+• T1556 Modify Authentication Process
+• T1556.002 Password Filter DLL (Conceptual)
+• T1556.006 Multi-Factor Authentication Interception (Conceptual)
+• T1550 Use Alternate Authentication Material
+• T1550.001 Application Access Token (Conceptual)
+• T1550.003 Pass the Ticket (Conceptual)
+• T1550.004 Web Session Cookie (Conceptual)
+
+Tactics
+-------
+• Credential Access
+• Defense Evasion
+• Persistence
+• Privilege Escalation
+
+Telemetry Confidence
+--------------------
+HIGH
+
+Data Sources
+------------
+• Oracle Unified Audit
+• Oracle Authentication Events
+• Oracle Session Metadata
+• Oracle Proxy Authentication
+
+Required Telemetry
+------------------
+• CURRENT_USER
+• TARGET_USER
+• DBPROXY_USERNAME
+• EXTERNAL_USERID
+• GLOBAL_USERID
+• AUTHENTICATION_TYPE
+• CLIENT ADDRESS
+• HOST
+• SESSIONID
+• RETURN_CODE
+• ACTION
+
+==========================================================
+OVERARCHING HYPOTHESIS
+==========================================================
+
+IF an adversary attempts to steal, impersonate, reuse, or otherwise abuse
+Oracle authentication mechanisms or credential relationships,
+
+THEN Oracle Unified Audit records will contain evidence of abnormal proxy
+authentication, identity misuse, unauthorized authentication methods,
+unexpected account relationships, or suspicious session activity,
+
+BECAUSE Oracle auditing records authentication methods, identity mappings,
+proxy relationships, and account activity required to establish and maintain
+authenticated database sessions.
+
+==========================================================
+STORY 2A — UNAUTHORIZED PROXY USER IMPERSONATION
+==========================================================
+
+Priority
+--------
+High
+
+Indicators
+----------
+• New DBPROXY_USERNAME observed.
+• One proxy authenticating as many Oracle users.
+• Proxy authenticating privileged accounts.
+• Proxy authentication from new CLIENT ADDRESS values.
+• Proxy authentication from unexpected HOST systems.
+• Excessive proxy authentication volume.
+
+Logic
+
+Oracle proxy relationships are generally static and application-specific.
+Unauthorized proxy authentication or abnormal impersonation patterns may
+indicate application compromise, stolen service account credentials, or
+privilege abuse.
+
+Splunk Query
+------------
+index=database
+| rex field=_raw "(?i)DBPROXY_USERNAME[=:]\"?(?<proxy_user>[^\"]+)"
+| rex field=_raw "(?i)CURRENT_USER[=:]\"?(?<db_user>[^\"]+)"
+| rex field=_raw "(?i)CLIENT ADDRESS[=:]\"?(?<src_ip>[0-9A-Fa-f:\.]+)"
+| rex field=_raw "(?i)HOST[=:]\"?(?<host>[^\"]+)"
+| search proxy_user=*
+| stats count dc(db_user) AS impersonated_users values(db_user) AS users values(src_ip) AS source_ips values(host) AS hosts earliest(_time) AS first_seen latest(_time) AS last_seen by proxy_user
+| convert ctime(first_seen) ctime(last_seen)
+| sort -impersonated_users
+
+
+Query Logic
+-----------
+Extracts Oracle proxy authentication activity and identifies proxy accounts
+used to authenticate as multiple database users. Proxy accounts impersonating
+an unusually large number of users should be validated against expected
+application behavior.
+
+Investigation Pivot Fields
+--------------------------
+• DBPROXY_USERNAME
+• CURRENT_USER
+• CLIENT ADDRESS
+• HOST
+• SESSIONID
+
+Operational Notes
+-----------------
+• Verify whether the proxy account belongs to an approved application.
+• Review historical proxy activity.
+• Pivot into privilege escalation and object access.
+• Review recent application configuration changes.
+
+Expected False Positives
+------------------------
+• Enterprise middleware.
+• Connection pools.
+• Oracle Enterprise Manager.
+• Approved application testing.
+
+==========================================================
+STORY 2B — EXTERNAL IDENTITY MAPPING CHANGES
+==========================================================
+
+Priority
+--------
+High
+
+Indicators
+----------
+• New EXTERNAL_USERID observed.
+• New GLOBAL_USERID observed.
+• Multiple enterprise identities mapped to one Oracle account.
+• One enterprise identity authenticating multiple Oracle accounts.
+• Unexpected AUTHENTICATION_TYPE.
+• Authentication from unfamiliar CLIENT ADDRESS.
+
+Logic
+
+Enterprise identities generally remain stable. New identity mappings or
+unexpected authentication methods may indicate federation abuse, identity
+provider compromise, or unauthorized authentication.
+
+Splunk Query
+------------
+index=database
+| search "LOGON"
+| rex field=_raw "(?i)CURRENT_USER[=:]\"?(?<db_user>[^\"]+)"
+| rex field=_raw "(?i)EXTERNAL_USERID[=:]\"?(?<external_user>[^\"]+)"
+| rex field=_raw "(?i)GLOBAL_USERID[=:]\"?(?<global_user>[^\"]+)"
+| rex field=_raw "(?i)AUTHENTICATION_TYPE[=:]\"?(?<authentication_type>[^\"]+)"
+| rex field=_raw "(?i)CLIENT ADDRESS[=:]\"?(?<src_ip>[0-9A-Fa-f:\.]+)"
+| stats count values(external_user) AS external_identity values(global_user) AS global_identity values(authentication_type) AS authentication_types values(src_ip) AS source_ips by db_user
+| sort -count
+
+
+Query Logic
+-----------
+Identifies Oracle accounts associated with enterprise identities and highlights
+unexpected identity mappings or authentication methods that differ from normal
+usage patterns.
+
+Investigation Pivot Fields
+--------------------------
+• CURRENT_USER
+• EXTERNAL_USERID
+• GLOBAL_USERID
+• AUTHENTICATION_TYPE
+• CLIENT ADDRESS
+
+Operational Notes
+-----------------
+• Validate the identity mapping.
+• Compare against enterprise identity provider records.
+• Review authentication history.
+• Pivot into subsequent Oracle activity.
+
+Expected False Positives
+------------------------
+• Identity provider migration.
+• PKI certificate renewal.
+• New employee onboarding.
+• Directory synchronization.
+
+==========================================================
+STORY 2C — AUTHENTICATION METHOD ANOMALIES
+==========================================================
+
+Priority
+--------
+Medium
+
+Indicators
+----------
+• New AUTHENTICATION_TYPE observed.
+• Same user authenticating using multiple methods.
+• Authentication method changing unexpectedly.
+• Privileged accounts using unfamiliar authentication methods.
+
+Logic
+
+Authentication methods generally remain consistent for individual Oracle
+accounts. Sudden changes may indicate configuration manipulation, credential
+abuse, or attempts to bypass existing authentication controls.
+
+Splunk Query
+------------
+index=database
+| search "LOGON"
+| rex field=_raw "(?i)CURRENT_USER[=:]\"?(?<db_user>[^\"]+)"
+| rex field=_raw "(?i)AUTHENTICATION_TYPE[=:]\"?(?<authentication_type>[^\"]+)"
+| rex field=_raw "(?i)CLIENT ADDRESS[=:]\"?(?<src_ip>[^\"]+)"
+| stats count dc(authentication_type) AS auth_methods values(authentication_type) AS authentication_methods values(src_ip) AS source_ips by db_user
+| where auth_methods>1
+| sort -auth_methods
+
+
+Query Logic
+-----------
+Identifies Oracle accounts authenticating with multiple authentication methods.
+Unexpected authentication method diversity may indicate unauthorized access,
+configuration changes, or credential misuse.
+
+Investigation Pivot Fields
+--------------------------
+• CURRENT_USER
+• AUTHENTICATION_TYPE
+• CLIENT ADDRESS
+• SESSIONID
+
+Operational Notes
+-----------------
+• Validate approved authentication methods.
+• Review authentication history.
+• Correlate with identity management changes.
+
+Expected False Positives
+------------------------
+• Authentication migration.
+• PKI rollout.
+• MFA implementation.
+• Identity provider upgrades.
+
+==========================================================
+STORY 2D — MULTIPLE IDENTITIES USING THE SAME DATABASE ACCOUNT
+==========================================================
+
+Priority
+--------
+Medium
+
+Indicators
+----------
+• Multiple EXTERNAL_USERID values mapped to one Oracle account.
+• Multiple GLOBAL_USERID values mapped to one Oracle account.
+• Multiple CLIENT ADDRESS values within short periods.
+• High authentication diversity.
+
+Logic
+
+Individual Oracle accounts generally have a single associated enterprise
+identity. Multiple identities authenticating as the same Oracle account may
+indicate account sharing, impersonation, or identity compromise.
+
+Splunk Query
+------------
+index=database
+| search "LOGON"
+| rex field=_raw "(?i)CURRENT_USER[=:]\"?(?<db_user>[^\"]+)"
+| rex field=_raw "(?i)EXTERNAL_USERID[=:]\"?(?<external_user>[^\"]+)"
+| rex field=_raw "(?i)GLOBAL_USERID[=:]\"?(?<global_user>[^\"]+)"
+| stats dc(external_user) AS external_users dc(global_user) AS global_users values(external_user) AS external_identity values(global_user) AS global_identity by db_user
+| where external_users>1 OR global_users>1
+
+
+Query Logic
+-----------
+Identifies Oracle accounts associated with multiple enterprise identities.
+Unexpected identity diversity may indicate impersonation, shared credentials,
+or unauthorized federation.
+
+Investigation Pivot Fields
+--------------------------
+• CURRENT_USER
+• EXTERNAL_USERID
+• GLOBAL_USERID
+
+Operational Notes
+-----------------
+• Validate approved identity mappings.
+• Review recent identity changes.
+• Correlate with identity provider records.
+
+Expected False Positives
+------------------------
+• Identity consolidation.
+• Federation migration.
+• Directory synchronization.
+
+==========================================================
+STORY 2E — FIRST-TIME AUTHENTICATION SOURCE
+==========================================================
+
+Priority
+--------
+Medium
+
+Indicators
+----------
+• New CLIENT ADDRESS.
+• New HOST.
+• Previously unseen workstation.
+• New authentication source for privileged users.
+
+Logic
+
+Threat actors frequently authenticate from infrastructure that has never
+previously accessed the Oracle environment. Identifying first-time
+authentication sources provides an opportunity to detect compromised accounts
+early in the intrusion lifecycle.
+
+Splunk Query
+------------
+index=database
+| search "LOGON"
+| rex field=_raw "(?i)CURRENT_USER[=:]\"?(?<db_user>[^\"]+)"
+| rex field=_raw "(?i)CLIENT ADDRESS[=:]\"?(?<src_ip>[^\"]+)"
+| rex field=_raw "(?i)HOST[=:]\"?(?<host>[^\"]+)"
+| stats earliest(_time) AS first_seen latest(_time) AS last_seen values(host) AS hosts by db_user src_ip
+| convert ctime(first_seen) ctime(last_seen)
+| sort first_seen
+
+
+Query Logic
+-----------
+Establishes the first observed authentication for each Oracle account from a
+given CLIENT ADDRESS. Recently observed authentication sources should be
+validated to determine whether they represent legitimate administrative
+activity or potential account compromise.
+
+Investigation Pivot Fields
+--------------------------
+• CURRENT_USER
+• CLIENT ADDRESS
+• HOST
+• SESSIONID
+
+Operational Notes
+-----------------
+• Verify the endpoint with the asset inventory.
+• Determine whether the user normally authenticates from the source.
+• Pivot into all subsequent Oracle activity from the same session.
+
+Expected False Positives
+------------------------
+• New workstations.
+• VPN changes.
+• Device replacement.
+• Disaster recovery activities.
+
+==========================================================
+DETECTION ENGINEERING OPPORTUNITIES
+==========================================================
+
+• Detect first-time DBPROXY_USERNAME usage.
+• Detect proxy accounts authenticating unusually large numbers of users.
+• Detect new EXTERNAL_USERID or GLOBAL_USERID mappings.
+• Detect multiple enterprise identities associated with a single Oracle account.
+• Detect Oracle accounts authenticating with multiple AUTHENTICATION_TYPE values.
+• Detect first-time CLIENT ADDRESS or HOST authentication for privileged users.
+• Detect proxy authentication originating from previously unseen systems.
