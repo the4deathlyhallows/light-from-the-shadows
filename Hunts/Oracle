@@ -15,3 +15,12 @@ index=database sourcetype=oracle:audit:text CLIENT_IP IN ("10.68.123.113","10.68
 | eval bucket=if(match(COMMAND_TEXT, "(?i)(SYSTEM\.LOGMNR|DBMS_STATS|SYS\.|AUDSYS\.)"), "internal_maintenance", "needs_review")
 | stats count by bucket, COMMAND_CLASS, TARGET_OWNER
 | sort -count
+
+
+
+index=database sourcetype=oracle:audit:text CLIENT_IP IN ("10.68.123.113","10.68.72.176","10.65.68.72","10.65.68.84")
+| rex field=EXTENSION "(?i)CURRENT_USER=(?<ext_user>[^:]+)"
+| eval db_user=coalesce(ext_user, USER_NAME, user)
+| where db_user="SYS" AND (COMMAND_CLASS="CREATE" OR COMMAND_CLASS="ALTER")
+| table EVENT_TIME, _time, CLIENT_IP, CLIENT_HOST_NAME, COMMAND_CLASS, COMMAND_TEXT
+| sort _time
