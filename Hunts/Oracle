@@ -1,0 +1,7 @@
+
+index=database sourcetype=oracle:audit:text CLIENT_IP IN ("10.68.123.113","10.68.72.176","10.65.68.72","10.65.68.84")
+| rex field=EXTENSION "(?i)CURRENT_USER=(?<ext_user>[^:]+)"
+| eval db_user=coalesce(ext_user, USER_NAME, user)
+| where db_user="SYS"
+| table EVENT_TIME, AV_TIME, _time, CLIENT_IP, CLIENT_PROGRAM, CLIENT_HOST_NAME, COMMAND_CLASS, EVENT_NAME, TARGET_OWNER, TARGET_OBJECT, COMMAND_TEXT
+| sort _time
